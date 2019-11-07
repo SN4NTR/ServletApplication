@@ -13,7 +13,18 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void save(User user) {
+        Connection connection = JdbcConnection.getConnection();
 
+        String SQL_INSERT = "INSERT INTO users VALUES (?)";
+
+        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_INSERT) : null) {
+            if (preparedStatement != null) {
+                preparedStatement.setString(1, user.getFirstName());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {;
+            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        }
     }
 
     @Override
@@ -23,7 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        Connection connection = JdbcConnection.getInstance().create();
+        Connection connection = JdbcConnection.getConnection();
 
         List<User> users = new ArrayList<>();
         String SQL_SELECT = "SELECT * FROM users";
@@ -44,14 +55,6 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {;
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
             return null;
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 }

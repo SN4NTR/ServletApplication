@@ -18,7 +18,7 @@ import java.util.List;
 @WebServlet(name = "UserServlet", urlPatterns = "/users")
 public class UserServlet extends HttpServlet {
 
-    private static Gson gson = new Gson();
+    private final static Gson gson = new Gson();
 
     private UserService userService = new UserServiceImpl();
 
@@ -41,6 +41,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        User user = gson.fromJson(req.getReader(), User.class);
+        userService.save(user);
     }
 }
