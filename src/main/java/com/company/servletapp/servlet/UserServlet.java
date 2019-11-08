@@ -28,22 +28,24 @@ public class UserServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
+        List<String> usersToString = new ArrayList<>();
+
         if (req.getParameter("firstName") == null) {
             List<User> users = userService.getAll();
 
-            List<String> usersToString = new ArrayList<>();
             for (User u : users) {
                 usersToString.add(gson.toJson(u));
             }
-
-            printWriter.print(usersToString);
         } else {
             String firstName = req.getParameter("firstName");
-            User user = userService.getByFirstName(firstName);
+            List<User> users = userService.getByFirstName(firstName);
 
-            printWriter.print(gson.toJson(user));
+            for (User u : users) {
+                usersToString.add(gson.toJson(u));
+            }
         }
 
+        printWriter.print(usersToString);
         printWriter.flush();
     }
 

@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByFirstName(String firstName) {
+    public List<User> getByFirstName(String firstName) {
         return userRepository.getByFirstName(firstName);
     }
 

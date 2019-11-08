@@ -8,7 +8,7 @@ public interface UserRepository {
 
     void save(User user);
 
-    User getByFirstName(String firstName);
+    List<User> getByFirstName(String firstName);
 
     List<User> getAll();
 }

@@ -24,14 +24,22 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException ex) {;
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
-    public User getByFirstName(String firstName) {
+    public List<User> getByFirstName(String firstName) {
         Connection connection = JdbcConnection.getConnection();
 
-        User user = new User();
+        List<User> users = new ArrayList<>();
         String SQL_SELECT_BY_FIRST_NAME = "SELECT * FROM users WHERE first_name = ?";
 
         try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_FIRST_NAME) : null) {
@@ -41,14 +49,24 @@ public class UserRepositoryImpl implements UserRepository {
 
                 while (resultSet != null && resultSet.next()) {
                     String userFirstName = resultSet.getString("first_name");
+                    User user = new User();
                     user.setFirstName(userFirstName);
+                    users.add(user);
                 }
             }
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
 
-        return user;
+        return users;
     }
 
     @Override
@@ -71,6 +89,14 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException ex) {;
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
 
         return users;
