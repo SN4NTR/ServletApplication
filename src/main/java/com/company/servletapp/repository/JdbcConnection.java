@@ -1,18 +1,29 @@
 package com.company.servletapp.repository;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 final class JdbcConnection {
 
     private static Connection connection;
 
     static Connection getConnection() {
-        if (connection == null) {
-            String URL = "jdbc:mysql://localhost:3306/servlet_db";
-            String PASSWORD = "root";
-            String USER = "root";
+        final String FILE_NAME = "application.properties";
+
+        try (InputStream inputStream = JdbcConnection.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+            Properties properties = new Properties();
+
+            if (inputStream != null) {
+                properties.load(inputStream);
+            }
+
+            final String USER = properties.getProperty("db.user");
+            final String PASSWORD = properties.getProperty("db.password");
+            final String URL = properties.getProperty("db.url");
 
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -22,6 +33,8 @@ final class JdbcConnection {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
         return connection;
