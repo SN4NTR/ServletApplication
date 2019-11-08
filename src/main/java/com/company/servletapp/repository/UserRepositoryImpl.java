@@ -165,4 +165,29 @@ public class UserRepositoryImpl implements UserRepository {
             }
         }
     }
+
+    @Override
+    public void update(User user) {
+        Connection connection = JdbcConnection.getConnection();
+
+        final String SQL_UPDATE = "UPDATE users SET first_name = ? WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_UPDATE) : null) {
+            if (preparedStatement != null) {
+                preparedStatement.setString(1, user.getFirstName());
+                preparedStatement.setInt(2, user.getId());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {;
+            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
 }
