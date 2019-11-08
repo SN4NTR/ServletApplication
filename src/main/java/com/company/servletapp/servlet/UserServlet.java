@@ -24,19 +24,27 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<User> users = userService.getAll();
-
-        PrintWriter out = resp.getWriter();
+        PrintWriter printWriter = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        List<String> usersToString = new ArrayList<>();
-        for (User u: users) {
-            usersToString.add(gson.toJson(u));
+        if (req.getParameter("firstName") == null) {
+            List<User> users = userService.getAll();
+
+            List<String> usersToString = new ArrayList<>();
+            for (User u : users) {
+                usersToString.add(gson.toJson(u));
+            }
+
+            printWriter.print(usersToString);
+        } else {
+            String firstName = req.getParameter("firstName");
+            User user = userService.getByFirstName(firstName);
+
+            printWriter.print(gson.toJson(user));
         }
 
-        out.print(usersToString);
-        out.flush();
+        printWriter.flush();
     }
 
     @Override

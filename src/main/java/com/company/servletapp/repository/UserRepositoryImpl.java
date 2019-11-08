@@ -28,8 +28,27 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getById(int id) {
-        return null;
+    public User getByFirstName(String firstName) {
+        Connection connection = JdbcConnection.getConnection();
+
+        User user = new User();
+        String SQL_SELECT_BY_FIRST_NAME = "SELECT * FROM users WHERE first_name = ?";
+
+        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_FIRST_NAME) : null) {
+            if (preparedStatement != null) {
+                preparedStatement.setString(1, firstName);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet != null && resultSet.next()) {
+                    String userFirstName = resultSet.getString("first_name");
+                    user.setFirstName(userFirstName);
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        }
+
+        return user;
     }
 
     @Override
@@ -50,11 +69,10 @@ public class UserRepositoryImpl implements UserRepository {
 
                 users.add(user);
             }
-
-            return users;
         } catch (SQLException ex) {;
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-            return null;
         }
+
+        return users;
     }
 }
