@@ -1,9 +1,7 @@
 package com.company.servletapp.servlet;
 
-import com.company.servletapp.entity.User;
 import com.company.servletapp.service.UserService;
 import com.company.servletapp.service.UserServiceImpl;
-import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,64 +10,47 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "UserServlet", urlPatterns = "/users")
 public class UserServlet extends HttpServlet {
 
-    private final static Gson gson = new Gson();
-
     private UserService userService = new UserServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter printWriter = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        List<String> usersToString = new ArrayList<>();
+        PrintWriter printWriter = resp.getWriter();
 
         if (req.getParameter("firstName") != null) {
             String firstName = req.getParameter("firstName");
-            List<User> users = userService.getByFirstName(firstName);
-
-            for (User u : users) {
-                usersToString.add(gson.toJson(u));
-            }
+            List<String> users = userService.getByFirstName(firstName);
+            printWriter.print(users);
         } else if (req.getParameter("id") != null) {
-            int id = Integer.parseInt(req.getParameter("id"));
-            User user = userService.getById(id);
-
-            usersToString.add(gson.toJson(user));
+            String user = userService.getById(req.getParameter("id"));
+            printWriter.print(user);
         } else {
-            List<User> users = userService.getAll();
-
-            for (User u : users) {
-                usersToString.add(gson.toJson(u));
-            }
+            List<String> users = userService.getAll();
+            printWriter.print(users);
         }
 
-        printWriter.print(usersToString);
         printWriter.flush();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = gson.fromJson(req.getReader(), User.class);
-        userService.save(user);
+        userService.save(req.getReader());
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        userService.delete(id);
+        userService.delete(req.getParameter("id"));
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = gson.fromJson(req.getReader(), User.class);
-        user.setId(Integer.parseInt(req.getParameter("id")));
-        userService.update(user);
+        userService.update(req.getReader(), req.getParameter("id"));
     }
 }

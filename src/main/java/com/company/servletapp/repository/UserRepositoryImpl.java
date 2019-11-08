@@ -22,7 +22,7 @@ public class UserRepositoryImpl implements UserRepository {
                 preparedStatement.setString(1, user.getFirstName());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException ex) {;
+        } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
             if (connection != null) {
@@ -127,7 +127,7 @@ public class UserRepositoryImpl implements UserRepository {
 
                 users.add(user);
             }
-        } catch (SQLException ex) {;
+        } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
             if (connection != null) {
@@ -153,7 +153,7 @@ public class UserRepositoryImpl implements UserRepository {
                 preparedStatement.setInt(1, id);
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException ex) {;
+        } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
             if (connection != null) {
@@ -178,7 +178,7 @@ public class UserRepositoryImpl implements UserRepository {
                 preparedStatement.setInt(2, user.getId());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException ex) {;
+        } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
             if (connection != null) {

@@ -1,20 +1,19 @@
 package com.company.servletapp.service;
 
-import com.company.servletapp.entity.User;
-
+import java.io.BufferedReader;
 import java.util.List;
 
 public interface UserService {
 
-    void save(User user);
+    void save(BufferedReader reader);
 
-    List<User> getByFirstName(String firstName);
+    List<String> getByFirstName(String firstName);
 
-    User getById(int id);
+    String getById(String id);
 
-    List<User> getAll();
+    List<String> getAll();
 
-    void delete(int id);
+    void delete(String id);
 
-    void update(User user);
+    void update(BufferedReader reader, String id);
 }
