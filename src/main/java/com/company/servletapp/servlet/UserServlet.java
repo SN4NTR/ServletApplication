@@ -30,15 +30,20 @@ public class UserServlet extends HttpServlet {
 
         List<String> usersToString = new ArrayList<>();
 
-        if (req.getParameter("firstName") == null) {
-            List<User> users = userService.getAll();
+        if (req.getParameter("firstName") != null) {
+            String firstName = req.getParameter("firstName");
+            List<User> users = userService.getByFirstName(firstName);
 
             for (User u : users) {
                 usersToString.add(gson.toJson(u));
             }
+        } else if (req.getParameter("id") != null) {
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userService.getById(id);
+
+            usersToString.add(gson.toJson(user));
         } else {
-            String firstName = req.getParameter("firstName");
-            List<User> users = userService.getByFirstName(firstName);
+            List<User> users = userService.getAll();
 
             for (User u : users) {
                 usersToString.add(gson.toJson(u));

@@ -81,14 +81,16 @@ public class UserRepositoryImpl implements UserRepository {
 
         try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_ID) : null) {
             if (preparedStatement != null) {
-                preparedStatement.setString(1, String.valueOf(id));
+                preparedStatement.setInt(1, id);
                 ResultSet resultSet = preparedStatement.executeQuery();
 
-                String userId = resultSet.getString("id");
-                String userFirstName = resultSet.getString("first_name");
+                while (resultSet != null && resultSet.next()) {
+                    String userId = resultSet.getString("id");
+                    String userFirstName = resultSet.getString("first_name");
 
-                user.setId(Integer.parseInt(userId));
-                user.setFirstName(userFirstName);
+                    user.setId(Integer.parseInt(userId));
+                    user.setFirstName(userFirstName);
+                }
             }
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
