@@ -29,4 +29,9 @@ public class UserServiceImpl implements UserService {
     public List<User> getAll() {
         return userRepository.getAll();
     }
+
+    @Override
+    public void delete(int id) {
+        userRepository.delete(id);
+    }
 }

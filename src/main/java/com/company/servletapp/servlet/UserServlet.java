@@ -59,4 +59,10 @@ public class UserServlet extends HttpServlet {
         User user = gson.fromJson(req.getReader(), User.class);
         userService.save(user);
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        userService.delete(id);
+    }
 }

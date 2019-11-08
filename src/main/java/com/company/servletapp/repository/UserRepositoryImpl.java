@@ -141,4 +141,28 @@ public class UserRepositoryImpl implements UserRepository {
 
         return users;
     }
+
+    @Override
+    public void delete(int id) {
+        Connection connection = JdbcConnection.getConnection();
+
+        final String SQL_DELETE = "DELETE FROM users WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_DELETE) : null) {
+            if (preparedStatement != null) {
+                preparedStatement.setInt(1, id);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {;
+            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
 }
