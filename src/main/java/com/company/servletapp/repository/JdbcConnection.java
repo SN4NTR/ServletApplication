@@ -1,5 +1,8 @@
 package com.company.servletapp.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -12,7 +15,10 @@ final class JdbcConnection {
     private static Connection connection;
 
     static Connection getConnection() {
-        final String FILE_NAME = "application.properties";
+        final String FILE_NAME = "database.properties";
+
+        Logger logger = LoggerFactory.getLogger("ConnectionLogger");
+        logger.info("Trying to create connection to database");
 
         try (InputStream inputStream = JdbcConnection.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             Properties properties = new Properties();
@@ -29,8 +35,9 @@ final class JdbcConnection {
             try {
                 Class.forName(DATASOURCE);
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                logger.info("Connection has been created");
             } catch (SQLException ex) {
-                System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
+                logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
