@@ -24,12 +24,14 @@ public class UserServlet extends HttpServlet {
 
         PrintWriter printWriter = resp.getWriter();
 
-        if (req.getParameter("firstName") != null) {
-            String firstName = req.getParameter("firstName");
+        String firstName = req.getParameter("firstName");
+        String id = req.getParameter("id");
+
+        if (firstName != null) {
             List<String> users = userService.getByFirstName(firstName);
             printWriter.print(users);
-        } else if (req.getParameter("id") != null) {
-            String user = userService.getById(req.getParameter("id"));
+        } else if (id != null) {
+            String user = userService.getById(id);
             printWriter.print(user);
         } else {
             List<String> users = userService.getAll();
