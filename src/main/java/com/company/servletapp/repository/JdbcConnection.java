@@ -24,9 +24,10 @@ final class JdbcConnection {
             final String USER = properties.getProperty("db.user");
             final String PASSWORD = properties.getProperty("db.password");
             final String URL = properties.getProperty("db.url");
+            final String DATASOURCE = properties.getProperty("db.datasource.driver-class-name");
 
             try {
-                Class.forName("com.mysql.jdbc.Driver");
+                Class.forName(DATASOURCE);
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
             } catch (SQLException ex) {
                 System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
