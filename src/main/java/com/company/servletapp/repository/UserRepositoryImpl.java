@@ -13,39 +13,33 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void save(User user) {
-        Connection connection = JdbcConnection.getConnection();
+        final String SQL_INSERT = "INSERT INTO users (first_name) VALUES (?)";
 
-        String SQL_INSERT = "INSERT INTO users (first_name) VALUES (?)";
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_INSERT) : null) {
 
-        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_INSERT) : null) {
             if (preparedStatement != null) {
                 preparedStatement.setString(1, user.getFirstName());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
     }
 
     @Override
     public List<User> getByFirstName(String firstName) {
-        Connection connection = JdbcConnection.getConnection();
+        final String SQL_SELECT_BY_FIRST_NAME = "SELECT * FROM users WHERE first_name = ?";
 
         List<User> users = new ArrayList<>();
-        String SQL_SELECT_BY_FIRST_NAME = "SELECT * FROM users WHERE first_name = ?";
+        ResultSet resultSet = null;
 
-        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_FIRST_NAME) : null) {
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_FIRST_NAME) : null) {
+
             if (preparedStatement != null) {
                 preparedStatement.setString(1, firstName);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                resultSet = preparedStatement.executeQuery();
 
                 while (resultSet != null && resultSet.next()) {
                     String userId = resultSet.getString("id");
@@ -60,9 +54,9 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
-            if (connection != null) {
+            if (resultSet != null) {
                 try {
-                    connection.close();
+                    resultSet.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -74,15 +68,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getById(int id) {
-        Connection connection = JdbcConnection.getConnection();
+        final String SQL_SELECT_BY_ID = "SELECT * FROM users WHERE id = ?";
 
         User user = new User();
-        String SQL_SELECT_BY_ID = "SELECT * FROM users WHERE id = ?";
+        ResultSet resultSet = null;
 
-        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_ID) : null) {
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_ID) : null) {
+
             if (preparedStatement != null) {
                 preparedStatement.setInt(1, id);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                resultSet = preparedStatement.executeQuery();
 
                 while (resultSet != null && resultSet.next()) {
                     String userId = resultSet.getString("id");
@@ -95,9 +91,9 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
-            if (connection != null) {
+            if (resultSet != null) {
                 try {
-                    connection.close();
+                    resultSet.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -109,30 +105,34 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        Connection connection = JdbcConnection.getConnection();
+        final String SQL_SELECT = "SELECT * FROM users";
 
         List<User> users = new ArrayList<>();
-        String SQL_SELECT = "SELECT * FROM users";
+        ResultSet resultSet = null;
 
-        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT) : null) {
-            ResultSet resultSet = preparedStatement != null ? preparedStatement.executeQuery() : null;
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT) : null) {
 
-            while (resultSet != null && resultSet.next()) {
-                String id = resultSet.getString("id");
-                String firstName = resultSet.getString("first_name");
+            if (preparedStatement != null) {
+                resultSet = preparedStatement.executeQuery();
 
-                User user = new User();
-                user.setId(Integer.parseInt(id));
-                user.setFirstName(firstName);
+                while (resultSet != null && resultSet.next()) {
+                    String id = resultSet.getString("id");
+                    String firstName = resultSet.getString("first_name");
 
-                users.add(user);
+                    User user = new User();
+                    user.setId(Integer.parseInt(id));
+                    user.setFirstName(firstName);
+
+                    users.add(user);
+                }
             }
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
         } finally {
-            if (connection != null) {
+            if (resultSet != null) {
                 try {
-                    connection.close();
+                    resultSet.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -144,35 +144,27 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(int id) {
-        Connection connection = JdbcConnection.getConnection();
-
         final String SQL_DELETE = "DELETE FROM users WHERE id = ?";
 
-        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_DELETE) : null) {
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_DELETE) : null) {
+
             if (preparedStatement != null) {
                 preparedStatement.setInt(1, id);
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
     }
 
     @Override
     public void update(User user) {
-        Connection connection = JdbcConnection.getConnection();
-
         final String SQL_UPDATE = "UPDATE users SET first_name = ? WHERE id = ?";
 
-        try (PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_UPDATE) : null) {
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_UPDATE) : null) {
+
             if (preparedStatement != null) {
                 preparedStatement.setString(1, user.getFirstName());
                 preparedStatement.setInt(2, user.getId());
@@ -180,14 +172,6 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException ex) {
             System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
     }
 }
