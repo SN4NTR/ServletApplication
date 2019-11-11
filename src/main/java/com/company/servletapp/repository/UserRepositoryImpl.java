@@ -1,8 +1,8 @@
 package com.company.servletapp.repository;
 
 import com.company.servletapp.entity.User;
-import com.company.servletapp.logger.ServletLogger;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,11 +13,7 @@ import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    private final Logger logger;
-
-    public UserRepositoryImpl() {
-        this.logger = ServletLogger.getLogger();
-    }
+    private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
 
     @Override
     public void save(User user) {

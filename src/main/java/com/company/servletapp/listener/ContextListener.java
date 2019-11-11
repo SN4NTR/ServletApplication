@@ -1,7 +1,7 @@
 package com.company.servletapp.listener;
 
-import com.company.servletapp.logger.ServletLogger;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -10,11 +10,7 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class ContextListener implements ServletContextListener {
 
-    private final Logger logger;
-
-    public ContextListener() {
-        this.logger = ServletLogger.getLogger();
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ContextListener.class.getSimpleName());
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

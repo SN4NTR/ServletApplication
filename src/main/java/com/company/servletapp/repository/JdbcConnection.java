@@ -1,7 +1,7 @@
 package com.company.servletapp.repository;
 
-import com.company.servletapp.logger.ServletLogger;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +12,14 @@ import java.util.Properties;
 
 final class JdbcConnection {
 
+    private static final Logger logger = LoggerFactory.getLogger(JdbcConnection.class.getSimpleName());
+
     private JdbcConnection() {
     }
 
     static Connection getConnection() {
         Connection connection = null;
 
-        Logger logger = ServletLogger.getLogger();
         logger.info("Trying to create connection to database");
 
         final String FILE_NAME = "database.properties";
@@ -33,10 +34,10 @@ final class JdbcConnection {
             final String USER = properties.getProperty("db.user");
             final String PASSWORD = properties.getProperty("db.password");
             final String URL = properties.getProperty("db.url");
-            final String DATASOURCE = properties.getProperty("db.datasource.driver-class-name");
+            final String DRIVER = properties.getProperty("db.datasource.driver-class-name");
 
             try {
-                Class.forName(DATASOURCE);
+                Class.forName(DRIVER);
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 logger.info("Connection has been created");
             } catch (SQLException ex) {

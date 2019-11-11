@@ -1,5 +1,8 @@
 package com.company.servletapp.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,8 +15,11 @@ import java.io.IOException;
 @WebFilter(filterName = "UserServletFilter", urlPatterns = "/users")
 public class UserServletFilter implements Filter {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        logger.info("Filter initialized.");
     }
 
     @Override
@@ -26,5 +32,6 @@ public class UserServletFilter implements Filter {
 
     @Override
     public void destroy() {
+        logger.info("Filter destroyed.");
     }
 }
