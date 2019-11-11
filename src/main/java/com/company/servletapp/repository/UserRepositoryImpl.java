@@ -64,6 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
                         User user = new User();
                         user.setFirstName(userFirstName);
                         user.setId(Integer.parseInt(userId));
+
                         users.add(user);
                     }
                 }
