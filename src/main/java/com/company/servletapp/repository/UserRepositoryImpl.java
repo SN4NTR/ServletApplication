@@ -76,7 +76,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getById(int id) {
         User user = new User();
-        ResultSet resultSet = null;
 
         logger.info("Getting user by id = {}", id);
 
@@ -85,28 +84,21 @@ public class UserRepositoryImpl implements UserRepository {
 
             if (preparedStatement != null) {
                 preparedStatement.setInt(1, id);
-                resultSet = preparedStatement.executeQuery();
 
-                while (resultSet != null && resultSet.next()) {
-                    String userId = resultSet.getString("id");
-                    String userFirstName = resultSet.getString("first_name");
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet != null && resultSet.next()) {
+                        String userId = resultSet.getString("id");
+                        String userFirstName = resultSet.getString("first_name");
 
-                    user.setId(Integer.parseInt(userId));
-                    user.setFirstName(userFirstName);
+                        user.setId(Integer.parseInt(userId));
+                        user.setFirstName(userFirstName);
+                    }
+
+                    logger.info("User has been found");
                 }
             }
-
-            logger.info("User has been found");
         } catch (SQLException ex) {
             logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
 
         return user;
