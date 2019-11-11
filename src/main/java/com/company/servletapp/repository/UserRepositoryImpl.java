@@ -107,39 +107,27 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        ResultSet resultSet = null;
 
         logger.info("Getting all users");
 
         try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_ALL) : null) {
+             PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_ALL) : null;
+             ResultSet resultSet = preparedStatement != null ? preparedStatement.executeQuery() : null) {
 
-            if (preparedStatement != null) {
-                resultSet = preparedStatement.executeQuery();
+            while (resultSet != null && resultSet.next()) {
+                String id = resultSet.getString("id");
+                String firstName = resultSet.getString("first_name");
 
-                while (resultSet != null && resultSet.next()) {
-                    String id = resultSet.getString("id");
-                    String firstName = resultSet.getString("first_name");
+                User user = new User();
+                user.setId(Integer.parseInt(id));
+                user.setFirstName(firstName);
 
-                    User user = new User();
-                    user.setId(Integer.parseInt(id));
-                    user.setFirstName(firstName);
-
-                    users.add(user);
-                }
+                users.add(user);
             }
 
             logger.info("Users are got");
         } catch (SQLException ex) {
             logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
 
         return users;
