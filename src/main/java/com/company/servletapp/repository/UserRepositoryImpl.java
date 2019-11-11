@@ -15,12 +15,16 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
 
-    private static final String SQL_INSERT = "INSERT INTO users (first_name) VALUES (?)";
-    private static final String SQL_SELECT_BY_FIRST_NAME = "SELECT * FROM users WHERE first_name = ?";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM users WHERE id = ?";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM users";
-    private static final String SQL_DELETE = "DELETE FROM users WHERE id = ?";
-    private static final String SQL_UPDATE = "UPDATE users SET first_name = ? WHERE id = ?";
+    private static final String TABLE_NAME = "users";
+    private static final String ID_COLUMN = "id";
+    private static final String FIRST_NAME_COLUMN = "first_name";
+
+    private static final String SQL_INSERT = "INSERT INTO " + TABLE_NAME + " (" + FIRST_NAME_COLUMN + ") VALUES (?)";
+    private static final String SQL_SELECT_BY_FIRST_NAME = "SELECT * FROM " + TABLE_NAME + " WHERE " + FIRST_NAME_COLUMN + " = ?";
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + " = ?";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM " + TABLE_NAME;
+    private static final String SQL_DELETE = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + " = ?";
+    private static final String SQL_UPDATE = "UPDATE " + TABLE_NAME + " SET " + FIRST_NAME_COLUMN + " = ? WHERE " + ID_COLUMN + " = ?";
 
     @Override
     public void save(User user) {
@@ -54,8 +58,8 @@ public class UserRepositoryImpl implements UserRepository {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet != null && resultSet.next()) {
-                        String userId = resultSet.getString("id");
-                        String userFirstName = resultSet.getString("first_name");
+                        String userId = resultSet.getString(ID_COLUMN);
+                        String userFirstName = resultSet.getString(FIRST_NAME_COLUMN);
 
                         User user = new User();
                         user.setFirstName(userFirstName);
@@ -87,8 +91,8 @@ public class UserRepositoryImpl implements UserRepository {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet != null && resultSet.next()) {
-                        String userId = resultSet.getString("id");
-                        String userFirstName = resultSet.getString("first_name");
+                        String userId = resultSet.getString(ID_COLUMN);
+                        String userFirstName = resultSet.getString(FIRST_NAME_COLUMN);
 
                         user.setId(Integer.parseInt(userId));
                         user.setFirstName(userFirstName);
@@ -115,8 +119,8 @@ public class UserRepositoryImpl implements UserRepository {
              ResultSet resultSet = preparedStatement != null ? preparedStatement.executeQuery() : null) {
 
             while (resultSet != null && resultSet.next()) {
-                String id = resultSet.getString("id");
-                String firstName = resultSet.getString("first_name");
+                String id = resultSet.getString(ID_COLUMN);
+                String firstName = resultSet.getString(FIRST_NAME_COLUMN);
 
                 User user = new User();
                 user.setId(Integer.parseInt(id));
