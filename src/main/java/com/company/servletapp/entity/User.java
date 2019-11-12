@@ -1,10 +1,12 @@
 package com.company.servletapp.entity;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
 public class User {
 
-    private Integer id;
+    private int id;
     private String firstName;
 }
