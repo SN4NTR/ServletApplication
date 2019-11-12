@@ -1,5 +1,7 @@
 package com.company.servletapp.repository;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,40 +12,38 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class JdbcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcConnection.class.getSimpleName());
 
-    private JdbcConnection() {
-    }
+    private static final String FILE_NAME = "database.properties";
 
     static Connection getConnection() {
         Connection connection = null;
 
         logger.info("Trying to create connection to database");
 
-        final String FILE_NAME = "database.properties";
-
         try (InputStream inputStream = JdbcConnection.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             Properties properties = new Properties();
 
             if (inputStream != null) {
                 properties.load(inputStream);
-            }
 
-            final String USER = properties.getProperty("db.user");
-            final String PASSWORD = properties.getProperty("db.password");
-            final String URL = properties.getProperty("db.url");
-            final String DRIVER = properties.getProperty("db.datasource.driver-class-name");
+                String username = properties.getProperty("db.user");
+                String password = properties.getProperty("db.password");
+                String url = properties.getProperty("db.url");
+                String driver = properties.getProperty("db.datasource.driver-class-name");
 
-            try {
-                Class.forName(DRIVER);
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                logger.info("Connection has been created");
-            } catch (SQLException ex) {
-                logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            } catch (Exception ex) {
-                logger.error(ex.getMessage());
+                try {
+                    Class.forName(driver);
+                    connection = DriverManager.getConnection(url, username, password);
+                    logger.info("Connection has been created");
+                } catch (SQLException ex) {
+                    logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage());
+                }
             }
         } catch (IOException ex) {
             logger.error(ex.getMessage());
