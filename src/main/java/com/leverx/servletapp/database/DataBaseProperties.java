@@ -17,10 +17,10 @@ final class DataBaseProperties {
 
     private static final String FILE_NAME = "database.properties";
 
-    static String driverClassName;
-    static String username;
-    static String password;
-    static String dataBaseUrl;
+    static final String driverClassName;
+    static final String username;
+    static final String password;
+    static final String dataBaseUrl;
 
     static {
         try (InputStream inputStream = DataBaseProperties.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
