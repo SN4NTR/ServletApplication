@@ -1,4 +1,4 @@
-package com.leverx.servletapp.util;
+package com.leverx.servletapp.user.repository;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

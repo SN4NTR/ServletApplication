@@ -8,8 +8,6 @@ public interface UserRepository {
 
     void save(User user);
 
-    Collection<User> findByFirstName(String firstName);
-
     User findById(int id);
 
     Collection<User> findAll();

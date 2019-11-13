@@ -1,7 +1,7 @@
 package com.leverx.servletapp.user.repository;
 
+import com.leverx.servletapp.user.constant.SQL;
 import com.leverx.servletapp.user.entity.User;
-import com.leverx.servletapp.util.JdbcConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,31 +30,6 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been saved");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-        }
-    }
-
-    @Override
-    public Collection<User> findByFirstName(String firstName) {
-        LOGGER.info("Getting user by firstName = {}", firstName);
-
-        try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL.SELECT_BY_FIRST_NAME)) {
-
-            preparedStatement.setString(1, firstName);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<User> users = new ArrayList<>();
-
-                while (resultSet.next()) {
-                    User user = getUserFromResultSet(resultSet);
-                    users.add(user);
-                }
-
-                return users;
-            }
-        } catch (SQLException ex) {
-            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            return null;
         }
     }
 

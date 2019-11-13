@@ -12,7 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
-@WebFilter(filterName = "UserServletFilter", urlPatterns = "/users")
+@WebFilter(filterName = "UserServletFilter", urlPatterns = {"/users", "/users/*"})
 public class UserServletFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
