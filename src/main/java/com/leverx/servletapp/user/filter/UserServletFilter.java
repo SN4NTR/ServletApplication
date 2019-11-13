@@ -15,11 +15,11 @@ import java.io.IOException;
 @WebFilter(filterName = "UserServletFilter", urlPatterns = "/users")
 public class UserServletFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
 
     @Override
     public void init(FilterConfig filterConfig) {
-        logger.info("Filter initialized.");
+        LOGGER.info("Filter initialized.");
     }
 
     @Override
@@ -32,6 +32,6 @@ public class UserServletFilter implements Filter {
 
     @Override
     public void destroy() {
-        logger.info("Filter destroyed.");
+        LOGGER.info("Filter destroyed.");
     }
 }

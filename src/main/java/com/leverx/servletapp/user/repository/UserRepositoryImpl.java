@@ -15,7 +15,7 @@ import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
 
     private static final String TABLE_NAME = "users";
     private static final String ID_COLUMN = "id";
@@ -30,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void save(User user) {
-        logger.info("Saving user with name '{}'.", user.getFirstName());
+        LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_INSERT) : null) {
@@ -40,9 +40,9 @@ public class UserRepositoryImpl implements UserRepository {
                 preparedStatement.executeUpdate();
             }
 
-            logger.info("User has been saved");
+            LOGGER.info("User has been saved");
         } catch (SQLException ex) {
-            logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findByFirstName(String firstName) {
         List<User> users = new ArrayList<>();
 
-        logger.info("Getting user by firstName = {}", firstName);
+        LOGGER.info("Getting user by firstName = {}", firstName);
 
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_FIRST_NAME) : null) {
@@ -71,10 +71,10 @@ public class UserRepositoryImpl implements UserRepository {
                     }
                 }
 
-                logger.info("User has been found");
+                LOGGER.info("User has been found");
             }
         } catch (SQLException ex) {
-            logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
         }
 
         return users;
@@ -84,7 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(int id) {
         User user = new User();
 
-        logger.info("Getting user by id = {}", id);
+        LOGGER.info("Getting user by id = {}", id);
 
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_BY_ID) : null) {
@@ -101,11 +101,11 @@ public class UserRepositoryImpl implements UserRepository {
                         user.setFirstName(userFirstName);
                     }
 
-                    logger.info("User has been found");
+                    LOGGER.info("User has been found");
                 }
             }
         } catch (SQLException ex) {
-            logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
         }
 
         return user;
@@ -115,7 +115,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findAll() {
         List<User> users = new ArrayList<>();
 
-        logger.info("Getting all users");
+        LOGGER.info("Getting all users");
 
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_SELECT_ALL) : null;
@@ -132,9 +132,9 @@ public class UserRepositoryImpl implements UserRepository {
                 users.add(user);
             }
 
-            logger.info("Users are got");
+            LOGGER.info("Users are got");
         } catch (SQLException ex) {
-            logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
         }
 
         return users;
@@ -142,7 +142,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(int id) {
-        logger.info("Deleting user with id = {}", id);
+        LOGGER.info("Deleting user with id = {}", id);
 
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_DELETE) : null) {
@@ -152,15 +152,15 @@ public class UserRepositoryImpl implements UserRepository {
                 preparedStatement.executeUpdate();
             }
 
-            logger.info("User has been deleted");
+            LOGGER.info("User has been deleted");
         } catch (SQLException ex) {
-            logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
         }
     }
 
     @Override
     public void update(User user) {
-        logger.info("Updating user with id = {}", user.getId());
+        LOGGER.info("Updating user with id = {}", user.getId());
 
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement preparedStatement = connection != null ? connection.prepareStatement(SQL_UPDATE) : null) {
@@ -171,9 +171,9 @@ public class UserRepositoryImpl implements UserRepository {
                 preparedStatement.executeUpdate();
             }
 
-            logger.info("User has been updated");
+            LOGGER.info("User has been updated");
         } catch (SQLException ex) {
-            logger.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
         }
     }
 }
