@@ -4,7 +4,6 @@ import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserServiceImpl implements UserService {
@@ -23,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<User> findAll() {
-        return new ArrayList<>(userRepository.findAll());
+        return userRepository.findAll();
     }
 
     @Override

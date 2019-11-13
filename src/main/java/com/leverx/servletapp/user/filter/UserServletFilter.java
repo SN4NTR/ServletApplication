@@ -13,12 +13,12 @@ import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
 @WebFilter(filterName = "UserServletFilter", urlPatterns = {"/users", "/users/*"})
 public class UserServletFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
-
-    private static final String CONTENT_TYPE = "application/json";
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -29,7 +29,7 @@ public class UserServletFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         servletRequest.setCharacterEncoding(StandardCharsets.UTF_8.name());
         servletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        servletResponse.setContentType(CONTENT_TYPE);
+        servletResponse.setContentType(APPLICATION_JSON);
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

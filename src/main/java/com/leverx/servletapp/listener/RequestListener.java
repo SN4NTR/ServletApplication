@@ -1,4 +1,4 @@
-package com.leverx.servletapp.user.listener;
+package com.leverx.servletapp.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
