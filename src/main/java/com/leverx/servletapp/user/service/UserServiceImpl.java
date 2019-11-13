@@ -1,58 +1,43 @@
 package com.leverx.servletapp.user.service;
 
+import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
-import com.leverx.servletapp.user.entity.User;
-import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class UserServiceImpl implements UserService {
-
-    private final static Gson gson = new Gson();
 
     private UserRepository userRepository = new UserRepositoryImpl();
 
     @Override
-    public void save(BufferedReader reader) {
-        User user = gson.fromJson(reader, User.class);
+    public void save(User user) {
         userRepository.save(user);
     }
 
     @Override
-    public List<String> findByFirstName(String firstName) {
-        return userRepository.findByFirstName(firstName)
-                .stream()
-                .map(gson::toJson)
-                .collect(Collectors.toList());
+    public Collection<User> findByFirstName(String firstName) {
+        return new ArrayList<>(userRepository.findByFirstName(firstName));
     }
 
     @Override
-    public String findById(String id) {
-        User user = userRepository.findById(Integer.parseInt(id));
-
-        return gson.toJson(user);
+    public User findById(int id) {
+        return userRepository.findById(id);
     }
 
     @Override
-    public List<String> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(gson::toJson)
-                .collect(Collectors.toList());
+    public Collection<User> findAll() {
+        return new ArrayList<>(userRepository.findAll());
     }
 
     @Override
-    public void delete(String id) {
-        userRepository.delete(Integer.parseInt(id));
+    public void delete(int id) {
+        userRepository.delete(id);
     }
 
     @Override
-    public void update(BufferedReader reader, String id) {
-        User user = gson.fromJson(reader, User.class);
-        user.setId(Integer.parseInt(id));
+    public void update(User user) {
         userRepository.update(user);
     }
 }

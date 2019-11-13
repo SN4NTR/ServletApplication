@@ -1,8 +1,8 @@
 package com.leverx.servletapp.user.repository;
 
-class SQL {
+public class SQL {
 
-    static final String ID = "id";
+    public static final String ID = "id";
     static final String FIRST_NAME = "first_name";
 
     static final String INSERT = "INSERT INTO users (" + FIRST_NAME + ") VALUES (?)";

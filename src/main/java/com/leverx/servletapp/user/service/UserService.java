@@ -1,19 +1,20 @@
 package com.leverx.servletapp.user.service;
 
-import java.io.BufferedReader;
+import com.leverx.servletapp.user.entity.User;
+
 import java.util.Collection;
 
 public interface UserService {
 
-    void save(BufferedReader reader);
+    void save(User user);
 
-    Collection<String> findByFirstName(String firstName);
+    Collection<User> findByFirstName(String firstName);
 
-    String findById(String id);
+    User findById(int id);
 
-    Collection<String> findAll();
+    Collection<User> findAll();
 
-    void delete(String id);
+    void delete(int id);
 
-    void update(BufferedReader reader, String id);
+    void update(User user);
 }

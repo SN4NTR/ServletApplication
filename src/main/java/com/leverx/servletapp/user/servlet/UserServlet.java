@@ -1,55 +1,74 @@
 package com.leverx.servletapp.user.servlet;
 
+import com.google.gson.Gson;
+import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.user.repository.SQL;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Collection;
 
 @WebServlet(name = "UserServlet", urlPatterns = "/users")
 public class UserServlet extends HttpServlet {
 
+    private final static Gson GSON = new Gson();
+
     private final UserService userService = new UserServiceImpl();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter printWriter = resp.getWriter();
 
         String firstName = req.getParameter("firstName");
         String id = req.getParameter("id");
 
         if (firstName != null) {
-            List<String> users = (List<String>) userService.findByFirstName(firstName);
-            printWriter.print(users);
+            Collection<User> users = userService.findByFirstName(firstName);
+            String result = GSON.toJson(users);
+            printWriter.print(result);
         } else if (id != null) {
-            String user = userService.findById(id);
-            printWriter.print(user);
+            User user = userService.findById(Integer.parseInt(id));
+            String result = GSON.toJson(user);
+            printWriter.print(result);
         } else {
-            List<String> users = (List<String>) userService.findAll();
-            printWriter.print(users);
+            Collection<User> users = userService.findAll();
+            String result = GSON.toJson(users);
+            printWriter.print(result);
         }
 
         printWriter.flush();
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        userService.save(req.getReader());
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        BufferedReader reader = req.getReader();
+        User user = GSON.fromJson(reader, User.class);
+
+        userService.save(user);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        userService.delete(req.getParameter("id"));
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        int id = Integer.parseInt(req.getParameter(SQL.ID));
+
+        userService.delete(id);
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        userService.update(req.getReader(), req.getParameter("id"));
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        BufferedReader reader = req.getReader();
+        int id = Integer.parseInt(req.getParameter(SQL.ID));
+
+        User user = GSON.fromJson(reader, User.class);
+        user.setId(id);
+
+        userService.update(user);
     }
 }
