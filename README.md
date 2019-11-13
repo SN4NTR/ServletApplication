@@ -16,7 +16,11 @@
 mvn clean install
 ```
 
-* Deploy `war` file to Tomcat.
+* Deploy `war` file to Tomcat:
+
+1. Open IntelliJ IDEA -> Edit Configuration -> Add new configuration -> Tomcat.
+2. Select deployed `war` file.
+3. Select `URL`.
 
 * Start MySQL Database:
 
