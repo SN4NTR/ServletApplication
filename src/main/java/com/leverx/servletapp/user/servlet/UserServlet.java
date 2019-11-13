@@ -25,13 +25,13 @@ public class UserServlet extends HttpServlet {
         String id = req.getParameter("id");
 
         if (firstName != null) {
-            List<String> users = userService.getByFirstName(firstName);
+            List<String> users = (List<String>) userService.findByFirstName(firstName);
             printWriter.print(users);
         } else if (id != null) {
-            String user = userService.getById(id);
+            String user = userService.findById(id);
             printWriter.print(user);
         } else {
-            List<String> users = userService.getAll();
+            List<String> users = (List<String>) userService.findAll();
             printWriter.print(users);
         }
 

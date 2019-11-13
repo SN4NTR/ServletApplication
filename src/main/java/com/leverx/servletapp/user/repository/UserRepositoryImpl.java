@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
@@ -46,7 +47,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getByFirstName(String firstName) {
+    public Collection<User> findByFirstName(String firstName) {
         List<User> users = new ArrayList<>();
 
         logger.info("Getting user by firstName = {}", firstName);
@@ -80,7 +81,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getById(int id) {
+    public User findById(int id) {
         User user = new User();
 
         logger.info("Getting user by id = {}", id);
@@ -111,7 +112,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll() {
+    public Collection<User> findAll() {
         List<User> users = new ArrayList<>();
 
         logger.info("Getting all users");

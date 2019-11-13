@@ -22,23 +22,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<String> getByFirstName(String firstName) {
-        return userRepository.getByFirstName(firstName)
+    public List<String> findByFirstName(String firstName) {
+        return userRepository.findByFirstName(firstName)
                 .stream()
                 .map(gson::toJson)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public String getById(String id) {
-        User user = userRepository.getById(Integer.parseInt(id));
+    public String findById(String id) {
+        User user = userRepository.findById(Integer.parseInt(id));
 
         return gson.toJson(user);
     }
 
     @Override
-    public List<String> getAll() {
-        return userRepository.getAll()
+    public List<String> findAll() {
+        return userRepository.findAll()
                 .stream()
                 .map(gson::toJson)
                 .collect(Collectors.toList());

@@ -2,17 +2,17 @@ package com.leverx.servletapp.user.repository;
 
 import com.leverx.servletapp.user.entity.User;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface UserRepository {
 
     void save(User user);
 
-    List<User> getByFirstName(String firstName);
+    Collection<User> findByFirstName(String firstName);
 
-    User getById(int id);
+    User findById(int id);
 
-    List<User> getAll();
+    Collection<User> findAll();
 
     void delete(int id);
 
