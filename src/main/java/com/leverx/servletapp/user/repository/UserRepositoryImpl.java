@@ -5,6 +5,7 @@ import com.leverx.servletapp.user.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,6 +31,8 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been saved");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+
+            throw new InternalServerErrorException();
         }
     }
 
@@ -43,11 +46,13 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setInt(1, id);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next() ? getUserFromResultSet(resultSet) : null;
+                resultSet.next();
+                return getUserFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            return null;
+
+            throw new InternalServerErrorException();
         }
     }
 
@@ -62,14 +67,15 @@ public class UserRepositoryImpl implements UserRepository {
             List<User> users = new ArrayList<>();
 
             while (resultSet.next()) {
-                User user = getUserFromResultSet(resultSet);
+                var user = getUserFromResultSet(resultSet);
                 users.add(user);
             }
 
             return users;
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            return null;
+
+            throw new InternalServerErrorException();
         }
     }
 
@@ -86,6 +92,8 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been deleted");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+
+            throw new InternalServerErrorException();
         }
     }
 
@@ -103,12 +111,14 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been updated");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+
+            throw new InternalServerErrorException();
         }
     }
 
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt(SQL.ID);
-        String firstName = resultSet.getString(SQL.FIRST_NAME);
+        var id = resultSet.getInt(SQL.ID);
+        var firstName = resultSet.getString(SQL.FIRST_NAME);
 
         LOGGER.info("User with id = {} has been found", id);
 
