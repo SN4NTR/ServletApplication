@@ -1,6 +1,7 @@
-package com.company.servletapp.repository;
+package com.leverx.servletapp.user.repository;
 
-import com.company.servletapp.entity.User;
+import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.util.JdbcConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

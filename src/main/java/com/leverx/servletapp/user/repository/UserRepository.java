@@ -1,6 +1,6 @@
-package com.company.servletapp.repository;
+package com.leverx.servletapp.user.repository;
 
-import com.company.servletapp.entity.User;
+import com.leverx.servletapp.user.entity.User;
 
 import java.util.List;
 

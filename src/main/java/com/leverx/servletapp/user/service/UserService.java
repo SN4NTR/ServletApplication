@@ -1,4 +1,4 @@
-package com.company.servletapp.service;
+package com.leverx.servletapp.user.service;
 
 import java.io.BufferedReader;
 import java.util.List;

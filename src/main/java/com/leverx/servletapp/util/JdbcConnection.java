@@ -1,4 +1,4 @@
-package com.company.servletapp.repository;
+package com.leverx.servletapp.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,13 +13,13 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class JdbcConnection {
+public final class JdbcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcConnection.class.getSimpleName());
 
     private static final String FILE_NAME = "database.properties";
 
-    static Connection getConnection() {
+    public static Connection getConnection() {
         Connection connection = null;
 
         logger.info("Trying to create connection to database");

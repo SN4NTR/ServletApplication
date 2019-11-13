@@ -1,8 +1,8 @@
-package com.company.servletapp.service;
+package com.leverx.servletapp.user.service;
 
-import com.company.servletapp.entity.User;
-import com.company.servletapp.repository.UserRepository;
-import com.company.servletapp.repository.UserRepositoryImpl;
+import com.leverx.servletapp.user.repository.UserRepository;
+import com.leverx.servletapp.user.repository.UserRepositoryImpl;
+import com.leverx.servletapp.user.entity.User;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;

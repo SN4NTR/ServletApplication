@@ -1,7 +1,7 @@
-package com.company.servletapp.servlet;
+package com.leverx.servletapp.user.servlet;
 
-import com.company.servletapp.service.UserService;
-import com.company.servletapp.service.UserServiceImpl;
+import com.leverx.servletapp.user.service.UserService;
+import com.leverx.servletapp.user.service.UserServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
