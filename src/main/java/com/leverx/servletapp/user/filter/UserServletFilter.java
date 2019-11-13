@@ -1,4 +1,4 @@
-package com.company.servletapp.filter;
+package com.leverx.servletapp.user.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,27 +11,30 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-@WebFilter(filterName = "UserServletFilter", urlPatterns = "/users")
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+@WebFilter(filterName = "UserServletFilter", urlPatterns = {"/users", "/users/*"})
 public class UserServletFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        logger.info("Filter initialized.");
+    public void init(FilterConfig filterConfig) {
+        LOGGER.info("Filter initialized.");
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        servletRequest.setCharacterEncoding("UTF-8");
-        servletResponse.setCharacterEncoding("UTF-8");
-        servletResponse.setContentType("application/json");
+        servletRequest.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        servletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        servletResponse.setContentType(APPLICATION_JSON);
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
     public void destroy() {
-        logger.info("Filter destroyed.");
+        LOGGER.info("Filter destroyed.");
     }
 }

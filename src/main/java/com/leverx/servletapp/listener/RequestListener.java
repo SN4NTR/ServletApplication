@@ -1,4 +1,4 @@
-package com.company.servletapp.listener;
+package com.leverx.servletapp.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,20 +11,20 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class RequestListener implements ServletRequestListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestListener.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestListener.class.getSimpleName());
 
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
         ServletRequest servletRequest = sre.getServletRequest();
 
-        logger.info("Request initialized.");
-        logger.info("Remote IP: {}", servletRequest.getRemoteAddr());
-        logger.info("Protocol: {}", servletRequest.getProtocol());
-        logger.info("Content type: {}", servletRequest.getContentType());
+        LOGGER.info("Request initialized.");
+        LOGGER.info("Remote IP: {}", servletRequest.getRemoteAddr());
+        LOGGER.info("Protocol: {}", servletRequest.getProtocol());
+        LOGGER.info("Content type: {}", servletRequest.getContentType());
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
-        logger.info("Request destroyed.");
+        LOGGER.info("Request destroyed.");
     }
 }
