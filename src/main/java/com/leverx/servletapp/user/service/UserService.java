@@ -11,6 +11,8 @@ public interface UserService {
 
     User findById(int id);
 
+    Collection<User> findByName(String name);
+
     Collection<User> findAll();
 
     void delete(int id);

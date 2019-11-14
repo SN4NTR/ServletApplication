@@ -1,24 +1,28 @@
 package com.leverx.servletapp.user.servlet;
 
 import com.leverx.servletapp.user.entity.User;
-import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
-import com.leverx.servletapp.util.UserServletUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.convertCollectionToJson;
-import static com.leverx.servletapp.user.mapper.UserMapper.convertJsonToUser;
+import static com.leverx.servletapp.user.mapper.UserMapper.convertJsonToUserDto;
 import static com.leverx.servletapp.user.mapper.UserMapper.convertUserToJson;
 import static com.leverx.servletapp.user.validator.UserValidator.isFirstNameLengthValid;
+import static com.leverx.servletapp.util.UserServletUtils.PATH;
+import static com.leverx.servletapp.util.UserServletUtils.getIdFromUrl;
+import static com.leverx.servletapp.util.UserServletUtils.getValueFromUrl;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CREATED;
+import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 @WebServlet(name = "UserServlet", urlPatterns = {"/users", "/users/*"})
 public class UserServlet extends HttpServlet {
@@ -27,66 +31,80 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        PrintWriter printWriter = resp.getWriter();
+        var printWriter = resp.getWriter();
 
-        StringBuffer url = req.getRequestURL();
-        var id = UserServletUtils.getIdFromUrl(url);
-        String result;
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
+        var value = getValueFromUrl(urlToString);
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
+        if (PATH.equals(value)) {
             Collection<User> users = userService.findAll();
-            result = convertCollectionToJson(users);
-        } else {
+            String result = convertCollectionToJson(users);
+            printWriter.print(result);
+        } else if (isParsable(value)) {
+            int id = Integer.parseInt(value);
             User user = userService.findById(id);
-            result = convertUserToJson(user);
+            String result = convertUserToJson(user);
+            printWriter.print(result);
+        } else {
+            Collection<User> users = userService.findByName(value);
+            String result = convertCollectionToJson(users);
+            printWriter.print(result);
         }
 
-        resp.setStatus(HttpServletResponse.SC_OK);
-        printWriter.print(result);
+        resp.setStatus(SC_OK);
         printWriter.flush();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        BufferedReader reader = req.getReader();
-        UserDto userDto = convertJsonToUser(reader);
-
-        String userFirstName = userDto.getFirstName();
+        var reader = req.getReader();
+        var userDto = convertJsonToUserDto(reader);
+        var userFirstName = userDto.getFirstName();
 
         if (isFirstNameLengthValid(userFirstName)) {
             userService.save(userDto);
-            resp.setStatus(HttpServletResponse.SC_CREATED);
+            resp.setStatus(SC_CREATED);
         } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setStatus(SC_BAD_REQUEST);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        StringBuffer url = req.getRequestURL();
-        int id = UserServletUtils.getIdFromUrl(url);
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
+        var idOptional = getIdFromUrl(urlToString);
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } else {
+        if (idOptional.isPresent()) {
+            var id = idOptional.get();
             userService.delete(id);
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            resp.setStatus(SC_NO_CONTENT);
+        } else {
+            resp.setStatus(SC_BAD_REQUEST);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        StringBuffer url = req.getRequestURL();
-        int id = UserServletUtils.getIdFromUrl(url);
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
+        var idOptional = getIdFromUrl(urlToString);
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        if (idOptional.isPresent()) {
+            var reader = req.getReader();
+            var userDto = convertJsonToUserDto(reader);
+            var userFirstName = userDto.getFirstName();
+
+            if (isFirstNameLengthValid(userFirstName)) {
+                int id = idOptional.get();
+                userService.update(id, userDto);
+                resp.setStatus(SC_CREATED);
+            } else {
+                resp.setStatus(SC_BAD_REQUEST);
+            }
         } else {
-            BufferedReader reader = req.getReader();
-            UserDto userDto = convertJsonToUser(reader);
-            userService.update(id, userDto);
-
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            resp.setStatus(SC_BAD_REQUEST);
         }
     }
 }

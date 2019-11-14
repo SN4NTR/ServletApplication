@@ -26,7 +26,7 @@ public final class UserMapper {
                 .collect(joining("\n"));
     }
 
-    public static UserDto convertJsonToUser(Reader reader) {
+    public static UserDto convertJsonToUserDto(Reader reader) {
         return GSON.fromJson(reader, UserDto.class);
     }
 }

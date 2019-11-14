@@ -3,32 +3,27 @@ package com.leverx.servletapp.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
+import static org.apache.commons.lang3.math.NumberUtils.isParsable;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserServletUtils {
 
-    public static final int ID_NOT_FOUND = -1;
+    private static final String DELIMITER = "/";
 
-    private static final String delimiter = "/";
+    public static final String PATH = "users";
 
-    public static int getIdFromUrl(StringBuffer url) {
-        String urlToString = url.toString();
-        String[] urlComponents = urlToString.split(delimiter);
+    public static String getValueFromUrl(String url) {
+        var urlComponents = url.split(DELIMITER);
+        var lastElementIndex = urlComponents.length - 1;
 
-        var index = urlComponents.length - 1;
-        String lastElement = urlComponents[index];
-        if (isNumeric(lastElement)) {
-            return Integer.parseInt(lastElement);
-        } else {
-            return ID_NOT_FOUND;
-        }
+        return urlComponents[lastElementIndex];
     }
 
-    private static boolean isNumeric(String string) {
-        try {
-            Integer.parseInt(string);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
+    public static Optional<Integer> getIdFromUrl(String url) {
+        String value = getValueFromUrl(url);
+
+        return isParsable(value) ? Optional.of(Integer.parseInt(value)) : Optional.empty();
     }
 }

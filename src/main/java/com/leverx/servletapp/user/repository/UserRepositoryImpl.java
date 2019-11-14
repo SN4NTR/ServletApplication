@@ -16,6 +16,7 @@ import java.util.List;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.DELETE;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.INSERT;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_ALL;
+import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_NAME;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_ID;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.UPDATE;
 import static com.leverx.servletapp.user.repository.constant.UsersColumns.FIRST_NAME;
@@ -25,9 +26,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
 
-    private static final int ID_INDEX = 1;
-    private static final int FIRST_NAME_INDEX = 2;
-
     @Override
     public void save(UserDto user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
@@ -35,7 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (var connectionPool = ConnectionPool.getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(INSERT)) {
 
-            preparedStatement.setString(ID_INDEX, user.getFirstName());
+            preparedStatement.setString(1, user.getFirstName());
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been saved");
@@ -52,10 +50,28 @@ public class UserRepositoryImpl implements UserRepository {
         try (var connectionPool = ConnectionPool.getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_BY_ID)) {
 
-            preparedStatement.setInt(ID_INDEX, id);
+            preparedStatement.setInt(1, id);
 
             try (var resultSet = preparedStatement.executeQuery()) {
                 return getUserFromResultSet(resultSet);
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
+            throw new InternalServerErrorException(ex.getCause());
+        }
+    }
+
+    @Override
+    public Collection<User> findByName(String name) {
+        LOGGER.info("Getting user by firstName = {}", name);
+
+        try (var connectionPool = ConnectionPool.getInstance();
+             var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_BY_NAME)) {
+
+            preparedStatement.setString(1, name);
+
+            try (var resultSet = preparedStatement.executeQuery()) {
+                return getListOfUsersFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
@@ -85,7 +101,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (var connectionPool = ConnectionPool.getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(DELETE)) {
 
-            preparedStatement.setInt(ID_INDEX, id);
+            preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been deleted");
@@ -102,8 +118,8 @@ public class UserRepositoryImpl implements UserRepository {
         try (var connectionPool = ConnectionPool.getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(UPDATE)) {
 
-            preparedStatement.setString(ID_INDEX, user.getFirstName());
-            preparedStatement.setInt(FIRST_NAME_INDEX, id);
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been updated");
