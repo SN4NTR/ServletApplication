@@ -18,6 +18,7 @@ import java.util.Collection;
 import static com.leverx.servletapp.user.mapper.UserMapper.convertCollectionToJson;
 import static com.leverx.servletapp.user.mapper.UserMapper.convertJsonToUser;
 import static com.leverx.servletapp.user.mapper.UserMapper.convertUserToJson;
+import static com.leverx.servletapp.user.validator.UserValidator.isFirstNameLengthValid;
 
 @WebServlet(name = "UserServlet", urlPatterns = {"/users", "/users/*"})
 public class UserServlet extends HttpServlet {
@@ -50,8 +51,14 @@ public class UserServlet extends HttpServlet {
         BufferedReader reader = req.getReader();
         UserDto userDto = convertJsonToUser(reader);
 
-        userService.save(userDto);
-        resp.setStatus(HttpServletResponse.SC_CREATED);
+        String userFirstName = userDto.getFirstName();
+
+        if (isFirstNameLengthValid(userFirstName)) {
+            userService.save(userDto);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
     @Override
