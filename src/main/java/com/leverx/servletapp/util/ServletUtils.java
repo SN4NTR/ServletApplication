@@ -1,10 +1,10 @@
-package com.leverx.servletapp.user.util;
+package com.leverx.servletapp.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UserServletUtils {
+public final class ServletUtils {
 
     public static final int ID_NOT_FOUND = -1;
 

@@ -1,10 +1,10 @@
 package com.leverx.servletapp.user.servlet;
 
-import com.google.gson.Gson;
 import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
-import com.leverx.servletapp.user.util.UserServletUtils;
+import com.leverx.servletapp.util.ServletUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,10 +15,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
+import static com.leverx.servletapp.user.mapper.UserMapper.convertCollectionToJson;
+import static com.leverx.servletapp.user.mapper.UserMapper.convertJsonToUser;
+import static com.leverx.servletapp.user.mapper.UserMapper.convertUserToJson;
+
 @WebServlet(name = "UserServlet", urlPatterns = {"/users", "/users/*"})
 public class UserServlet extends HttpServlet {
-
-    private final static Gson GSON = new Gson();
 
     private final UserService userService = new UserServiceImpl();
 
@@ -27,15 +29,15 @@ public class UserServlet extends HttpServlet {
         PrintWriter printWriter = resp.getWriter();
 
         StringBuffer url = req.getRequestURL();
-        var id = UserServletUtils.getIdFromUrl(url);
+        var id = ServletUtils.getIdFromUrl(url);
         String result;
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
+        if (id == ServletUtils.ID_NOT_FOUND) {
             Collection<User> users = userService.findAll();
-            result = GSON.toJson(users);
+            result = convertCollectionToJson(users);
         } else {
             User user = userService.findById(id);
-            result = GSON.toJson(user);
+            result = convertUserToJson(user);
         }
 
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -46,18 +48,18 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         BufferedReader reader = req.getReader();
-        User user = GSON.fromJson(reader, User.class);
+        UserDto userDto = convertJsonToUser(reader);
 
-        userService.save(user);
+        userService.save(userDto);
         resp.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         StringBuffer url = req.getRequestURL();
-        int id = UserServletUtils.getIdFromUrl(url);
+        int id = ServletUtils.getIdFromUrl(url);
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
+        if (id == ServletUtils.ID_NOT_FOUND) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
             userService.delete(id);
@@ -68,15 +70,14 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         StringBuffer url = req.getRequestURL();
-        int id = UserServletUtils.getIdFromUrl(url);
+        int id = ServletUtils.getIdFromUrl(url);
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
+        if (id == ServletUtils.ID_NOT_FOUND) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
             BufferedReader reader = req.getReader();
-            User user = GSON.fromJson(reader, User.class);
-            user.setId(id);
-            userService.update(user);
+            UserDto userDto = convertJsonToUser(reader);
+            userService.update(id, userDto);
 
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }

@@ -1,4 +1,4 @@
-package com.leverx.servletapp.database;
+package com.leverx.servletapp.db;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

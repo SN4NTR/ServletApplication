@@ -1,7 +1,8 @@
 package com.leverx.servletapp.user.repository;
 
-import com.leverx.servletapp.database.JdbcConnection;
+import com.leverx.servletapp.db.JdbcConnection;
 import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.user.entity.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final int FIRST_NAME_INDEX = 2;
 
     @Override
-    public void save(User user) {
+    public void save(UserDto user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
         try (var connection = JdbcConnection.getConnection();
@@ -95,14 +96,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(User user) {
-        LOGGER.info("Updating user with id = {}", user.getId());
+    public void update(int id, UserDto user) {
+        LOGGER.info("Updating user with id = {}", id);
 
         try (var connection = JdbcConnection.getConnection();
              var preparedStatement = connection.prepareStatement(UPDATE)) {
 
             preparedStatement.setString(ID_INDEX, user.getFirstName());
-            preparedStatement.setInt(FIRST_NAME_INDEX, user.getId());
+            preparedStatement.setInt(FIRST_NAME_INDEX, id);
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been updated");
