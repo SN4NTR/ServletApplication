@@ -1,4 +1,4 @@
-package com.leverx.servletapp.util;
+package com.leverx.servletapp.user.servlet.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public final class UserServletUtils {
     }
 
     public static Optional<Integer> getIdFromUrl(String url) {
-        String value = getValueFromUrl(url);
+        var value = getValueFromUrl(url);
 
         return isParsable(value) ? Optional.of(Integer.parseInt(value)) : Optional.empty();
     }
