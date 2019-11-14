@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ServletUtils {
+public final class UserServletUtils {
 
     public static final int ID_NOT_FOUND = -1;
 

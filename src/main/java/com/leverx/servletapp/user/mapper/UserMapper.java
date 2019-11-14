@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.io.Reader;
 import java.util.Collection;
 
+import static java.util.stream.Collectors.joining;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserMapper {
 
@@ -21,7 +23,7 @@ public final class UserMapper {
     public static String convertCollectionToJson(Collection<User> users) {
         return users.stream()
                 .map(GSON::toJson)
-                .toString();
+                .collect(joining("\n"));
     }
 
     public static UserDto convertJsonToUser(Reader reader) {
