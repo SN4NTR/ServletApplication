@@ -40,7 +40,6 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been saved");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-
             throw new InternalServerErrorException(ex.getCause());
         }
     }
@@ -59,7 +58,6 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-
             throw new InternalServerErrorException(ex.getCause());
         }
     }
@@ -75,7 +73,6 @@ public class UserRepositoryImpl implements UserRepository {
             return getListOfUsersFromResultSet(resultSet);
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-
             throw new InternalServerErrorException(ex.getCause());
         }
     }
@@ -93,7 +90,6 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been deleted");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-
             throw new InternalServerErrorException(ex.getCause());
         }
     }
@@ -112,7 +108,6 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.info("User has been updated");
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-
             throw new InternalServerErrorException(ex.getCause());
         }
     }
