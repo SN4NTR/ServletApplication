@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.DELETE;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.INSERT;
@@ -54,7 +55,6 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setInt(ID_INDEX, id);
 
             try (var resultSet = preparedStatement.executeQuery()) {
-                resultSet.next();
                 return getUserFromResultSet(resultSet);
             }
         } catch (SQLException ex) {
@@ -72,14 +72,7 @@ public class UserRepositoryImpl implements UserRepository {
              var preparedStatement = connection.prepareStatement(SELECT_ALL);
              var resultSet = preparedStatement.executeQuery()) {
 
-            var users = new ArrayList<User>();
-
-            while (resultSet.next()) {
-                var user = getUserFromResultSet(resultSet);
-                users.add(user);
-            }
-
-            return users;
+            return getListOfUsersFromResultSet(resultSet);
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
 
@@ -124,7 +117,22 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    private List<User> getListOfUsersFromResultSet(ResultSet resultSet) throws SQLException {
+        var users = new ArrayList<User>();
+
+        while (resultSet.next()) {
+            resultSet.previous();
+
+            var user = getUserFromResultSet(resultSet);
+            users.add(user);
+        }
+
+        return users;
+    }
+
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        resultSet.next();
+
         var id = resultSet.getInt(ID);
         var firstName = resultSet.getString(FIRST_NAME);
 
