@@ -25,7 +25,7 @@ public final class ConnectionPool implements AutoCloseable {
 
     private ConnectionPool() {
         while (unusedConnections.size() < MAX_CONNECTIONS) {
-            Connection connection = createConnection();
+            var connection = createConnection();
             unusedConnections.add(connection);
         }
     }
@@ -48,7 +48,7 @@ public final class ConnectionPool implements AutoCloseable {
 
         try {
             Class.forName(driverClassName);
-            Connection connection = DriverManager.getConnection(dataBaseUrl, username, password);
+            var connection = DriverManager.getConnection(dataBaseUrl, username, password);
 
             LOGGER.info("Connection has been created");
 
@@ -67,7 +67,7 @@ public final class ConnectionPool implements AutoCloseable {
             LOGGER.info("All connections are busy");
         }
 
-        Connection connection = unusedConnections.get(ELEMENT_INDEX);
+        var connection = unusedConnections.get(ELEMENT_INDEX);
         unusedConnections.remove(ELEMENT_INDEX);
         usedConnections.add(connection);
 
@@ -76,8 +76,8 @@ public final class ConnectionPool implements AutoCloseable {
 
     @Override
     public void close() {
-        int lastElementIndex = usedConnections.size() - 1;
-        Connection connection = usedConnections.get(lastElementIndex);
+        var lastElementIndex = usedConnections.size() - 1;
+        var connection = usedConnections.get(lastElementIndex);
         usedConnections.remove(lastElementIndex);
         unusedConnections.add(connection);
     }

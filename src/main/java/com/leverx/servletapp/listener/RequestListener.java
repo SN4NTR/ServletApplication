@@ -15,7 +15,7 @@ public class RequestListener implements ServletRequestListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
-        ServletRequest servletRequest = sre.getServletRequest();
+        var servletRequest = sre.getServletRequest();
 
         LOGGER.info("Request initialized.");
         LOGGER.info("Remote IP: {}", servletRequest.getRemoteAddr());

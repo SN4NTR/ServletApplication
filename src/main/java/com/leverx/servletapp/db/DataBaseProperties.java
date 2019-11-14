@@ -24,7 +24,7 @@ final class DataBaseProperties {
 
     static {
         try (InputStream inputStream = DataBaseProperties.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
-            Properties properties = new Properties();
+            var properties = new Properties();
             properties.load(inputStream);
 
             driverClassName = properties.getProperty("db.datasource.driver-class-name");
@@ -33,7 +33,6 @@ final class DataBaseProperties {
             dataBaseUrl = properties.getProperty("db.url");
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage());
-
             throw new InternalServerErrorException();
         }
     }
