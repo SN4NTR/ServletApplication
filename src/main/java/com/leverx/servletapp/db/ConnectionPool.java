@@ -7,6 +7,7 @@ import javax.ws.rs.InternalServerErrorException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public final class ConnectionPool implements AutoCloseable {
     private static final int MAX_CONNECTIONS = 10;
     private static final int ELEMENT_INDEX = 0;
 
-    private final List<Connection> unusedConnections = new LinkedList<>();
-    private final List<Connection> usedConnections = new LinkedList<>();
+    private final List<Connection> unusedConnections = Collections.synchronizedList(new LinkedList<>());
+    private final List<Connection> usedConnections = Collections.synchronizedList(new LinkedList<>());
 
     private ConnectionPool() {
         while (unusedConnections.size() < MAX_CONNECTIONS) {
