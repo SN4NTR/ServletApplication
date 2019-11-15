@@ -1,8 +1,10 @@
 package com.leverx.servletapp.db.constant;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum PropertyName {
 
     FILE_NAME("database.properties"),
@@ -12,8 +14,4 @@ public enum PropertyName {
     PASSWORD("db.password");
 
     private String value;
-
-    PropertyName(String value) {
-        this.value = value;
-    }
 }
