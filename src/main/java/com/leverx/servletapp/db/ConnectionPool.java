@@ -15,27 +15,17 @@ public final class ConnectionPool implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionPool.class.getSimpleName());
 
-    private static ConnectionPool connectionPool;
-
     private static final int MAX_CONNECTIONS = 10;
     private static final int ELEMENT_INDEX = 0;
 
-    private final List<Connection> unusedConnections = Collections.synchronizedList(new LinkedList<>());
-    private final List<Connection> usedConnections = Collections.synchronizedList(new LinkedList<>());
+    private static final List<Connection> UNUSED_CONNECTIONS = Collections.synchronizedList(new LinkedList<>());
+    private static final List<Connection> USED_CONNECTIONS = Collections.synchronizedList(new LinkedList<>());
 
-    private ConnectionPool() {
-        while (unusedConnections.size() < MAX_CONNECTIONS) {
+    static {
+        while (UNUSED_CONNECTIONS.size() < MAX_CONNECTIONS) {
             var connection = createConnection();
-            unusedConnections.add(connection);
+            UNUSED_CONNECTIONS.add(connection);
         }
-    }
-
-    public static ConnectionPool getInstance() {
-        if (connectionPool == null) {
-            connectionPool = new ConnectionPool();
-        }
-
-        return connectionPool;
     }
 
     private static Connection createConnection() {
@@ -63,22 +53,22 @@ public final class ConnectionPool implements AutoCloseable {
     }
 
     public Connection getConnection() {
-        while (unusedConnections.isEmpty()) {
+        while (UNUSED_CONNECTIONS.isEmpty()) {
             LOGGER.info("All connections are busy");
         }
 
-        var connection = unusedConnections.get(ELEMENT_INDEX);
-        unusedConnections.remove(ELEMENT_INDEX);
-        usedConnections.add(connection);
+        var connection = UNUSED_CONNECTIONS.get(ELEMENT_INDEX);
+        UNUSED_CONNECTIONS.remove(ELEMENT_INDEX);
+        USED_CONNECTIONS.add(connection);
 
         return connection;
     }
 
     @Override
     public void close() {
-        var lastElementIndex = usedConnections.size() - 1;
-        var connection = usedConnections.get(lastElementIndex);
-        usedConnections.remove(lastElementIndex);
-        unusedConnections.add(connection);
+        var lastElementIndex = USED_CONNECTIONS.size() - 1;
+        var connection = USED_CONNECTIONS.get(lastElementIndex);
+        USED_CONNECTIONS.remove(lastElementIndex);
+        UNUSED_CONNECTIONS.add(connection);
     }
 }
