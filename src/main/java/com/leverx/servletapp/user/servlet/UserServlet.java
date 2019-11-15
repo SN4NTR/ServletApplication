@@ -27,6 +27,8 @@ public class UserServlet extends HttpServlet {
 
     private final UserService userService = new UserServiceImpl();
 
+    private static final String ERROR_MESSAGE = "Invalid request parameters";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var printWriter = resp.getWriter();
@@ -57,16 +59,26 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var isCorrect = isValidPostRequest(req);
-        resp.setStatus(isCorrect ? SC_CREATED : SC_BAD_REQUEST);
+
+        if (isCorrect) {
+            resp.setStatus(SC_CREATED);
+        } else {
+            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+        }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
 
         var isCorrect = isValidDeleteRequest(urlToString);
-        resp.setStatus(isCorrect ? SC_NO_CONTENT : SC_BAD_REQUEST);
+
+        if (isCorrect) {
+            resp.setStatus(SC_NO_CONTENT);
+        } else {
+            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+        }
     }
 
     @Override
@@ -75,7 +87,11 @@ public class UserServlet extends HttpServlet {
         var urlToString = url.toString();
 
         var isCorrect = isValidPutRequest(req, urlToString);
-        resp.setStatus(isCorrect ? SC_OK : SC_BAD_REQUEST);
+        if (isCorrect) {
+            resp.setStatus(SC_OK);
+        } else {
+            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+        }
     }
 
     private boolean isValidPostRequest(HttpServletRequest req) throws IOException {
@@ -85,7 +101,6 @@ public class UserServlet extends HttpServlet {
 
         if (isFirstNameLengthValid(firstName)) {
             userService.save(userDto);
-
             return true;
         } else {
             return false;
@@ -98,7 +113,6 @@ public class UserServlet extends HttpServlet {
         if (idOptional.isPresent()) {
             var id = idOptional.get();
             userService.delete(id);
-
             return true;
         } else {
             return false;
@@ -114,7 +128,6 @@ public class UserServlet extends HttpServlet {
         if (idOptional.isPresent() && isFirstNameLengthValid(firstName)) {
             var id = idOptional.get();
             userService.update(id, userDto);
-
             return true;
         } else {
             return false;
