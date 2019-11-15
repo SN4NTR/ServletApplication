@@ -3,7 +3,6 @@ package com.leverx.servletapp.user.servlet;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,6 @@ import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
-@WebServlet(name = "UserServlet", urlPatterns = {"/users", "/users/*"})
 public class UserServlet extends HttpServlet {
 
     private final UserService userService = new UserServiceImpl();
