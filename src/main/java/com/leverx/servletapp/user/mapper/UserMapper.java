@@ -22,7 +22,7 @@ public final class UserMapper {
 
     public static String convertCollectionToJson(Collection<User> users) {
         return users.stream()
-                .map(GSON::toJson)
+                .map(UserMapper::convertUserToJson)
                 .collect(joining("\n"));
     }
 
