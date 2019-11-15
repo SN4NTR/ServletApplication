@@ -65,7 +65,7 @@ public class UserServlet extends HttpServlet {
         var url = req.getRequestURL();
         var urlToString = url.toString();
 
-        var isCorrect = isValidDeleteRequest(req, urlToString);
+        var isCorrect = isValidDeleteRequest(urlToString);
         resp.setStatus(isCorrect ? SC_NO_CONTENT : SC_BAD_REQUEST);
     }
 
@@ -75,7 +75,7 @@ public class UserServlet extends HttpServlet {
         var urlToString = url.toString();
 
         var isCorrect = isValidPutRequest(req, urlToString);
-        resp.setStatus(isCorrect ? SC_CREATED : SC_BAD_REQUEST);
+        resp.setStatus(isCorrect ? SC_OK : SC_BAD_REQUEST);
     }
 
     private boolean isValidPostRequest(HttpServletRequest req) throws IOException {
@@ -92,7 +92,7 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private boolean isValidDeleteRequest(HttpServletRequest req, String url) {
+    private boolean isValidDeleteRequest(String url) {
         var idOptional = getIdFromUrl(url);
 
         if (idOptional.isPresent()) {
