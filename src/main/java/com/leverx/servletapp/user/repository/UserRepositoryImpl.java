@@ -21,6 +21,8 @@ import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.UPDATE;
 import static com.leverx.servletapp.user.repository.constant.UsersColumns.FIRST_NAME;
 import static com.leverx.servletapp.user.repository.constant.UsersColumns.ID;
+import static com.leverx.servletapp.db.ConnectionPool.getInstance;
+
 
 public class UserRepositoryImpl implements UserRepository {
 
@@ -30,7 +32,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(UserDto user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
-        try (var connectionPool = new ConnectionPool();
+        try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(INSERT)) {
 
             preparedStatement.setString(1, user.getFirstName());
@@ -47,7 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(int id) {
         LOGGER.info("Getting user by id = {}", id);
 
-        try (var connectionPool = new ConnectionPool();
+        try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_BY_ID)) {
 
             preparedStatement.setInt(1, id);
@@ -65,7 +67,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findByName(String name) {
         LOGGER.info("Getting user by firstName = {}", name);
 
-        try (var connectionPool = new ConnectionPool();
+        try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_BY_NAME)) {
 
             preparedStatement.setString(1, name);
@@ -83,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findAll() {
         LOGGER.info("Getting all users");
 
-        try (var connectionPool = new ConnectionPool();
+        try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_ALL);
              var resultSet = preparedStatement.executeQuery()) {
 
@@ -98,7 +100,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void delete(int id) {
         LOGGER.info("Deleting user with id = {}", id);
 
-        try (var connectionPool = new ConnectionPool();
+        try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(DELETE)) {
 
             preparedStatement.setInt(1, id);
@@ -115,7 +117,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void update(int id, UserDto user) {
         LOGGER.info("Updating user with id = {}", id);
 
-        try (var connectionPool = new ConnectionPool();
+        try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(UPDATE)) {
 
             preparedStatement.setString(1, user.getFirstName());

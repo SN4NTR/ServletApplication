@@ -5,13 +5,12 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.InternalServerErrorException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.leverx.servletapp.db.DBConnection.createConnection;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConnectionPool implements AutoCloseable {
@@ -59,29 +58,5 @@ public final class ConnectionPool implements AutoCloseable {
         USED_CONNECTIONS.add(connection);
 
         return connection;
-    }
-
-    private static Connection createConnection() {
-        LOGGER.info("Trying to create connection to database");
-
-        var driverClassName = DataBaseProperties.driverClassName;
-        var dataBaseUrl = DataBaseProperties.dataBaseUrl;
-        var username = DataBaseProperties.username;
-        var password = DataBaseProperties.password;
-
-        try {
-            Class.forName(driverClassName);
-            var connection = DriverManager.getConnection(dataBaseUrl, username, password);
-
-            LOGGER.info("Connection has been created");
-
-            return connection;
-        } catch (SQLException ex) {
-            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            throw new InternalServerErrorException();
-        } catch (ClassNotFoundException ex) {
-            LOGGER.error(ex.getMessage());
-            throw new InternalServerErrorException();
-        }
     }
 }
