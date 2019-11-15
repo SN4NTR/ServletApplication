@@ -1,6 +1,7 @@
 package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
@@ -11,13 +12,18 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository = new UserRepositoryImpl();
 
     @Override
-    public void save(User user) {
+    public void save(UserDto user) {
         userRepository.save(user);
     }
 
     @Override
     public User findById(int id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public Collection<User> findByName(String name) {
+        return userRepository.findByName(name);
     }
 
     @Override
@@ -31,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user) {
-        userRepository.update(user);
+    public void update(int id, UserDto user) {
+        userRepository.update(id, user);
     }
 }

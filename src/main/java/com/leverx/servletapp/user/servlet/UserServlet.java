@@ -1,84 +1,134 @@
 package com.leverx.servletapp.user.servlet;
 
-import com.google.gson.Gson;
-import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
-import com.leverx.servletapp.user.util.UserServletUtils;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collection;
 
-@WebServlet(name = "UserServlet", urlPatterns = {"/users", "/users/*"})
+import static com.leverx.servletapp.user.mapper.UserMapper.convertCollectionToJson;
+import static com.leverx.servletapp.user.mapper.UserMapper.convertJsonToUserDto;
+import static com.leverx.servletapp.user.mapper.UserMapper.convertUserToJson;
+import static com.leverx.servletapp.user.servlet.util.UserServletUtils.PATH;
+import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getIdFromUrl;
+import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getValueFromUrl;
+import static com.leverx.servletapp.user.validator.UserValidator.isFirstNameLengthValid;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CREATED;
+import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static org.apache.commons.lang3.math.NumberUtils.isParsable;
+
 public class UserServlet extends HttpServlet {
-
-    private final static Gson GSON = new Gson();
 
     private final UserService userService = new UserServiceImpl();
 
+    private static final String ERROR_MESSAGE = "Invalid request parameters";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        PrintWriter printWriter = resp.getWriter();
+        var printWriter = resp.getWriter();
 
-        StringBuffer url = req.getRequestURL();
-        var id = UserServletUtils.getIdFromUrl(url);
-        String result;
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
+        var value = getValueFromUrl(urlToString);
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
-            Collection<User> users = userService.findAll();
-            result = GSON.toJson(users);
+        if (PATH.equals(value)) {
+            var users = userService.findAll();
+            var result = convertCollectionToJson(users);
+            printWriter.print(result);
+        } else if (isParsable(value)) {
+            var id = Integer.parseInt(value);
+            var user = userService.findById(id);
+            var result = convertUserToJson(user);
+            printWriter.print(result);
         } else {
-            User user = userService.findById(id);
-            result = GSON.toJson(user);
+            var users = userService.findByName(value);
+            var result = convertCollectionToJson(users);
+            printWriter.print(result);
         }
 
-        resp.setStatus(HttpServletResponse.SC_OK);
-        printWriter.print(result);
+        resp.setStatus(SC_OK);
         printWriter.flush();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        BufferedReader reader = req.getReader();
-        User user = GSON.fromJson(reader, User.class);
+        var isCorrect = isValidPostRequest(req);
 
-        userService.save(user);
-        resp.setStatus(HttpServletResponse.SC_CREATED);
+        if (isCorrect) {
+            resp.setStatus(SC_CREATED);
+        } else {
+            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        StringBuffer url = req.getRequestURL();
-        int id = UserServletUtils.getIdFromUrl(url);
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        var isCorrect = isValidDeleteRequest(urlToString);
+
+        if (isCorrect) {
+            resp.setStatus(SC_NO_CONTENT);
         } else {
-            userService.delete(id);
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        StringBuffer url = req.getRequestURL();
-        int id = UserServletUtils.getIdFromUrl(url);
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
 
-        if (id == UserServletUtils.ID_NOT_FOUND) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        var isCorrect = isValidPutRequest(req, urlToString);
+        if (isCorrect) {
+            resp.setStatus(SC_OK);
         } else {
-            BufferedReader reader = req.getReader();
-            User user = GSON.fromJson(reader, User.class);
-            user.setId(id);
-            userService.update(user);
+            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+        }
+    }
 
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    private boolean isValidPostRequest(HttpServletRequest req) throws IOException {
+        var reader = req.getReader();
+        var userDto = convertJsonToUserDto(reader);
+        var firstName = userDto.getFirstName();
+
+        if (isFirstNameLengthValid(firstName)) {
+            userService.save(userDto);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isValidDeleteRequest(String url) {
+        var idOptional = getIdFromUrl(url);
+
+        if (idOptional.isPresent()) {
+            var id = idOptional.get();
+            userService.delete(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isValidPutRequest(HttpServletRequest req, String url) throws IOException {
+        var reader = req.getReader();
+        var userDto = convertJsonToUserDto(reader);
+        var firstName = userDto.getFirstName();
+        var idOptional = getIdFromUrl(url);
+
+        if (idOptional.isPresent() && isFirstNameLengthValid(firstName)) {
+            var id = idOptional.get();
+            userService.update(id, userDto);
+            return true;
+        } else {
+            return false;
         }
     }
 }
