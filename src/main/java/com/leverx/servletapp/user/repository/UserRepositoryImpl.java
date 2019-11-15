@@ -1,6 +1,5 @@
 package com.leverx.servletapp.user.repository;
 
-import com.leverx.servletapp.db.ConnectionPool;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import org.slf4j.Logger;
@@ -19,8 +18,8 @@ import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_ALL
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_NAME;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_ID;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.UPDATE;
-import static com.leverx.servletapp.user.repository.constant.UsersColumns.FIRST_NAME;
-import static com.leverx.servletapp.user.repository.constant.UsersColumns.ID;
+import static com.leverx.servletapp.user.repository.constant.UsersFields.FIRST_NAME;
+import static com.leverx.servletapp.user.repository.constant.UsersFields.ID;
 import static com.leverx.servletapp.db.ConnectionPool.getInstance;
 
 
