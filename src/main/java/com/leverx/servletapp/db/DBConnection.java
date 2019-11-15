@@ -29,10 +29,10 @@ class DBConnection {
             return connection;
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(ex.getMessage());
         } catch (ClassNotFoundException ex) {
             LOGGER.error(ex.getMessage());
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 }
