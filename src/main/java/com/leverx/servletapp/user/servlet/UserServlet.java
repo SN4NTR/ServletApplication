@@ -56,53 +56,68 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        var reader = req.getReader();
-        var userDto = convertJsonToUserDto(reader);
-        var userFirstName = userDto.getFirstName();
-
-        if (isFirstNameLengthValid(userFirstName)) {
-            userService.save(userDto);
-            resp.setStatus(SC_CREATED);
-        } else {
-            resp.setStatus(SC_BAD_REQUEST);
-        }
+        var isCorrect = isValidPostRequest(req);
+        resp.setStatus(isCorrect ? SC_CREATED : SC_BAD_REQUEST);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var idOptional = getIdFromUrl(urlToString);
 
-        if (idOptional.isPresent()) {
-            var id = idOptional.get();
-            userService.delete(id);
-            resp.setStatus(SC_NO_CONTENT);
-        } else {
-            resp.setStatus(SC_BAD_REQUEST);
-        }
+        var isCorrect = isValidDeleteRequest(req, urlToString);
+        resp.setStatus(isCorrect ? SC_NO_CONTENT : SC_BAD_REQUEST);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var idOptional = getIdFromUrl(urlToString);
+
+        var isCorrect = isValidPutRequest(req, urlToString);
+        resp.setStatus(isCorrect ? SC_CREATED : SC_BAD_REQUEST);
+    }
+
+    private boolean isValidPostRequest(HttpServletRequest req) throws IOException {
+        var reader = req.getReader();
+        var userDto = convertJsonToUserDto(reader);
+        var firstName = userDto.getFirstName();
+
+        if (isFirstNameLengthValid(firstName)) {
+            userService.save(userDto);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isValidDeleteRequest(HttpServletRequest req, String url) {
+        var idOptional = getIdFromUrl(url);
 
         if (idOptional.isPresent()) {
-            var reader = req.getReader();
-            var userDto = convertJsonToUserDto(reader);
-            var userFirstName = userDto.getFirstName();
+            var id = idOptional.get();
+            userService.delete(id);
 
-            if (isFirstNameLengthValid(userFirstName)) {
-                var id = idOptional.get();
-                userService.update(id, userDto);
-                resp.setStatus(SC_CREATED);
-            } else {
-                resp.setStatus(SC_BAD_REQUEST);
-            }
+            return true;
         } else {
-            resp.setStatus(SC_BAD_REQUEST);
+            return false;
+        }
+    }
+
+    private boolean isValidPutRequest(HttpServletRequest req, String url) throws IOException {
+        var reader = req.getReader();
+        var userDto = convertJsonToUserDto(reader);
+        var firstName = userDto.getFirstName();
+        var idOptional = getIdFromUrl(url);
+
+        if (idOptional.isPresent() && isFirstNameLengthValid(firstName)) {
+            var id = idOptional.get();
+            userService.update(id, userDto);
+
+            return true;
+        } else {
+            return false;
         }
     }
 }
