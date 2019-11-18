@@ -29,9 +29,7 @@ final class PropertyHolder {
     }
 
     private static void loadProperties() {
-        final var PROPERTIES_FILE_NAME = FILE_NAME.getValue();
-
-        try (InputStream inputStream = PropertyHolder.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {
+        try (InputStream inputStream = PropertyHolder.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             var properties = new Properties();
             properties.load(inputStream);
 

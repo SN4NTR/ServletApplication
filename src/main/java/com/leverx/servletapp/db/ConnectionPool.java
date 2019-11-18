@@ -67,7 +67,7 @@ public final class ConnectionPool {
 
     private static void registerDriver() {
         try {
-            var driver = properties.get(DRIVER.getValue());
+            var driver = properties.get(DRIVER);
 
             Class.forName(driver);
             LOGGER.info("Driver is registered");
@@ -81,9 +81,9 @@ public final class ConnectionPool {
         LOGGER.info("Trying to create connection to database");
 
         try {
-            var url = properties.get(URL.getValue());
-            var username = properties.get(USERNAME.getValue());
-            var password = properties.get(PASSWORD.getValue());
+            var url = properties.get(URL);
+            var username = properties.get(USERNAME);
+            var password = properties.get(PASSWORD);
 
             var connection = DriverManager.getConnection(url, username, password);
             LOGGER.info("Connection has been created");
