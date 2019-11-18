@@ -10,11 +10,11 @@ import java.io.IOException;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.collectionToJson;
 import static com.leverx.servletapp.user.mapper.UserMapper.jsonToUserDto;
+import static com.leverx.servletapp.user.mapper.UserMapper.readJsonBody;
 import static com.leverx.servletapp.user.mapper.UserMapper.userToJson;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtils.PATH;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getValueFromUrl;
-import static com.leverx.servletapp.user.validator.UserValidator.isFirstNameLengthValid;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
@@ -56,23 +56,25 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        var isCorrect = isValidPostRequest(req);
+        var reader = req.getReader();
+        var jsonBody = readJsonBody(reader);
+        var userDto = jsonToUserDto(jsonBody);
 
-        if (isCorrect) {
-            resp.setStatus(SC_CREATED);
-        } else {
-            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
-        }
+        userService.save(userDto);
+
+        resp.setStatus(SC_CREATED);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
+        var idOpt = getIdFromUrl(urlToString);
 
-        var isCorrect = isValidDeleteRequest(urlToString);
+        if (idOpt.isPresent()) {
+            var id = idOpt.get();
 
-        if (isCorrect) {
+            userService.delete(id);
             resp.setStatus(SC_NO_CONTENT);
         } else {
             resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
@@ -83,52 +85,18 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
+        var idOpt = getIdFromUrl(urlToString);
 
-        var isCorrect = isValidPutRequest(req, urlToString);
-        if (isCorrect) {
+        if (idOpt.isPresent()) {
+            var id = idOpt.get();
+            var reader = req.getReader();
+            var jsonBody = readJsonBody(reader);
+            var userDto = jsonToUserDto(jsonBody);
+
+            userService.update(id, userDto);
             resp.setStatus(SC_OK);
         } else {
             resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
-        }
-    }
-
-    private boolean isValidPostRequest(HttpServletRequest req) throws IOException {
-        var reader = req.getReader();
-        var userDto = jsonToUserDto(reader);
-        var firstName = userDto.getFirstName();
-
-        if (isFirstNameLengthValid(firstName)) {
-            userService.save(userDto);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isValidDeleteRequest(String url) {
-        var idOptional = getIdFromUrl(url);
-
-        if (idOptional.isPresent()) {
-            var id = idOptional.get();
-            userService.delete(id);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isValidPutRequest(HttpServletRequest req, String url) throws IOException {
-        var reader = req.getReader();
-        var userDto = jsonToUserDto(reader);
-        var firstName = userDto.getFirstName();
-        var idOptional = getIdFromUrl(url);
-
-        if (idOptional.isPresent() && isFirstNameLengthValid(firstName)) {
-            var id = idOptional.get();
-            userService.update(id, userDto);
-            return true;
-        } else {
-            return false;
         }
     }
 }
