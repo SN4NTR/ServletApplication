@@ -1,7 +1,6 @@
 package com.leverx.servletapp.user.repository;
 
 import com.leverx.servletapp.user.entity.User;
-import com.leverx.servletapp.user.entity.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,15 +11,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.leverx.servletapp.db.ConnectionPool.getInstance;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.DELETE;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.INSERT;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_ALL;
-import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_NAME;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_ID;
+import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_NAME;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.UPDATE;
 import static com.leverx.servletapp.user.repository.constant.UsersFields.FIRST_NAME;
 import static com.leverx.servletapp.user.repository.constant.UsersFields.ID;
-import static com.leverx.servletapp.db.ConnectionPool.getInstance;
 
 
 public class UserRepositoryImpl implements UserRepository {
@@ -28,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
 
     @Override
-    public void save(UserDto user) {
+    public void save(User user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
         try (var connectionPool = getInstance();
@@ -113,7 +112,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(int id, UserDto user) {
+    public void update(int id, User user) {
         LOGGER.info("Updating user with id = {}", id);
 
         try (var connectionPool = getInstance();
