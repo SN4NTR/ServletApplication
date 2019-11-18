@@ -25,8 +25,6 @@ public class UserServlet extends HttpServlet {
 
     private final UserService userService = new UserServiceImpl();
 
-    private static final String ERROR_MESSAGE = "Invalid request parameters";
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var printWriter = resp.getWriter();
@@ -77,7 +75,7 @@ public class UserServlet extends HttpServlet {
             userService.delete(id);
             resp.setStatus(SC_NO_CONTENT);
         } else {
-            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+            resp.sendError(SC_BAD_REQUEST, "Such user can't be found");
         }
     }
 
@@ -96,7 +94,7 @@ public class UserServlet extends HttpServlet {
             userService.update(id, userDto);
             resp.setStatus(SC_OK);
         } else {
-            resp.sendError(SC_BAD_REQUEST, ERROR_MESSAGE);
+            resp.sendError(SC_BAD_REQUEST, "Such user can't be found");
         }
     }
 }

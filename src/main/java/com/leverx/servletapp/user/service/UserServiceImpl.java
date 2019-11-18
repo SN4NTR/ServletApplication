@@ -4,17 +4,19 @@ import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 
-// TODO moved exception message to props
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
 
     private static final int FIRST_NAME_LENGTH = 60;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getSimpleName());
 
     @Override
     public void save(UserDto userDto) {
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
             var user = userDtoToUser(userDto);
             userRepository.save(user);
         } else {
+            LOGGER.error("Length of firstName is bigger than {}", FIRST_NAME_LENGTH);
             throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
         }
     }
@@ -57,6 +60,7 @@ public class UserServiceImpl implements UserService {
             user.setId(id);
             userRepository.update(user);
         } else  {
+            LOGGER.error("Length of firstName is bigger than {}", FIRST_NAME_LENGTH);
             throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
         }
     }
