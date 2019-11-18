@@ -31,8 +31,8 @@ public final class UserMapper {
     }
 
     public static User userDtoToUser(UserDto userDto) {
-        String firstName = userDto.getFirstName();
-        User user = new User();
+        var firstName = userDto.getFirstName();
+        var user = new User();
         user.setFirstName(firstName);
         return user;
     }
