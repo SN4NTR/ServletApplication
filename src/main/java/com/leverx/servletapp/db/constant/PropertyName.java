@@ -8,10 +8,10 @@ import lombok.Getter;
 public enum PropertyName {
 
     FILE_NAME("database.properties"),
-    DRIVER("db.datasource.driver-class-name"),
-    URL("db.url"),
-    USERNAME("db.user"),
-    PASSWORD("db.password");
+    DRIVER("driver"),
+    URL("url"),
+    USERNAME("username"),
+    PASSWORD("password");
 
     private String value;
 }

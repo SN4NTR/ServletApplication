@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 
+// TODO moved exception message to props
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();

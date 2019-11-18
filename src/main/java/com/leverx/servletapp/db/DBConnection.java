@@ -1,5 +1,6 @@
 package com.leverx.servletapp.db;
 
+import com.leverx.servletapp.db.constant.PropertyName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,10 +9,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static com.leverx.servletapp.db.DBPropertyLoader.DB_DRIVER;
-import static com.leverx.servletapp.db.DBPropertyLoader.DB_PASSWORD;
-import static com.leverx.servletapp.db.DBPropertyLoader.DB_URL;
-import static com.leverx.servletapp.db.DBPropertyLoader.DB_USERNAME;
+import static com.leverx.servletapp.db.PropertyHolder.dbProperties;
+import static com.leverx.servletapp.db.constant.PropertyName.DRIVER;
+import static com.leverx.servletapp.db.constant.PropertyName.PASSWORD;
+import static com.leverx.servletapp.db.constant.PropertyName.URL;
+import static com.leverx.servletapp.db.constant.PropertyName.USERNAME;
 
 class DBConnection {
 
@@ -19,6 +21,11 @@ class DBConnection {
 
     static Connection createConnection() {
         LOGGER.info("Trying to create connection to database");
+
+        final String DB_DRIVER = dbProperties.get(DRIVER.getValue());
+        final String DB_URL = dbProperties.get(URL.getValue());
+        final String DB_USERNAME = dbProperties.get(USERNAME.getValue());
+        final String DB_PASSWORD = dbProperties.get(PASSWORD.getValue());
 
         try {
             Class.forName(DB_DRIVER);

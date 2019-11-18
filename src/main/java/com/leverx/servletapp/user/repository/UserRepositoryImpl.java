@@ -1,10 +1,12 @@
 package com.leverx.servletapp.user.repository;
 
+import com.leverx.servletapp.db.ConnectionPool;
 import com.leverx.servletapp.user.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.InternalServerErrorException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,11 +31,12 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
-        try (var connectionPool = getInstance();
-             var preparedStatement = connectionPool.getConnection().prepareStatement(INSERT)) {
+        ConnectionPool connectionPool = getInstance();
+        Connection connection = connectionPool.getConnection();
+
+        try (var preparedStatement = connection.prepareStatement(INSERT)) {
 
             var firstName = user.getFirstName();
-
             preparedStatement.setString(1, firstName);
             preparedStatement.executeUpdate();
 
@@ -41,6 +44,8 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
@@ -48,8 +53,10 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(int id) {
         LOGGER.info("Getting user by id = {}", id);
 
-        try (var connectionPool = getInstance();
-             var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_BY_ID)) {
+        ConnectionPool connectionPool = getInstance();
+        Connection connection = connectionPool.getConnection();
+
+        try (var preparedStatement = connection.prepareStatement(SELECT_BY_ID)) {
 
             preparedStatement.setInt(1, id);
 
@@ -59,6 +66,8 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
@@ -66,8 +75,10 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findByName(String name) {
         LOGGER.info("Getting user by firstName = {}", name);
 
-        try (var connectionPool = getInstance();
-             var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_BY_NAME)) {
+        ConnectionPool connectionPool = getInstance();
+        Connection connection = connectionPool.getConnection();
+
+        try (var preparedStatement = connection.prepareStatement(SELECT_BY_NAME)) {
 
             preparedStatement.setString(1, name);
 
@@ -77,6 +88,8 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
@@ -84,14 +97,18 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findAll() {
         LOGGER.info("Getting all users");
 
-        try (var connectionPool = getInstance();
-             var preparedStatement = connectionPool.getConnection().prepareStatement(SELECT_ALL);
+        ConnectionPool connectionPool = getInstance();
+        Connection connection = connectionPool.getConnection();
+
+        try (var preparedStatement = connection.prepareStatement(SELECT_ALL);
              var resultSet = preparedStatement.executeQuery()) {
 
             return getListOfUsersFromResultSet(resultSet);
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
@@ -99,8 +116,10 @@ public class UserRepositoryImpl implements UserRepository {
     public void delete(int id) {
         LOGGER.info("Deleting user with id = {}", id);
 
-        try (var connectionPool = getInstance();
-             var preparedStatement = connectionPool.getConnection().prepareStatement(DELETE)) {
+        ConnectionPool connectionPool = getInstance();
+        Connection connection = connectionPool.getConnection();
+
+        try (var preparedStatement = connection.prepareStatement(DELETE)) {
 
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
@@ -109,6 +128,8 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
@@ -116,8 +137,10 @@ public class UserRepositoryImpl implements UserRepository {
     public void update(User user) {
         LOGGER.info("Updating user with id = {}", user.getId());
 
-        try (var connectionPool = getInstance();
-             var preparedStatement = connectionPool.getConnection().prepareStatement(UPDATE)) {
+        ConnectionPool connectionPool = getInstance();
+        Connection connection = connectionPool.getConnection();
+
+        try (var preparedStatement = connection.prepareStatement(UPDATE)) {
 
             var firstName = user.getFirstName();
             var id = user.getId();
@@ -130,6 +153,8 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException ex) {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
@@ -142,13 +167,11 @@ public class UserRepositoryImpl implements UserRepository {
             var user = getUserFromResultSet(resultSet);
             users.add(user);
         }
-
         return users;
     }
 
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         resultSet.next();
-
         var id = resultSet.getInt(ID);
         var firstName = resultSet.getString(FIRST_NAME);
 
