@@ -6,7 +6,7 @@ import com.leverx.servletapp.user.entity.UserDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.io.Reader;
+import java.io.BufferedReader;
 import java.util.Collection;
 
 import static java.util.stream.Collectors.joining;
@@ -16,6 +16,15 @@ public final class UserMapper {
 
     private final static Gson GSON = new Gson();
 
+    public static String readJsonBody(BufferedReader reader) {
+        return reader.lines()
+                .collect(joining());
+    }
+
+    public static UserDto jsonToUserDto(String jsonBody) {
+        return GSON.fromJson(jsonBody, UserDto.class);
+    }
+
     public static String userToJson(User user) {
         return GSON.toJson(user);
     }
@@ -24,10 +33,6 @@ public final class UserMapper {
         return users.stream()
                 .map(UserMapper::userToJson)
                 .collect(joining("\n"));
-    }
-
-    public static UserDto jsonToUserDto(Reader reader) {
-        return GSON.fromJson(reader, UserDto.class);
     }
 
     public static User userDtoToUser(UserDto userDto) {
