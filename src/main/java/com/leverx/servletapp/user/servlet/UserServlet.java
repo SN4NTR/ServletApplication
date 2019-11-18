@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.leverx.servletapp.user.mapper.UserMapper.convertCollectionToJson;
-import static com.leverx.servletapp.user.mapper.UserMapper.convertJsonToUserDto;
-import static com.leverx.servletapp.user.mapper.UserMapper.convertUserToJson;
+import static com.leverx.servletapp.user.mapper.UserMapper.collectionToJson;
+import static com.leverx.servletapp.user.mapper.UserMapper.jsonToUserDto;
+import static com.leverx.servletapp.user.mapper.UserMapper.userToJson;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtils.PATH;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getValueFromUrl;
@@ -37,16 +37,16 @@ public class UserServlet extends HttpServlet {
 
         if (PATH.equals(value)) {
             var users = userService.findAll();
-            var result = convertCollectionToJson(users);
+            var result = collectionToJson(users);
             printWriter.print(result);
         } else if (isParsable(value)) {
             var id = Integer.parseInt(value);
             var user = userService.findById(id);
-            var result = convertUserToJson(user);
+            var result = userToJson(user);
             printWriter.print(result);
         } else {
             var users = userService.findByName(value);
-            var result = convertCollectionToJson(users);
+            var result = collectionToJson(users);
             printWriter.print(result);
         }
 
@@ -94,7 +94,7 @@ public class UserServlet extends HttpServlet {
 
     private boolean isValidPostRequest(HttpServletRequest req) throws IOException {
         var reader = req.getReader();
-        var userDto = convertJsonToUserDto(reader);
+        var userDto = jsonToUserDto(reader);
         var firstName = userDto.getFirstName();
 
         if (isFirstNameLengthValid(firstName)) {
@@ -119,7 +119,7 @@ public class UserServlet extends HttpServlet {
 
     private boolean isValidPutRequest(HttpServletRequest req, String url) throws IOException {
         var reader = req.getReader();
-        var userDto = convertJsonToUserDto(reader);
+        var userDto = jsonToUserDto(reader);
         var firstName = userDto.getFirstName();
         var idOptional = getIdFromUrl(url);
 
