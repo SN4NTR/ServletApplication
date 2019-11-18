@@ -1,12 +1,10 @@
 package com.leverx.servletapp.user.repository;
 
-import com.leverx.servletapp.db.ConnectionPool;
 import com.leverx.servletapp.user.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.InternalServerErrorException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,8 +29,8 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
-        ConnectionPool connectionPool = getInstance();
-        Connection connection = connectionPool.getConnection();
+        var connectionPool = getInstance();
+        var connection = connectionPool.getConnection();
 
         try (var preparedStatement = connection.prepareStatement(INSERT)) {
 
@@ -53,8 +51,8 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(int id) {
         LOGGER.info("Getting user by id = {}", id);
 
-        ConnectionPool connectionPool = getInstance();
-        Connection connection = connectionPool.getConnection();
+        var connectionPool = getInstance();
+        var connection = connectionPool.getConnection();
 
         try (var preparedStatement = connection.prepareStatement(SELECT_BY_ID)) {
 
@@ -75,8 +73,8 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findByName(String name) {
         LOGGER.info("Getting user by firstName = {}", name);
 
-        ConnectionPool connectionPool = getInstance();
-        Connection connection = connectionPool.getConnection();
+        var connectionPool = getInstance();
+        var connection = connectionPool.getConnection();
 
         try (var preparedStatement = connection.prepareStatement(SELECT_BY_NAME)) {
 
@@ -97,8 +95,8 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findAll() {
         LOGGER.info("Getting all users");
 
-        ConnectionPool connectionPool = getInstance();
-        Connection connection = connectionPool.getConnection();
+        var connectionPool = getInstance();
+        var connection = connectionPool.getConnection();
 
         try (var preparedStatement = connection.prepareStatement(SELECT_ALL);
              var resultSet = preparedStatement.executeQuery()) {
@@ -116,8 +114,8 @@ public class UserRepositoryImpl implements UserRepository {
     public void delete(int id) {
         LOGGER.info("Deleting user with id = {}", id);
 
-        ConnectionPool connectionPool = getInstance();
-        Connection connection = connectionPool.getConnection();
+        var connectionPool = getInstance();
+        var connection = connectionPool.getConnection();
 
         try (var preparedStatement = connection.prepareStatement(DELETE)) {
 
@@ -137,8 +135,8 @@ public class UserRepositoryImpl implements UserRepository {
     public void update(User user) {
         LOGGER.info("Updating user with id = {}", user.getId());
 
-        ConnectionPool connectionPool = getInstance();
-        Connection connection = connectionPool.getConnection();
+        var connectionPool = getInstance();
+        var connection = connectionPool.getConnection();
 
         try (var preparedStatement = connection.prepareStatement(UPDATE)) {
 
