@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.stream.Stream;
 
 import static com.leverx.servletapp.db.PropertyHolder.getProperties;
 import static com.leverx.servletapp.db.constant.PropertyName.DRIVER;
