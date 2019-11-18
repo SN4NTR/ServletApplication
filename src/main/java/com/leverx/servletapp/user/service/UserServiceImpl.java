@@ -13,10 +13,18 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
 
+    private static final int FIRST_NAME_LENGTH = 60;
+
     @Override
     public void save(UserDto userDto) {
-        User user = userDtoToUser(userDto);
-        userRepository.save(user);
+        var firstName = userDto.getFirstName();
+
+        if (isFirstNameLengthValid(firstName)) {
+            var user = userDtoToUser(userDto);
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
+        }
     }
 
     @Override
@@ -41,8 +49,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(int id, UserDto userDto) {
-        User user = userDtoToUser(userDto);
-        user.setId(id);
-        userRepository.update(user);
+        var firstName = userDto.getFirstName();
+
+        if (isFirstNameLengthValid(firstName)) {
+            var user = userDtoToUser(userDto);
+            user.setId(id);
+            userRepository.update(user);
+        } else  {
+            throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
+        }
+    }
+
+    private boolean isFirstNameLengthValid(String firstName) {
+        return firstName.length() <= FIRST_NAME_LENGTH;
     }
 }
