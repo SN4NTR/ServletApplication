@@ -16,17 +16,17 @@ public final class UserMapper {
 
     private final static Gson GSON = new Gson();
 
-    public static String convertUserToJson(User user) {
+    public static String userToJson(User user) {
         return GSON.toJson(user);
     }
 
-    public static String convertCollectionToJson(Collection<User> users) {
+    public static String collectionToJson(Collection<User> users) {
         return users.stream()
-                .map(UserMapper::convertUserToJson)
+                .map(UserMapper::userToJson)
                 .collect(joining("\n"));
     }
 
-    public static UserDto convertJsonToUserDto(Reader reader) {
+    public static UserDto jsonToUserDto(Reader reader) {
         return GSON.fromJson(reader, UserDto.class);
     }
 }
