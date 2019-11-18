@@ -75,7 +75,7 @@ public class UserServlet extends HttpServlet {
             userService.delete(id);
             resp.setStatus(SC_NO_CONTENT);
         } else {
-            resp.sendError(SC_BAD_REQUEST, "Such user can't be found");
+            resp.sendError(SC_BAD_REQUEST, "User can't be found");
         }
     }
 
@@ -94,7 +94,7 @@ public class UserServlet extends HttpServlet {
             userService.update(id, userDto);
             resp.setStatus(SC_OK);
         } else {
-            resp.sendError(SC_BAD_REQUEST, "Such user can't be found");
+            resp.sendError(SC_BAD_REQUEST, "User can't be found");
         }
     }
 }
