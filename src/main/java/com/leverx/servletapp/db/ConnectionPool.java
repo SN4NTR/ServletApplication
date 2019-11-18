@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import static com.leverx.servletapp.db.PropertyHolder.getDataBaseProperties;
+import static com.leverx.servletapp.db.PropertyHolder.getProperties;
 import static com.leverx.servletapp.db.constant.PropertyName.DRIVER;
 import static com.leverx.servletapp.db.constant.PropertyName.PASSWORD;
 import static com.leverx.servletapp.db.constant.PropertyName.URL;
@@ -27,7 +27,7 @@ public final class ConnectionPool {
     private static ConnectionPool connectionPool;
 
     private ConnectionPool() {
-        properties = getDataBaseProperties();
+        properties = getProperties();
         registerDriver();
 
         while (CONNECTION_BLOCKING_QUEUE.size() < MAX_CONNECTIONS) {

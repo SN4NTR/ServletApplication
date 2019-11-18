@@ -19,18 +19,29 @@ final class PropertyHolder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertyHolder.class.getSimpleName());
 
-    static Map<String, String> getDataBaseProperties() {
-        final String PROPERTIES_FILE_NAME = FILE_NAME.getValue();
+    private static Map<String, String> dataBaseProperties;
+
+    static Map<String, String> getProperties() {
+        if (dataBaseProperties == null) {
+            loadProperties();
+        }
+        return dataBaseProperties;
+    }
+
+    private static void loadProperties() {
+        final var PROPERTIES_FILE_NAME = FILE_NAME.getValue();
 
         try (InputStream inputStream = PropertyHolder.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {
             var properties = new Properties();
             properties.load(inputStream);
 
-            return properties.entrySet()
+            dataBaseProperties = properties.entrySet()
                     .stream()
                     .collect(toMap(
                             entry -> (String) entry.getKey(),
                             entry -> (String) entry.getValue()));
+
+            LOGGER.info("Properties has been loaded");
         } catch (IOException ex) {
             LOGGER.error("Properties can't be loaded");
             throw new InternalServerErrorException(ex);
