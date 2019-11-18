@@ -7,12 +7,15 @@ import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
 import java.util.Collection;
 
+import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
+
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
 
     @Override
-    public void save(UserDto user) {
+    public void save(UserDto userDto) {
+        User user = userDtoToUser(userDto);
         userRepository.save(user);
     }
 
@@ -37,7 +40,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(int id, UserDto user) {
-        userRepository.update(id, user);
+    public void update(int id, UserDto userDto) {
+        User user = userDtoToUser(userDto);
+        user.setId(id);
+        userRepository.update(user);
     }
 }
