@@ -29,4 +29,11 @@ public final class UserMapper {
     public static UserDto jsonToUserDto(Reader reader) {
         return GSON.fromJson(reader, UserDto.class);
     }
+
+    public static User userDtoToUser(UserDto userDto) {
+        String firstName = userDto.getFirstName();
+        User user = new User();
+        user.setFirstName(firstName);
+        return user;
+    }
 }
