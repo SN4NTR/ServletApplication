@@ -7,10 +7,11 @@ import javax.ws.rs.InternalServerErrorException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import static com.leverx.servletapp.db.PropertyHolder.dbProperties;
+import static com.leverx.servletapp.db.PropertyHolder.getDataBaseProperties;
 import static com.leverx.servletapp.db.constant.PropertyName.DRIVER;
 import static com.leverx.servletapp.db.constant.PropertyName.PASSWORD;
 import static com.leverx.servletapp.db.constant.PropertyName.URL;
@@ -18,15 +19,15 @@ import static com.leverx.servletapp.db.constant.PropertyName.USERNAME;
 
 public final class ConnectionPool {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionPool.class.getSimpleName());
-
     private static final int MAX_CONNECTIONS = 10;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionPool.class.getSimpleName());
     private static final BlockingQueue<Connection> CONNECTION_BLOCKING_QUEUE = new ArrayBlockingQueue<>(MAX_CONNECTIONS);
 
+    private static Map<String, String> properties;
     private static ConnectionPool connectionPool;
 
     private ConnectionPool() {
+        properties = getDataBaseProperties();
         registerDriver();
 
         while (CONNECTION_BLOCKING_QUEUE.size() < MAX_CONNECTIONS) {
@@ -65,33 +66,32 @@ public final class ConnectionPool {
     }
 
     private static void registerDriver() {
-        final String DB_DRIVER = dbProperties.get(DRIVER.getValue());
+        var driver = properties.get(DRIVER.getValue());
 
         try {
-            Class.forName(DB_DRIVER);
+            Class.forName(driver);
             LOGGER.info("Driver is registered");
         } catch (ClassNotFoundException ex) {
-            LOGGER.error(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
+            LOGGER.error("Driver can't be registered");
+            throw new InternalServerErrorException(ex);
         }
     }
 
     private Connection createConnection() {
         LOGGER.info("Trying to create connection to database");
 
-        final String DB_URL = dbProperties.get(URL.getValue());
-        final String DB_USERNAME = dbProperties.get(USERNAME.getValue());
-        final String DB_PASSWORD = dbProperties.get(PASSWORD.getValue());
+        var url = properties.get(URL.getValue());
+        var username = properties.get(USERNAME.getValue());
+        var password = properties.get(PASSWORD.getValue());
 
         try {
-            var connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-
+            var connection = DriverManager.getConnection(url, username, password);
             LOGGER.info("Connection has been created");
 
             return connection;
         } catch (SQLException ex) {
-            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
+            LOGGER.error("Connection can't be created");
+            throw new InternalServerErrorException(ex);
         }
     }
 }
