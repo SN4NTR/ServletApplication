@@ -112,13 +112,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(int id, User user) {
-        LOGGER.info("Updating user with id = {}", id);
+    public void update(User user) {
+        LOGGER.info("Updating user with id = {}", user.getId());
 
         try (var connectionPool = getInstance();
              var preparedStatement = connectionPool.getConnection().prepareStatement(UPDATE)) {
 
-            preparedStatement.setString(1, user.getFirstName());
+            var firstName = user.getFirstName();
+            var id = user.getId();
+
+            preparedStatement.setString(1, firstName);
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
 
