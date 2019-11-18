@@ -36,7 +36,7 @@ public final class ConnectionPool {
         }
     }
 
-    public synchronized static ConnectionPool getInstance() {
+    public static synchronized ConnectionPool getInstance() {
         if (connectionPool == null) {
             connectionPool = new ConnectionPool();
         }
