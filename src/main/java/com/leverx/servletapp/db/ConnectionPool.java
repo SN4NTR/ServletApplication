@@ -10,12 +10,14 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Stream;
 
 import static com.leverx.servletapp.db.PropertyHolder.getProperties;
 import static com.leverx.servletapp.db.constant.PropertyName.DRIVER;
 import static com.leverx.servletapp.db.constant.PropertyName.PASSWORD;
 import static com.leverx.servletapp.db.constant.PropertyName.URL;
 import static com.leverx.servletapp.db.constant.PropertyName.USERNAME;
+import static java.util.stream.Stream.generate;
 
 public final class ConnectionPool {
 
@@ -30,10 +32,9 @@ public final class ConnectionPool {
         properties = getProperties();
         registerDriver();
 
-        while (CONNECTION_BLOCKING_QUEUE.size() < MAX_CONNECTIONS) {
-            var connection = createConnection();
-            CONNECTION_BLOCKING_QUEUE.add(connection);
-        }
+        generate(ConnectionPool::createConnection)
+                .limit(MAX_CONNECTIONS)
+                .forEach(CONNECTION_BLOCKING_QUEUE::add);
     }
 
     public static synchronized ConnectionPool getInstance() {
@@ -66,9 +67,9 @@ public final class ConnectionPool {
     }
 
     private static void registerDriver() {
-        var driver = properties.get(DRIVER.getValue());
-
         try {
+            var driver = properties.get(DRIVER.getValue());
+
             Class.forName(driver);
             LOGGER.info("Driver is registered");
         } catch (ClassNotFoundException ex) {
@@ -77,14 +78,14 @@ public final class ConnectionPool {
         }
     }
 
-    private Connection createConnection() {
+    private static Connection createConnection() {
         LOGGER.info("Trying to create connection to database");
 
-        var url = properties.get(URL.getValue());
-        var username = properties.get(USERNAME.getValue());
-        var password = properties.get(PASSWORD.getValue());
-
         try {
+            var url = properties.get(URL.getValue());
+            var username = properties.get(USERNAME.getValue());
+            var password = properties.get(PASSWORD.getValue());
+
             var connection = DriverManager.getConnection(url, username, password);
             LOGGER.info("Connection has been created");
 
