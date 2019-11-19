@@ -26,8 +26,9 @@ public class UserServiceImpl implements UserService {
             var user = userDtoToUser(userDto);
             userRepository.save(user);
         } else {
-            LOGGER.error("Length of firstName is bigger than {}", FIRST_NAME_LENGTH);
-            throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
+            String message = String.format("Length of first name is bigger than %s", FIRST_NAME_LENGTH);
+            LOGGER.error(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -60,8 +61,9 @@ public class UserServiceImpl implements UserService {
             user.setId(id);
             userRepository.update(user);
         } else  {
-            LOGGER.error("Length of firstName is bigger than {}", FIRST_NAME_LENGTH);
-            throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
+            String message = String.format("Length of first name is bigger than %s", FIRST_NAME_LENGTH);
+            LOGGER.error(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
