@@ -1,17 +1,10 @@
 package com.leverx.servletapp.db.constant;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public class PropertyName {
 
-@Getter
-@AllArgsConstructor
-public enum PropertyName {
-
-    FILE_NAME("database.properties"),
-    DRIVER("db.datasource.driver-class-name"),
-    URL("db.url"),
-    USERNAME("db.user"),
-    PASSWORD("db.password");
-
-    private String value;
+    public static final String FILE_NAME = "database.properties";
+    public static final String DRIVER = "driver";
+    public static final String URL = "url";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
 }
