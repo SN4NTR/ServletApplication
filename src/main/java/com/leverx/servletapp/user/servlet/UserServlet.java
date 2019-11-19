@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.collectionToJson;
 import static com.leverx.servletapp.user.mapper.UserMapper.jsonToUserDto;
@@ -34,18 +35,11 @@ public class UserServlet extends HttpServlet {
         var value = getValueFromUrl(urlToString);
 
         if (PATH.equals(value)) {
-            var users = userService.findAll();
-            var result = collectionToJson(users);
-            printWriter.print(result);
+            printAllUsers(printWriter);
         } else if (isParsable(value)) {
-            var id = Integer.parseInt(value);
-            var user = userService.findById(id);
-            var result = userToJson(user);
-            printWriter.print(result);
+            printUserById(printWriter, value);
         } else {
-            var users = userService.findByName(value);
-            var result = collectionToJson(users);
-            printWriter.print(result);
+            printUserByFirstName(printWriter, value);
         }
 
         resp.setStatus(SC_OK);
@@ -96,5 +90,24 @@ public class UserServlet extends HttpServlet {
         } else {
             resp.sendError(SC_BAD_REQUEST, "User can't be found");
         }
+    }
+
+    private void printUserByFirstName(PrintWriter printWriter, String value) {
+        var users = userService.findByName(value);
+        var result = collectionToJson(users);
+        printWriter.print(result);
+    }
+
+    private void printUserById(PrintWriter printWriter, String value) {
+        var id = Integer.parseInt(value);
+        var user = userService.findById(id);
+        var result = userToJson(user);
+        printWriter.print(result);
+    }
+
+    private void printAllUsers(PrintWriter printWriter) {
+        var users = userService.findAll();
+        var result = collectionToJson(users);
+        printWriter.print(result);
     }
 }
