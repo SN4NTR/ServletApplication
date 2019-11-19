@@ -55,7 +55,7 @@ public final class ConnectionPool {
         }
     }
 
-    public void closeConnection(Connection connection) {
+    public void releaseConnection(Connection connection) {
         try {
             CONNECTION_BLOCKING_QUEUE.put(connection);
             LOGGER.info("Connection is put back into queue");

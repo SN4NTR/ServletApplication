@@ -43,7 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
         } finally {
-            connectionPool.closeConnection(connection);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -65,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
         } finally {
-            connectionPool.closeConnection(connection);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -87,7 +87,7 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
         } finally {
-            connectionPool.closeConnection(connection);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -106,7 +106,7 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
         } finally {
-            connectionPool.closeConnection(connection);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -127,7 +127,7 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
         } finally {
-            connectionPool.closeConnection(connection);
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -152,7 +152,7 @@ public class UserRepositoryImpl implements UserRepository {
             LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
             throw new InternalServerErrorException(ex);
         } finally {
-            connectionPool.closeConnection(connection);
+            connectionPool.releaseConnection(connection);
         }
     }
 
