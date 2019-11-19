@@ -1,62 +1,97 @@
 package com.leverx.servletapp.db;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.sql.Connection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-import static com.leverx.servletapp.db.DBConnection.createConnection;
+import static com.leverx.servletapp.db.PropertyHolder.getProperties;
+import static com.leverx.servletapp.db.constant.PropertyName.DRIVER;
+import static com.leverx.servletapp.db.constant.PropertyName.PASSWORD;
+import static com.leverx.servletapp.db.constant.PropertyName.URL;
+import static com.leverx.servletapp.db.constant.PropertyName.USERNAME;
+import static java.util.stream.Stream.generate;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ConnectionPool implements AutoCloseable {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionPool.class.getSimpleName());
-
-    private static ConnectionPool connectionPool;
+public final class ConnectionPool {
 
     private static final int MAX_CONNECTIONS = 10;
-    private static final int ELEMENT_INDEX = 0;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionPool.class.getSimpleName());
+    private static final BlockingQueue<Connection> CONNECTION_BLOCKING_QUEUE = new ArrayBlockingQueue<>(MAX_CONNECTIONS);
 
-    private static final List<Connection> UNUSED_CONNECTIONS = Collections.synchronizedList(new LinkedList<>());
-    private static final List<Connection> USED_CONNECTIONS = Collections.synchronizedList(new LinkedList<>());
+    private static Map<String, String> properties;
+    private static ConnectionPool connectionPool;
 
-    static {
-        while (UNUSED_CONNECTIONS.size() < MAX_CONNECTIONS) {
-            var connection = createConnection();
-            UNUSED_CONNECTIONS.add(connection);
-        }
-    }
+    private ConnectionPool() {
+        properties = getProperties();
+        registerDriver();
 
-    @Override
-    public void close() {
-        var lastElementIndex = USED_CONNECTIONS.size() - 1;
-        var connection = USED_CONNECTIONS.get(lastElementIndex);
-        USED_CONNECTIONS.remove(lastElementIndex);
-        UNUSED_CONNECTIONS.add(connection);
+        generate(ConnectionPool::createConnection)
+                .limit(MAX_CONNECTIONS)
+                .forEach(CONNECTION_BLOCKING_QUEUE::add);
     }
 
     public static synchronized ConnectionPool getInstance() {
         if (connectionPool == null) {
             connectionPool = new ConnectionPool();
         }
-
         return connectionPool;
     }
 
     public Connection getConnection() {
-        while (UNUSED_CONNECTIONS.isEmpty()) {
-            LOGGER.info("All connections are busy");
+        try {
+            var connection = CONNECTION_BLOCKING_QUEUE.take();
+            LOGGER.info("Connection is retrieved from queue");
+
+            return connection;
+        } catch (InterruptedException ex) {
+            LOGGER.error(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
+    }
 
-        var connection = UNUSED_CONNECTIONS.get(ELEMENT_INDEX);
-        UNUSED_CONNECTIONS.remove(ELEMENT_INDEX);
-        USED_CONNECTIONS.add(connection);
+    public void closeConnection(Connection connection) {
+        try {
+            CONNECTION_BLOCKING_QUEUE.put(connection);
+            LOGGER.info("Connection is put back into queue");
+        } catch (InterruptedException ex) {
+            LOGGER.error(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+    }
 
-        return connection;
+    private static void registerDriver() {
+        try {
+            var driver = properties.get(DRIVER);
+
+            Class.forName(driver);
+            LOGGER.info("Driver is registered");
+        } catch (ClassNotFoundException ex) {
+            LOGGER.error("Driver can't be registered");
+            throw new InternalServerErrorException(ex);
+        }
+    }
+
+    private static Connection createConnection() {
+        LOGGER.info("Trying to create connection to database");
+
+        try {
+            var url = properties.get(URL);
+            var username = properties.get(USERNAME);
+            var password = properties.get(PASSWORD);
+
+            var connection = DriverManager.getConnection(url, username, password);
+            LOGGER.info("Connection has been created");
+
+            return connection;
+        } catch (SQLException ex) {
+            LOGGER.error("Connection can't be created");
+            throw new InternalServerErrorException(ex);
+        }
     }
 }
