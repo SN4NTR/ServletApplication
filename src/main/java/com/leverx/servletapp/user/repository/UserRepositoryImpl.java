@@ -24,6 +24,9 @@ import static com.leverx.servletapp.user.repository.constant.UsersFields.ID;
 public class UserRepositoryImpl implements UserRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
+    private static final int ID_INDEX = 1;
+    private static final int ID_INDEX_FOR_UPDATE = 2;
+    private static final int FIRST_NAME_INDEX = 1;
 
     @Override
     public void save(User user) {
@@ -35,7 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (var preparedStatement = connection.prepareStatement(INSERT)) {
 
             var firstName = user.getFirstName();
-            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(FIRST_NAME_INDEX, firstName);
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been saved");
@@ -56,7 +59,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         try (var preparedStatement = connection.prepareStatement(SELECT_BY_ID)) {
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(ID_INDEX, id);
 
             try (var resultSet = preparedStatement.executeQuery()) {
                 return getUserFromResultSet(resultSet);
@@ -78,7 +81,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         try (var preparedStatement = connection.prepareStatement(SELECT_BY_NAME)) {
 
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(FIRST_NAME_INDEX, name);
 
             try (var resultSet = preparedStatement.executeQuery()) {
                 return getListOfUsersFromResultSet(resultSet);
@@ -119,7 +122,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         try (var preparedStatement = connection.prepareStatement(DELETE)) {
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(ID_INDEX, id);
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been deleted");
@@ -143,8 +146,8 @@ public class UserRepositoryImpl implements UserRepository {
             var firstName = user.getFirstName();
             var id = user.getId();
 
-            preparedStatement.setString(1, firstName);
-            preparedStatement.setInt(2, id);
+            preparedStatement.setString(FIRST_NAME_INDEX, firstName);
+            preparedStatement.setInt(ID_INDEX_FOR_UPDATE, id);
             preparedStatement.executeUpdate();
 
             LOGGER.info("User has been updated");
