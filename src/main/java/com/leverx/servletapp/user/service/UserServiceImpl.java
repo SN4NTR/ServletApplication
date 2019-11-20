@@ -4,30 +4,26 @@ import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
+import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
 
-    private static final int FIRST_NAME_LENGTH = 60;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getSimpleName());
+    private static final int FIRST_NAME_LENGTH_MIN = 1;
+    private static final int FIRST_NAME_LENGTH_MAX = 60;
 
     @Override
     public void save(UserDto userDto) {
-        var firstName = userDto.getFirstName();
-
-        if (isFirstNameLengthValid(firstName)) {
-            var user = userDtoToUser(userDto);
+        var user = userDtoToUser(userDto);
+        if (isEntityValid(user)) {
             userRepository.save(user);
         } else {
-            String message = String.format("Length of first name is bigger than %s", FIRST_NAME_LENGTH);
-            LOGGER.error(message);
+            String message = String.format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             throw new IllegalArgumentException(message);
         }
     }
@@ -54,20 +50,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(int id, UserDto userDto) {
-        var firstName = userDto.getFirstName();
+        var user = userDtoToUser(userDto);
 
-        if (isFirstNameLengthValid(firstName)) {
-            var user = userDtoToUser(userDto);
+        if (isEntityValid(user)) {
             user.setId(id);
             userRepository.update(user);
         } else  {
-            String message = String.format("Length of first name is bigger than %s", FIRST_NAME_LENGTH);
-            LOGGER.error(message);
+            String message = String.format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             throw new IllegalArgumentException(message);
         }
-    }
-
-    private boolean isFirstNameLengthValid(String firstName) {
-        return firstName.length() <= FIRST_NAME_LENGTH;
     }
 }
