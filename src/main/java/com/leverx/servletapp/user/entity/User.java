@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 import static javax.persistence.CascadeType.REMOVE;
@@ -33,6 +35,8 @@ public class User {
 
     @Column
     @NonNull
+    @NotNull
+    @Size(min = 1, max = 60)
     private String firstName;
 
     @OneToMany(fetch = LAZY,
