@@ -6,16 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
+
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
@@ -27,15 +28,15 @@ public class User {
     @Id
     @Column
     @NonNull
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private int id;
 
     @Column
     @NonNull
     private String firstName;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.REMOVE,
+    @OneToMany(fetch = LAZY,
+            cascade = REMOVE,
             mappedBy = "owner")
     private List<Cat> cats;
 }
