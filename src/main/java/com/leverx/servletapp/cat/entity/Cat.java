@@ -12,8 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.sql.Date;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -21,8 +20,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "cats")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Cat {
 
     @Id
@@ -31,9 +30,10 @@ public class Cat {
     private int id;
 
     @Column
-    @NotNull
-    @Size(min = 1, max = 60)
     private String name;
+
+    @Column
+    private Date dateOfBirth;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "owner_id")
