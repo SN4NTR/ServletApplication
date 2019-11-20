@@ -2,11 +2,9 @@ package com.leverx.servletapp.user.entity;
 
 import com.leverx.servletapp.cat.entity.Cat;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
