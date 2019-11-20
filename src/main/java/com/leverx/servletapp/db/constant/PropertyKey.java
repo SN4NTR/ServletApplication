@@ -1,6 +1,6 @@
 package com.leverx.servletapp.db.constant;
 
-public class PropertyName {
+public class PropertyKey {
 
     public static final String FILE_NAME = "database.properties";
     public static final String DRIVER = "driver";
