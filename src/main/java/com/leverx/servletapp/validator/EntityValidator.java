@@ -3,8 +3,6 @@ package com.leverx.servletapp.validator;
 import org.slf4j.Logger;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
@@ -15,11 +13,11 @@ public class EntityValidator {
     private static final Logger LOGGER = getLogger(EntityValidator.class.getSimpleName());
 
     public static <T> boolean isEntityValid(T t) {
-        ValidatorFactory validatorFactory = buildDefaultValidatorFactory();
-        Validator validator = validatorFactory.getValidator();
+        var validatorFactory = buildDefaultValidatorFactory();
+        var validator = validatorFactory.getValidator();
 
-        Set<ConstraintViolation<T>> violations = validator.validate(t);
-        int violationsSize = violations.size();
+        var violations = validator.validate(t);
+        var violationsSize = violations.size();
 
         if (violationsSize == 0) {
             return true;
