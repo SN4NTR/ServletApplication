@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface CatService {
 
-    void save(CatDto cat);
+    void save(CatDto catDto);
 
     Cat findById(int id);
 
