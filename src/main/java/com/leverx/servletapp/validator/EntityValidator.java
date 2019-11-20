@@ -30,8 +30,8 @@ public class EntityValidator {
     }
 
     private static <T> void logErrors(Set<ConstraintViolation<T>> violations) {
-        for (ConstraintViolation<T> violation : violations) {
-            LOGGER.error(violation.getMessage());
-        }
+        violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .forEach(LOGGER::error);
     }
 }
