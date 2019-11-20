@@ -14,13 +14,13 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
 
-    private static final int FIRST_NAME_LENGTH_MIN = 1;
+    private static final int FIRST_NAME_LENGTH_MIN = 5;
     private static final int FIRST_NAME_LENGTH_MAX = 60;
 
     @Override
     public void save(UserDto userDto) {
-        var user = userDtoToUser(userDto);
-        if (isEntityValid(user)) {
+        if (isEntityValid(userDto)) {
+            var user = userDtoToUser(userDto);
             userRepository.save(user);
         } else {
             String message = String.format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
