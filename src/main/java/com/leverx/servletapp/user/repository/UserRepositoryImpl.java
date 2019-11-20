@@ -1,6 +1,9 @@
 package com.leverx.servletapp.user.repository;
 
+import com.leverx.servletapp.db.HibernateConfig;
 import com.leverx.servletapp.user.entity.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.leverx.servletapp.db.ConnectionPool.getInstance;
+import static com.leverx.servletapp.db.HibernateConfig.getSessionFactory;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.DELETE;
-import static com.leverx.servletapp.user.repository.constant.SQLQuery.INSERT;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_ALL;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_ID;
 import static com.leverx.servletapp.user.repository.constant.SQLQuery.SELECT_BY_NAME;
@@ -32,22 +35,10 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
-        var connectionPool = getInstance();
-        var connection = connectionPool.getConnection();
-
-        try (var preparedStatement = connection.prepareStatement(INSERT)) {
-
-            var firstName = user.getFirstName();
-            preparedStatement.setString(FIRST_NAME_INDEX, firstName);
-            preparedStatement.executeUpdate();
-
-            LOGGER.info("User has been saved");
-        } catch (SQLException ex) {
-            LOGGER.error("SQL State: {}\n{}", ex.getSQLState(), ex.getMessage());
-            throw new InternalServerErrorException(ex);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
+        SessionFactory sessionFactory = getSessionFactory();
+        Session session = sessionFactory.openSession();
+        session.save(user);
+        session.close();
     }
 
     @Override

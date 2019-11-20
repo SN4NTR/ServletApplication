@@ -26,12 +26,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class User {
 
     @Id
-    @Column
+    @Column(name = "id")
     @NonNull
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
-    @Column
+    @Column(name = "first_name")
     @NonNull
     private String firstName;
 
