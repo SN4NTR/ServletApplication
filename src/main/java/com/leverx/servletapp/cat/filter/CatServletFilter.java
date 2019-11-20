@@ -1,4 +1,4 @@
-package com.leverx.servletapp.user.filter;
+package com.leverx.servletapp.cat.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,18 +9,19 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
 import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-public class UserServletFilter implements Filter {
+public class CatServletFilter implements Filter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServletFilter.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CatServletFilter.class.getSimpleName());
 
     @Override
     public void init(FilterConfig filterConfig) {
-        LOGGER.info("UserServletFilter initialized.");
+        LOGGER.info("CatServletFilter initialized.");
     }
 
     @Override
@@ -33,6 +34,6 @@ public class UserServletFilter implements Filter {
 
     @Override
     public void destroy() {
-        LOGGER.info("UserServletFilter destroyed.");
+        LOGGER.info("CatServletFilter destroyed.");
     }
 }
