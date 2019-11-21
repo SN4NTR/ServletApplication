@@ -40,6 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<User> findByName(String name) {
         LOGGER.info("Getting user by firstName = {}", name);
 
@@ -55,6 +56,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<User> findAll() {
         LOGGER.info("Getting all users");
 

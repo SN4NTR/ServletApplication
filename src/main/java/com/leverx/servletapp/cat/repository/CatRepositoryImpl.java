@@ -46,6 +46,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<Cat> findAll() {
         LOGGER.info("Getting all users");
 
