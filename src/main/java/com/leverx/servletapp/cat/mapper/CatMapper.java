@@ -33,9 +33,11 @@ public class CatMapper {
     }
 
     public static Cat catDtoToCat(CatDto catDto) {
-        var name = catDto.getName();
         Cat cat = new Cat();
+        var name = catDto.getName();
         cat.setName(name);
+        var dateOfBirth = catDto.getDateOfBirth();
+        cat.setDateOfBirth(dateOfBirth);
         return cat;
     }
 }
