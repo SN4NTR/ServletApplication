@@ -9,6 +9,7 @@ import com.leverx.servletapp.user.entity.User;
 
 import java.util.Collection;
 
+import static com.leverx.servletapp.cat.mapper.CatMapper.catDtoToCat;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 
 public class CatServiceImpl implements CatService {
@@ -21,7 +22,7 @@ public class CatServiceImpl implements CatService {
     @Override
     public void save(CatDto catDto) {
         if (isEntityValid(catDto)) {
-            var cat = CatMapper.catDtoToCat(catDto);
+            var cat = catDtoToCat(catDto);
             catRepository.save(cat);
         } else {
             String message = String.format(
@@ -44,6 +45,6 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public Collection<Cat> findAll() {
-        return null;
+        return catRepository.findAll();
     }
 }
