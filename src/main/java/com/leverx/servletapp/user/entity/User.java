@@ -1,24 +1,21 @@
 package com.leverx.servletapp.user.entity;
 
-import com.leverx.servletapp.cat.entity.Cat;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
 
-import static javax.persistence.CascadeType.REMOVE;
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -35,8 +32,8 @@ public class User {
     @NonNull
     private String firstName;
 
-    @OneToMany(fetch = LAZY,
-            cascade = REMOVE,
-            mappedBy = "owner")
-    private List<Cat> cats;
+//    @OneToMany(fetch = EAGER,
+//            cascade = REMOVE,
+//            mappedBy = "owner")
+//    private List<Cat> cats;
 }
