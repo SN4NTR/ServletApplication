@@ -1,15 +1,11 @@
 package com.leverx.servletapp.user.repository;
 
 import com.leverx.servletapp.user.entity.User;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.List;
 
 import static com.leverx.servletapp.db.HibernateConfig.getSessionFactory;
 
@@ -23,8 +19,8 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        var session = sessionFactory.openSession();
+        var transaction = session.beginTransaction();
         session.save(user);
         transaction.commit();
         session.close();
@@ -36,8 +32,8 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(int id) {
         LOGGER.info("Getting user by id = {}", id);
 
-        Session session = sessionFactory.openSession();
-        User user = session.get(User.class, id);
+        var session = sessionFactory.openSession();
+        var user = session.get(User.class, id);
         session.close();
 
         return user;
@@ -47,10 +43,10 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findByName(String name) {
         LOGGER.info("Getting user by firstName = {}", name);
 
-        Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from User where firstName=:firstName");
+        var session = sessionFactory.openSession();
+        var query = session.createQuery("from User where firstName=:firstName");
         query.setParameter("firstName", name);
-        List users = query.list();
+        var users = query.list();
         session.close();
 
         LOGGER.info("Users are retrieved");
@@ -62,9 +58,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findAll() {
         LOGGER.info("Getting all users");
 
-        Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from User");
-        List users = query.list();
+        var session = sessionFactory.openSession();
+        var query = session.createQuery("from User");
+        var users = query.list();
         session.close();
 
         return users;
@@ -75,8 +71,8 @@ public class UserRepositoryImpl implements UserRepository {
         var id = user.getId();
         LOGGER.info("Deleting user with id = {}", id);
 
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        var session = sessionFactory.openSession();
+        var transaction = session.beginTransaction();
         session.delete(user);
         transaction.commit();
         session.close();
@@ -86,8 +82,8 @@ public class UserRepositoryImpl implements UserRepository {
     public void update(User user) {
         LOGGER.info("Updating user with id = {}", user.getId());
 
-        Session session = getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+        var session = getSessionFactory().openSession();
+        var transaction = session.beginTransaction();
         session.update(user);
         transaction.commit();
         session.close();
