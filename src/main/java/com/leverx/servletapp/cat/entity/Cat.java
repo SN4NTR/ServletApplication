@@ -2,8 +2,9 @@ package com.leverx.servletapp.cat.entity;
 
 import com.leverx.servletapp.user.entity.User;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,12 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.sql.Date;
 
-import static javax.persistence.FetchType.LAZY;
+import java.util.Date;
+
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "cats")
 @NoArgsConstructor
@@ -25,17 +28,17 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class Cat {
 
     @Id
-    @Column
+    @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;
 }
