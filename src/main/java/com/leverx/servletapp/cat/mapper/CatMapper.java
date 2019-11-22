@@ -24,7 +24,7 @@ public class CatMapper {
         return OBJECT_MAPPER.readValue(jsonBody, CatDto.class);
     }
 
-    private static String catToJson(Cat cat) {
+    public static String catToJson(Cat cat) {
         try {
             return OBJECT_MAPPER.writeValueAsString(cat);
         } catch (JsonProcessingException e) {
