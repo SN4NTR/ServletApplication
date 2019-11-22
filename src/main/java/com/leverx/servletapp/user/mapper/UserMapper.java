@@ -1,11 +1,13 @@
 package com.leverx.servletapp.user.mapper;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.io.BufferedReader;
 import java.util.Collection;
 
@@ -14,19 +16,23 @@ import static java.util.stream.Collectors.joining;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserMapper {
 
-    private final static Gson GSON = new Gson();
+    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static String readJsonBody(BufferedReader reader) {
         return reader.lines()
                 .collect(joining());
     }
 
-    public static UserDto jsonToUserDto(String jsonBody) {
-        return GSON.fromJson(jsonBody, UserDto.class);
+    public static UserDto jsonToUserDto(String jsonBody) throws JsonProcessingException {
+        return OBJECT_MAPPER.readValue(jsonBody, UserDto.class);
     }
 
     public static String userToJson(User user) {
-        return GSON.toJson(user);
+        try {
+            return OBJECT_MAPPER.writeValueAsString(user);
+        } catch (JsonProcessingException e) {
+            throw new InternalServerErrorException(e);
+        }
     }
 
     public static String collectionToJson(Collection<User> users) {
