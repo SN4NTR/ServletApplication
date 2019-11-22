@@ -25,6 +25,7 @@
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <hibernate.validator.version>6.1.0.Final</hibernate.validator.version>
         <hibernate.version>5.4.9.Final</hibernate.version>
+        <jackson.version>2.10.1</jackson.version>
     </properties>
 
     <dependencies>
@@ -45,11 +46,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Google Json -->
+        <!-- Jackson -->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Database -->
