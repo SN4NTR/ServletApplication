@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
 
-    private final UserService userService = new UserServiceImpl();
+    private UserService userService = new UserServiceImpl();
 
     private static final String PATH = "users";
 
