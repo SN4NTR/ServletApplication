@@ -2,7 +2,6 @@ package com.leverx.servletapp.cat.service;
 
 import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.CatDto;
-import com.leverx.servletapp.cat.mapper.CatMapper;
 import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.user.entity.User;
@@ -35,7 +34,7 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public Cat findById(int id) {
-        return null;
+        return catRepository.findById(id);
     }
 
     @Override
