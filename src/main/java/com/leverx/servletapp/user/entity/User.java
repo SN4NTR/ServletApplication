@@ -1,5 +1,9 @@
 package com.leverx.servletapp.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.leverx.servletapp.cat.entity.Cat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -10,8 +14,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Getter
@@ -19,21 +28,23 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @RequiredArgsConstructor
 public class User {
 
     @Id
-    @Column(name = "id")
     @NonNull
+    @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
-    @Column(name = "first_name")
     @NonNull
+    @Column(name = "first_name")
     private String firstName;
 
-//    @OneToMany(fetch = EAGER,
-//            cascade = REMOVE,
-//            mappedBy = "owner")
-//    private List<Cat> cats;
+    @JsonInclude(NON_NULL)
+    @OneToMany(fetch = EAGER,
+            cascade = REMOVE,
+            mappedBy = "owner")
+    private List<Cat> cats;
 }
