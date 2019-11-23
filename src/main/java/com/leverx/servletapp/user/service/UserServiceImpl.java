@@ -1,12 +1,16 @@
 package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.cat.entity.Cat;
+import com.leverx.servletapp.cat.entity.CatDtoId;
+import com.leverx.servletapp.cat.repository.CatRepository;
+import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
 import java.util.Collection;
+import java.util.List;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
@@ -14,6 +18,7 @@ import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
+    private CatRepository catRepository = new CatRepositoryImpl();
 
     private static final int FIRST_NAME_LENGTH_MIN = 5;
     private static final int FIRST_NAME_LENGTH_MAX = 60;
@@ -55,6 +60,17 @@ public class UserServiceImpl implements UserService {
         var user = new User();
         user.setId(id);
         userRepository.delete(user);
+    }
+
+    @Override
+    public void assignCat(int userId, CatDtoId catDtoId) {
+        var user = userRepository.findById(userId);
+        var catId = catDtoId.getId();
+        var cat = catRepository.findById(catId);
+        cat.setOwner(user);
+        var cats = List.of(cat);
+        user.setCats(cats);
+        userRepository.update(user);
     }
 
     @Override
