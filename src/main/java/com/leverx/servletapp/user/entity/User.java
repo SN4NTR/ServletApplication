@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -44,7 +44,7 @@ public class User {
 
     @JsonInclude(NON_NULL)
     @OneToMany(fetch = EAGER,
-            cascade = REMOVE,
+            cascade = ALL,
             mappedBy = "owner")
     private List<Cat> cats;
 }
