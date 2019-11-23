@@ -4,7 +4,6 @@ import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.CatDto;
 import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
-import com.leverx.servletapp.user.entity.User;
 
 import java.util.Collection;
 
@@ -35,11 +34,6 @@ public class CatServiceImpl implements CatService {
     @Override
     public Cat findById(int id) {
         return catRepository.findById(id);
-    }
-
-    @Override
-    public Cat findByOwner(User owner) {
-        return null;
     }
 
     @Override
