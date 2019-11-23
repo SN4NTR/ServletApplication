@@ -11,6 +11,7 @@ import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
@@ -59,9 +60,7 @@ public class UserServiceImpl implements UserService {
     public void delete(int id) {
         var user = userRepository.findById(id);
         var cats = user.getCats();
-        for (Cat cat : cats) {
-            cat.setOwner(null);
-        }
+        cats.forEach(cat -> cat.setOwner(null));
         userRepository.delete(user);
     }
 
