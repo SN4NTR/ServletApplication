@@ -1,7 +1,6 @@
 package com.leverx.servletapp.cat.repository;
 
 import com.leverx.servletapp.cat.entity.Cat;
-import com.leverx.servletapp.user.entity.User;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +37,6 @@ public class CatRepositoryImpl implements CatRepository {
         session.close();
 
         return cat;
-    }
-
-    @Override
-    public Cat findByOwner(User owner) {
-        return null;
     }
 
     @Override
