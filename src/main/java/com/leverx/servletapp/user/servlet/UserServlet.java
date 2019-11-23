@@ -1,5 +1,6 @@
 package com.leverx.servletapp.user.servlet;
 
+import com.leverx.servletapp.cat.entity.CatDtoId;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
@@ -17,6 +18,7 @@ import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
+import static java.lang.Integer.parseInt;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -80,21 +82,33 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var idOpt = getIdFromUrl(urlToString);
-        if (idOpt.isPresent()) {
-            var id = idOpt.get();
+        var value = getLastPartOFUrl(urlToString);
+        var idToString = getPenultimatePartOfUrl(urlToString);
+
+        if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
             var reader = req.getReader();
             var jsonBody = readJsonBody(reader);
-            var userDto = jsonToEntity(jsonBody, UserDto.class);
-            userService.update(id, userDto);
+            var catDtoId = jsonToEntity(jsonBody, CatDtoId.class);
+            var id = parseInt(idToString);
+            userService.assignCat(id, catDtoId);
             resp.setStatus(SC_OK);
         } else {
-            resp.sendError(SC_BAD_REQUEST, "User can't be found");
+            var idOpt = getIdFromUrl(urlToString);
+            if (idOpt.isPresent()) {
+                var id = idOpt.get();
+                var reader = req.getReader();
+                var jsonBody = readJsonBody(reader);
+                var userDto = jsonToEntity(jsonBody, UserDto.class);
+                userService.update(id, userDto);
+                resp.setStatus(SC_OK);
+            } else {
+                resp.sendError(SC_BAD_REQUEST, "User can't be found");
+            }
         }
     }
 
     private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
-        var id = Integer.parseInt(idToString);
+        var id = parseInt(idToString);
         var cats = userService.findCatsByUserId(id);
         if (cats != null) {
             var result = collectionToJson(cats);
@@ -117,7 +131,7 @@ public class UserServlet extends HttpServlet {
     }
 
     private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) {
-        var id = Integer.parseInt(value);
+        var id = parseInt(value);
         var user = userService.findById(id);
         if (user != null) {
             var result = entityToJson(user);
