@@ -1,5 +1,6 @@
 package com.leverx.servletapp.user.service;
 
+import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
@@ -41,6 +42,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Collection<Cat> findCatsByUserId(int id) {
+        var user = userRepository.findById(id);
+        return user != null ? user.getCats() : null;
     }
 
     @Override

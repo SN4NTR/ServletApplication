@@ -1,5 +1,6 @@
 package com.leverx.servletapp.user.service;
 
+import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 
@@ -14,6 +15,8 @@ public interface UserService {
     Collection<User> findByName(String name);
 
     Collection<User> findAll();
+
+    Collection<Cat> findCatsByUserId(int id);
 
     void delete(int id);
 
