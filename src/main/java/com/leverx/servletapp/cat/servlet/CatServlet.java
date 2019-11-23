@@ -1,5 +1,6 @@
 package com.leverx.servletapp.cat.servlet;
 
+import com.leverx.servletapp.cat.entity.CatDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 
@@ -9,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.cat.mapper.CatMapper.catToJson;
-import static com.leverx.servletapp.cat.mapper.CatMapper.collectionToJson;
-import static com.leverx.servletapp.cat.mapper.CatMapper.jsonToCatDto;
-import static com.leverx.servletapp.cat.mapper.CatMapper.readJsonBody;
-import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
+import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
+import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
+import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -32,7 +33,7 @@ public class CatServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getValueFromUrl(urlToString);
+        var value = getLastPartOFUrl(urlToString);
 
         if (PATH.equals(value)) {
             printAllCats(printWriter, resp);
@@ -46,7 +47,7 @@ public class CatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var reader = req.getReader();
         var jsonBody = readJsonBody(reader);
-        var catDto = jsonToCatDto(jsonBody);
+        var catDto = jsonToEntity(jsonBody, CatDto.class);
         catService.save(catDto);
         resp.setStatus(SC_CREATED);
     }
@@ -62,7 +63,7 @@ public class CatServlet extends HttpServlet {
         var id = Integer.parseInt(value);
         var cat = catService.findById(id);
         if (cat != null) {
-            var result = catToJson(cat);
+            var result = entityToJson(cat);
             printWriter.print(result);
             resp.setStatus(SC_OK);
         } else {
