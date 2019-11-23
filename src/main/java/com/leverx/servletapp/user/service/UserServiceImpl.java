@@ -57,8 +57,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) {
-        var user = new User();
-        user.setId(id);
+        var user = userRepository.findById(id);
+        var cats = user.getCats();
+        for (Cat cat : cats) {
+            cat.setOwner(null);
+        }
         userRepository.delete(user);
     }
 
@@ -80,7 +83,7 @@ public class UserServiceImpl implements UserService {
         if (isEntityValid(user)) {
             user.setId(id);
             userRepository.update(user);
-        } else  {
+        } else {
             String message = String.format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             throw new IllegalArgumentException(message);
         }
