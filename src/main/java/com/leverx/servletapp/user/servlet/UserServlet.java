@@ -1,5 +1,6 @@
 package com.leverx.servletapp.user.servlet;
 
+import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
@@ -9,12 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.user.mapper.UserMapper.collectionToJson;
-import static com.leverx.servletapp.user.mapper.UserMapper.jsonToUserDto;
-import static com.leverx.servletapp.user.mapper.UserMapper.readJsonBody;
-import static com.leverx.servletapp.user.mapper.UserMapper.userToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
+import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
-import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
+import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
+import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -26,7 +28,8 @@ public class UserServlet extends HttpServlet {
 
     private UserService userService = new UserServiceImpl();
 
-    private static final String PATH = "users";
+    private static final String USERS_ENDPOINT = "users";
+    private static final String CATS_ENDPOINT = "cats";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -34,10 +37,13 @@ public class UserServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getValueFromUrl(urlToString);
+        var value = getLastPartOFUrl(urlToString);
+        var idToString = getPenultimatePartOfUrl(urlToString);
 
-        if (PATH.equals(value)) {
+        if (USERS_ENDPOINT.equals(value)) {
             printAllUsers(printWriter, resp);
+        } else if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
+            printCatsByOwner(printWriter, idToString, resp);
         } else if (isParsable(value)) {
             printUserById(printWriter, value, resp);
         } else {
@@ -50,7 +56,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var reader = req.getReader();
         var jsonBody = readJsonBody(reader);
-        var userDto = jsonToUserDto(jsonBody);
+        var userDto = jsonToEntity(jsonBody, UserDto.class);
         userService.save(userDto);
         resp.setStatus(SC_CREATED);
     }
@@ -79,11 +85,23 @@ public class UserServlet extends HttpServlet {
             var id = idOpt.get();
             var reader = req.getReader();
             var jsonBody = readJsonBody(reader);
-            var userDto = jsonToUserDto(jsonBody);
+            var userDto = jsonToEntity(jsonBody, UserDto.class);
             userService.update(id, userDto);
             resp.setStatus(SC_OK);
         } else {
             resp.sendError(SC_BAD_REQUEST, "User can't be found");
+        }
+    }
+
+    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
+        var id = Integer.parseInt(idToString);
+        var cats = userService.findCatsByUserId(id);
+        if (cats != null) {
+            var result = collectionToJson(cats);
+            printWriter.print(result);
+            resp.setStatus(SC_OK);
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
         }
     }
 
@@ -102,7 +120,7 @@ public class UserServlet extends HttpServlet {
         var id = Integer.parseInt(value);
         var user = userService.findById(id);
         if (user != null) {
-            var result = userToJson(user);
+            var result = entityToJson(user);
             printWriter.print(result);
             resp.setStatus(SC_OK);
         } else {
