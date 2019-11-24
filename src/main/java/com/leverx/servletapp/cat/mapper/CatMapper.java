@@ -6,11 +6,13 @@ import com.leverx.servletapp.cat.entity.CatDto;
 public class CatMapper {
 
     public static Cat catDtoToCat(CatDto catDto) {
-        var cat = new Cat();
         var name = catDto.getName();
-        cat.setName(name);
         var dateOfBirth = catDto.getDateOfBirth();
+
+        var cat = new Cat();
+        cat.setName(name);
         cat.setDateOfBirth(dateOfBirth);
+
         return cat;
     }
 }
