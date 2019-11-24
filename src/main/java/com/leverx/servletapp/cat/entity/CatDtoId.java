@@ -1,8 +1,8 @@
 package com.leverx.servletapp.cat.entity;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class CatDtoId {
 
     private int id;
