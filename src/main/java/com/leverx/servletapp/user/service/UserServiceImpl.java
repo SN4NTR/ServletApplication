@@ -11,10 +11,10 @@ import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
+import static java.lang.String.format;
 
 public class UserServiceImpl implements UserService {
 
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
             var user = userDtoToUser(userDto);
             userRepository.save(user);
         } else {
-            String message = String.format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            String message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             throw new IllegalArgumentException(message);
         }
     }
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
             user.setId(id);
             userRepository.update(user);
         } else {
-            String message = String.format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            String message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             throw new IllegalArgumentException(message);
         }
     }
