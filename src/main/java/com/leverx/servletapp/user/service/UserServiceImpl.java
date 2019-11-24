@@ -77,9 +77,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(int id, UserDto userDto) {
-        var user = userDtoToUser(userDto);
-
-        if (isEntityValid(user)) {
+        if (isEntityValid(userDto)) {
+            var user = userDtoToUser(userDto);
             user.setId(id);
             userRepository.update(user);
         } else {
