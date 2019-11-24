@@ -85,26 +85,33 @@ public class UserServlet extends HttpServlet {
         var value = getLastPartOFUrl(urlToString);
         var idToString = getPenultimatePartOfUrl(urlToString);
 
+        var reader = req.getReader();
+        var jsonBody = readJsonBody(reader);
+
         if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
-            var reader = req.getReader();
-            var jsonBody = readJsonBody(reader);
-            var catDtoId = jsonToEntity(jsonBody, CatDtoId.class);
-            var id = parseInt(idToString);
-            userService.assignCat(id, catDtoId);
+            assignCatToUser(resp, idToString, jsonBody);
+        } else {
+            updateUser(resp, urlToString, jsonBody);
+        }
+    }
+
+    private void updateUser(HttpServletResponse resp, String urlToString, String jsonBody) throws IOException {
+        var idOpt = getIdFromUrl(urlToString);
+        if (idOpt.isPresent()) {
+            var id = idOpt.get();
+            var userDto = jsonToEntity(jsonBody, UserDto.class);
+            userService.update(id, userDto);
             resp.setStatus(SC_OK);
         } else {
-            var idOpt = getIdFromUrl(urlToString);
-            if (idOpt.isPresent()) {
-                var id = idOpt.get();
-                var reader = req.getReader();
-                var jsonBody = readJsonBody(reader);
-                var userDto = jsonToEntity(jsonBody, UserDto.class);
-                userService.update(id, userDto);
-                resp.setStatus(SC_OK);
-            } else {
-                resp.sendError(SC_BAD_REQUEST, "User can't be found");
-            }
+            resp.sendError(SC_BAD_REQUEST, "User can't be found");
         }
+    }
+
+    private void assignCatToUser(HttpServletResponse resp, String idToString, String jsonBody) {
+        var catDtoId = jsonToEntity(jsonBody, CatDtoId.class);
+        var id = parseInt(idToString);
+        userService.assignCat(id, catDtoId);
+        resp.setStatus(SC_OK);
     }
 
     private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
