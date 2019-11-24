@@ -59,8 +59,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(int id) {
         var user = userRepository.findById(id);
-        var cats = user.getCats();
-        cats.forEach(cat -> cat.setOwner(null));
         userRepository.delete(user);
     }
 
