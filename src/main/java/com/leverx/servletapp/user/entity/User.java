@@ -43,8 +43,6 @@ public class User {
     private String firstName;
 
     @JsonInclude(NON_NULL)
-    @OneToMany(fetch = EAGER,
-            cascade = ALL,
-            mappedBy = "owner")
+    @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "owner")
     private List<Cat> cats;
 }
