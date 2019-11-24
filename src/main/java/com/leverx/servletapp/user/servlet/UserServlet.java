@@ -1,7 +1,9 @@
 package com.leverx.servletapp.user.servlet;
 
 import com.leverx.servletapp.cat.entity.CatDtoId;
+import com.leverx.servletapp.cat.mapper.CatMapper;
 import com.leverx.servletapp.user.entity.UserDto;
+import com.leverx.servletapp.user.mapper.UserMapper;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
@@ -11,10 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.leverx.servletapp.cat.mapper.CatMapper.catsWithoutOwners;
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
+import static com.leverx.servletapp.user.mapper.UserMapper.usersWithoutCats;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
@@ -118,7 +122,8 @@ public class UserServlet extends HttpServlet {
         var id = parseInt(idToString);
         var cats = userService.findCatsByUserId(id);
         if (cats != null) {
-            var result = collectionToJson(cats);
+            var catsWithoutOwners = catsWithoutOwners(cats);
+            var result = collectionToJson(catsWithoutOwners);
             printWriter.print(result);
             resp.setStatus(SC_OK);
         } else {
@@ -151,7 +156,8 @@ public class UserServlet extends HttpServlet {
 
     private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) {
         var users = userService.findAll();
-        var result = collectionToJson(users);
+        var usersWithoutCats = usersWithoutCats(users);
+        var result = collectionToJson(usersWithoutCats);
         printWriter.print(result);
         resp.setStatus(SC_OK);
     }

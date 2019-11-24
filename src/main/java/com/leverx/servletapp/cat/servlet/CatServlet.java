@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.leverx.servletapp.cat.mapper.CatMapper.catsWithoutOwners;
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
@@ -54,7 +55,8 @@ public class CatServlet extends HttpServlet {
 
     private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) {
         var cats = catService.findAll();
-        var result = collectionToJson(cats);
+        var catsWithoutOwners = catsWithoutOwners(cats);
+        var result = collectionToJson(catsWithoutOwners);
         printWriter.print(result);
         resp.setStatus(SC_OK);
     }
