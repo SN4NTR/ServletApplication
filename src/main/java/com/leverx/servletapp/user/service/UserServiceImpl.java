@@ -11,7 +11,6 @@ import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class UserServiceImpl implements UserService {
             var user = userDtoToUser(userDto);
             userRepository.save(user);
         } else {
-            String message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             LOGGER.error(message);
             throw new IllegalArgumentException(message);
         }
@@ -73,16 +72,22 @@ public class UserServiceImpl implements UserService {
         var user = userRepository.findById(userId);
         var catId = catDto.getId();
         var cat = catRepository.findById(catId);
-        if (cat == null) {
-            String message = String.format("Cat with id = %s not found", catId);
-            LOGGER.error(message);
-            throw new InternalServerErrorException(message);
-        }
 
-        cat.setOwner(user);
-        var cats = List.of(cat);
-        user.setCats(cats);
-        userRepository.update(user);
+        if (cat == null) {
+            var message = format("Cat with id = %s not found", catId);
+            LOGGER.error(message);
+        } else {
+            var owner = cat.getOwner();
+            if (owner != null) {
+                var message = format("Cat with id = %s has owner", catId);
+                LOGGER.error(message);
+            } else {
+                cat.setOwner(user);
+                var cats = List.of(cat);
+                user.setCats(cats);
+                userRepository.update(user);
+            }
+        }
     }
 
     @Override
@@ -92,7 +97,7 @@ public class UserServiceImpl implements UserService {
             user.setId(id);
             userRepository.update(user);
         } else {
-            String message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
             LOGGER.error(message);
             throw new IllegalArgumentException(message);
         }
