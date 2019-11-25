@@ -1,14 +1,17 @@
 package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.cat.entity.Cat;
-import com.leverx.servletapp.cat.entity.CatDtoId;
+import com.leverx.servletapp.cat.entity.CatDto;
 import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,6 +20,8 @@ import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
 
 public class UserServiceImpl implements UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getSimpleName());
 
     private UserRepository userRepository = new UserRepositoryImpl();
     private CatRepository catRepository = new CatRepositoryImpl();
@@ -31,6 +36,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else {
             String message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            LOGGER.error(message);
             throw new IllegalArgumentException(message);
         }
     }
@@ -63,10 +69,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void assignCat(int userId, CatDtoId catDtoId) {
+    public void assignCat(int userId, CatDto catDto) {
         var user = userRepository.findById(userId);
-        var catId = catDtoId.getId();
+        var catId = catDto.getId();
         var cat = catRepository.findById(catId);
+        if (cat == null) {
+            String message = String.format("Cat with id = %s not found", catId);
+            LOGGER.error(message);
+            throw new InternalServerErrorException(message);
+        }
+
         cat.setOwner(user);
         var cats = List.of(cat);
         user.setCats(cats);
@@ -81,6 +93,7 @@ public class UserServiceImpl implements UserService {
             userRepository.update(user);
         } else {
             String message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            LOGGER.error(message);
             throw new IllegalArgumentException(message);
         }
     }
