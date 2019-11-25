@@ -1,7 +1,7 @@
 package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.cat.entity.Cat;
-import com.leverx.servletapp.cat.entity.CatDtoId;
+import com.leverx.servletapp.cat.entity.CatDto;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 
@@ -21,7 +21,7 @@ public interface UserService {
 
     void delete(int id);
 
-    void assignCat(int userId, CatDtoId catDtoId);
+    void assignCat(int userId, CatDto catDto);
 
     void update(int id, UserDto user);
 }
