@@ -1,9 +1,7 @@
 package com.leverx.servletapp.user.servlet;
 
-import com.leverx.servletapp.cat.entity.CatDtoId;
-import com.leverx.servletapp.cat.mapper.CatMapper;
+import com.leverx.servletapp.cat.entity.CatDto;
 import com.leverx.servletapp.user.entity.UserDto;
-import com.leverx.servletapp.user.mapper.UserMapper;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
@@ -112,9 +110,9 @@ public class UserServlet extends HttpServlet {
     }
 
     private void assignCatToUser(HttpServletResponse resp, String idToString, String jsonBody) {
-        var catDtoId = jsonToEntity(jsonBody, CatDtoId.class);
+        var catDto = jsonToEntity(jsonBody, CatDto.class);
         var id = parseInt(idToString);
-        userService.assignCat(id, catDtoId);
+        userService.assignCat(id, catDto);
         resp.setStatus(SC_OK);
     }
 
