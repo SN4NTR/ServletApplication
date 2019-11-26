@@ -11,12 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.cat.mapper.CatMapper.catsWithoutOwners;
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
-import static com.leverx.servletapp.user.mapper.UserMapper.usersWithoutCats;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
@@ -120,8 +118,7 @@ public class UserServlet extends HttpServlet {
         var id = parseInt(idToString);
         var cats = userService.findCatsByUserId(id);
         if (cats != null) {
-            var catsWithoutOwners = catsWithoutOwners(cats);
-            var result = collectionToJson(catsWithoutOwners);
+            var result = collectionToJson(cats);
             printWriter.print(result);
             resp.setStatus(SC_OK);
         } else {
@@ -154,8 +151,7 @@ public class UserServlet extends HttpServlet {
 
     private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) {
         var users = userService.findAll();
-        var usersWithoutCats = usersWithoutCats(users);
-        var result = collectionToJson(usersWithoutCats);
+        var result = collectionToJson(users);
         printWriter.print(result);
         resp.setStatus(SC_OK);
     }
