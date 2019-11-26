@@ -10,6 +10,7 @@ import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +33,18 @@ public class UserServiceImpl implements UserService {
     public void save(UserDto userDto) {
         if (isEntityValid(userDto)) {
             var user = userDtoToUser(userDto);
+
+            var catIdList = userDto.getCatsIdList();
+            var catList = new ArrayList<Cat>();
+            for (Integer id : catIdList) {
+                var cat = catRepository.findById(id);
+
+                if (cat != null) {
+                    catList.add(cat);
+                    user.setCats(catList);
+                    cat.setOwner(user);
+                }
+            }
             userRepository.save(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
