@@ -92,22 +92,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignCat(int userId, CatDto catDto) {
         var user = userRepository.findById(userId);
-        var catId = catDto.getId();
-        var cat = catRepository.findById(catId);
 
-        if (cat == null) {
-            var message = format("Cat with id = %s not found", catId);
-            LOGGER.error(message);
-        } else {
-            var owner = cat.getOwner();
-            if (owner != null) {
-                var message = format("Cat with id = %s has owner", catId);
+        var catIdList = catDto.getIdList();
+        for (Integer id : catIdList) {
+            var cat = catRepository.findById(id);
+
+            if (cat == null) {
+                var message = format("Cat with id = %s not found", id);
                 LOGGER.error(message);
+                throw new IllegalArgumentException(message);
             } else {
-                cat.setOwner(user);
-                var cats = List.of(cat);
-                user.setCats(cats);
-                userRepository.update(user);
+                var owner = cat.getOwner();
+                if (owner != null) {
+                    var message = format("Cat with id = %s already has an owner", id);
+                    LOGGER.error(message);
+                    throw new IllegalArgumentException(message);
+                } else {
+                    cat.setOwner(user);
+                    var cats = List.of(cat);
+                    user.setCats(cats);
+                    userRepository.update(user);
+                }
             }
         }
     }
