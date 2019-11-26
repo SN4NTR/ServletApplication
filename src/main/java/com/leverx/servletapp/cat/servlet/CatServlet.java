@@ -26,7 +26,7 @@ public class CatServlet extends HttpServlet {
 
     private CatService catService = new CatServiceImpl();
 
-    private static final String ENDPOINT = "cats";
+    private static final String CATS_ENDPOINT = "cats";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -36,7 +36,7 @@ public class CatServlet extends HttpServlet {
         var urlToString = url.toString();
         var value = getLastPartOFUrl(urlToString);
 
-        if (ENDPOINT.equals(value)) {
+        if (CATS_ENDPOINT.equals(value)) {
             printAllCats(printWriter, resp);
         } else if (isParsable(value)) {
             printCatById(printWriter, value, resp);
