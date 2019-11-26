@@ -25,7 +25,7 @@ public class CatRepositoryImpl implements CatRepository {
         transaction.commit();
         session.close();
 
-        LOGGER.info("Cat is saved");
+        LOGGER.info("Cat was saved");
     }
 
     @Override
