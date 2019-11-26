@@ -8,6 +8,8 @@ import com.leverx.servletapp.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -31,7 +33,7 @@ import static javax.persistence.TemporalType.DATE;
 @Entity
 @Table(name = "cats")
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Cat {
 
@@ -40,9 +42,11 @@ public class Cat {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
+    @NonNull
     @Column(name = "name")
     private String name;
 
+    @NonNull
     @Temporal(DATE)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
