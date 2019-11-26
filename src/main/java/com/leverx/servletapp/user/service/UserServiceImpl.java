@@ -17,6 +17,7 @@ import java.util.List;
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -34,23 +35,15 @@ public class UserServiceImpl implements UserService {
     public void save(UserDto userDto) {
         if (isEntityValid(userDto)) {
             var user = userDtoToUser(userDto);
+            user.setCats(new ArrayList<>());
 
-            var catIdList = userDto.getCatsIdList();
-            var catList = new ArrayList<Cat>();
-            for (Integer id : catIdList) {
-                var cat = catRepository.findById(id);
+            var catsIdList = userDto.getCatsIdList();
+            setCatList(user, catsIdList);
 
-                if (cat != null) {
-                    catList.add(cat);
-                    user.setCats(catList);
-                    cat.setOwner(user);
-                }
-            }
             userRepository.save(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
-            LOGGER.error(message);
-            throw new IllegalArgumentException(message);
+            throwException(message);
         }
     }
 
@@ -93,28 +86,10 @@ public class UserServiceImpl implements UserService {
     public void assignCat(int userId, CatDto catDto) {
         var user = userRepository.findById(userId);
 
-        var catIdList = catDto.getIdList();
-        for (Integer id : catIdList) {
-            var cat = catRepository.findById(id);
+        var catsIdList = catDto.getIdList();
+        setCatList(user, catsIdList);
 
-            if (cat == null) {
-                var message = format("Cat with id = %s not found", id);
-                LOGGER.error(message);
-                throw new IllegalArgumentException(message);
-            } else {
-                var owner = cat.getOwner();
-                if (owner != null) {
-                    var message = format("Cat with id = %s already has an owner", id);
-                    LOGGER.error(message);
-                    throw new IllegalArgumentException(message);
-                } else {
-                    cat.setOwner(user);
-                    var cats = List.of(cat);
-                    user.setCats(cats);
-                    userRepository.update(user);
-                }
-            }
-        }
+        userRepository.update(user);
     }
 
     @Override
@@ -125,8 +100,38 @@ public class UserServiceImpl implements UserService {
             userRepository.update(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
-            LOGGER.error(message);
-            throw new IllegalArgumentException(message);
+            throwException(message);
         }
+    }
+
+    private void setCatList(User user, List<Integer> catsIdList) {
+        var catList = user.getCats();
+
+        for (Integer id : catsIdList) {
+            var cat = catRepository.findById(id);
+
+            if (!isNull(cat)) {
+                if (!hasOwner(cat)) {
+                    catList.add(cat);
+                    user.setCats(catList);
+                    cat.setOwner(user);
+                } else {
+                    var message = format("Cat with id = %s already has an owner", id);
+                    throwException(message);
+                }
+            } else {
+                var message = format("Cat with id = %s doesn't exist", id);
+                throwException(message);
+            }
+        }
+    }
+
+    private void throwException(String message) {
+        LOGGER.error(message);
+        throw new IllegalArgumentException(message);
+    }
+
+    private boolean hasOwner(Cat cat) {
+        return cat.getOwner() != null;
     }
 }
