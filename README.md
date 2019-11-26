@@ -16,14 +16,14 @@
 mvn clean install
 ```
 
-* Deploy `war` file to Tomcat:
-
-1. Open IntelliJ IDEA -> Edit Configuration -> Add new configuration -> Tomcat.
-2. Select deployed `war` file.
-3. Select `URL`.
-
 * Start MySQL Database:
 
 ```
 docker-compose up
 ```
+
+* Deploy `war` file to Tomcat:
+
+1. Copy `war` file from `target` directory to Tomcat directory (e.g. `C:/Tomcat/webapps`).
+2. Start Tomcat server (`Tomcat/bin/startup.bat`).
+3. Type `http://localhost:8080/YOUR_WAR_FILE_NAME/users` in browser to see all users.
