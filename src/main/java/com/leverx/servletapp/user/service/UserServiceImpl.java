@@ -35,15 +35,16 @@ public class UserServiceImpl implements UserService {
     public void save(UserDto userDto) {
         if (isEntityValid(userDto)) {
             var user = userDtoToUser(userDto);
+            var catsIdList = userDto.getCatsIdList();
             user.setCats(new ArrayList<>());
 
-            var catsIdList = userDto.getCatsIdList();
             setCatList(user, catsIdList);
 
             userRepository.save(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
-            throwException(message);
+            LOGGER.error(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -85,53 +86,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignCat(int userId, CatDto catDto) {
         var user = userRepository.findById(userId);
-
         var catsIdList = catDto.getIdList();
         setCatList(user, catsIdList);
-
         userRepository.update(user);
     }
 
     @Override
     public void update(int id, UserDto userDto) {
         if (isEntityValid(userDto)) {
-            var user = userDtoToUser(userDto);
-            user.setId(id);
+            var user = userRepository.findById(id);
+            var firstName = userDto.getFirstName();
+            user.setFirstName(firstName);
+
+            var catsIdList = userDto.getCatsIdList();
+            setCatList(user, catsIdList);
+
             userRepository.update(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
-            throwException(message);
+            LOGGER.error(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
     private void setCatList(User user, List<Integer> catsIdList) {
-        var catList = user.getCats();
+        if (!isNull(catsIdList)) {
+            var catList = user.getCats();
 
-        for (Integer id : catsIdList) {
-            var cat = catRepository.findById(id);
+            var catsFromIdList = catsIdList.stream()
+                    .map(catRepository::findById)
+                    .filter(cat -> !isNull(cat))
+                    .filter(cat -> isNull(cat.getOwner()))
+                    .peek(cat -> cat.setOwner(user))
+                    .collect(toList());
 
-            if (!isNull(cat)) {
-                if (!hasOwner(cat)) {
-                    catList.add(cat);
-                    user.setCats(catList);
-                    cat.setOwner(user);
-                } else {
-                    var message = format("Cat with id = %s already has an owner", id);
-                    throwException(message);
-                }
-            } else {
-                var message = format("Cat with id = %s doesn't exist", id);
-                throwException(message);
-            }
+            catList.addAll(catsFromIdList);
         }
-    }
-
-    private void throwException(String message) {
-        LOGGER.error(message);
-        throw new IllegalArgumentException(message);
-    }
-
-    private boolean hasOwner(Cat cat) {
-        return cat.getOwner() != null;
     }
 }
