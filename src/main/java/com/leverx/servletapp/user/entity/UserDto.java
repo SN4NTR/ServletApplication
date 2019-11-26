@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 public class UserDto {
@@ -11,4 +12,6 @@ public class UserDto {
     @NotNull
     @Size(min = 5, max = 60)
     private String firstName;
+
+    private List<Integer> catsIdList;
 }
