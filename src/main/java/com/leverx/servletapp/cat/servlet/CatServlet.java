@@ -27,7 +27,6 @@ public class CatServlet extends HttpServlet {
 
     private static final String PATH = "cats";
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var printWriter = resp.getWriter();
