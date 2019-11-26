@@ -17,12 +17,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 import java.util.Date;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.TemporalType.DATE;
 
 @Getter
 @Setter
@@ -41,6 +43,7 @@ public class Cat {
     @Column(name = "name")
     private String name;
 
+    @Temporal(DATE)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
