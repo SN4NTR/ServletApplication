@@ -33,7 +33,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class User {
 
     @Id
-    @NonNull
     @Column(name = "id")
     @GeneratedValue(strategy = IDENTITY)
     private int id;
