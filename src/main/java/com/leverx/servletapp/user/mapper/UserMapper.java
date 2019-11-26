@@ -11,8 +11,6 @@ public final class UserMapper {
 
     public static User userDtoToUser(UserDto userDto) {
         var firstName = userDto.getFirstName();
-        var user = new User();
-        user.setFirstName(firstName);
-        return user;
+        return new User(firstName);
     }
 }
