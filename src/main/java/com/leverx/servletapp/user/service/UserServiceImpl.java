@@ -17,6 +17,7 @@ import java.util.List;
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServiceImpl implements UserService {
@@ -65,13 +66,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<User> findAll() {
-        return userRepository.findAll();
+        var users = userRepository.findAll();
+
+        return users.stream()
+                .peek(user -> user.setCats(null))
+                .collect(toList());
     }
 
     @Override
     public Collection<Cat> findCatsByUserId(int id) {
         var user = userRepository.findById(id);
-        return user != null ? user.getCats() : null;
+        var cats = user.getCats();
+
+        return cats.stream()
+                .peek(cat -> cat.setOwner(null))
+                .collect(toList());
     }
 
     @Override
