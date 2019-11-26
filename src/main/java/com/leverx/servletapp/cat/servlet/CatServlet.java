@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.cat.mapper.CatMapper.catsWithoutOwners;
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
+import static java.lang.Integer.parseInt;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -55,14 +55,13 @@ public class CatServlet extends HttpServlet {
 
     private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) {
         var cats = catService.findAll();
-        var catsWithoutOwners = catsWithoutOwners(cats);
-        var result = collectionToJson(catsWithoutOwners);
+        var result = collectionToJson(cats);
         printWriter.print(result);
         resp.setStatus(SC_OK);
     }
 
     private void printCatById(PrintWriter printWriter, String value, HttpServletResponse resp) {
-        var id = Integer.parseInt(value);
+        var id = parseInt(value);
         var cat = catService.findById(id);
         if (cat != null) {
             var result = entityToJson(cat);
