@@ -7,16 +7,11 @@ import lombok.NoArgsConstructor;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class CatMapper {
+public final class CatMapper {
 
     public static Cat catDtoToCat(CatDto catDto) {
         var name = catDto.getName();
         var dateOfBirth = catDto.getDateOfBirth();
-
-        var cat = new Cat();
-        cat.setName(name);
-        cat.setDateOfBirth(dateOfBirth);
-
-        return cat;
+        return new Cat(name, dateOfBirth);
     }
 }
