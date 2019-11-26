@@ -1,14 +1,15 @@
 package com.leverx.servletapp.listener;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class RequestListener implements ServletRequestListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestListener.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(RequestListener.class.getSimpleName());
 
     @Override
     public void requestInitialized(ServletRequestEvent sre) {

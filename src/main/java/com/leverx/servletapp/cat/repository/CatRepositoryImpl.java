@@ -3,15 +3,15 @@ package com.leverx.servletapp.cat.repository;
 import com.leverx.servletapp.cat.entity.Cat;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 import static com.leverx.servletapp.db.HibernateConfig.getSessionFactory;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class CatRepositoryImpl implements CatRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CatRepositoryImpl.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(CatRepositoryImpl.class.getSimpleName());
 
     private SessionFactory sessionFactory = getSessionFactory();
 

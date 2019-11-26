@@ -9,7 +9,6 @@ import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,10 +16,11 @@ import java.util.List;
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServiceImpl implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(UserServiceImpl.class.getSimpleName());
 
     private UserRepository userRepository = new UserRepositoryImpl();
     private CatRepository catRepository = new CatRepositoryImpl();

@@ -28,6 +28,7 @@ public class CatServiceImpl implements CatService {
                     "Length of name must be between %s and %s\n" +
                     "or date of birth can't be bigger than today's date.",
                     NAME_LENGTH_MIN, NAME_LENGTH_MAX);
+
             throw new IllegalArgumentException(message);
         }
     }

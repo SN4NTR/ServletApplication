@@ -1,14 +1,15 @@
 package com.leverx.servletapp.listener;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class ContextListener implements ServletContextListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContextListener.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(ContextListener.class.getSimpleName());
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

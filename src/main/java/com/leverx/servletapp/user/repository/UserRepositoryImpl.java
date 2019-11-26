@@ -3,15 +3,15 @@ package com.leverx.servletapp.user.repository;
 import com.leverx.servletapp.user.entity.User;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 import static com.leverx.servletapp.db.HibernateConfig.getSessionFactory;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryImpl.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(UserRepositoryImpl.class.getSimpleName());
 
     private SessionFactory sessionFactory = getSessionFactory();
 
