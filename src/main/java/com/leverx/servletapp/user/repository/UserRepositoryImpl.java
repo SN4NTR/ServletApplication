@@ -36,8 +36,6 @@ public class UserRepositoryImpl implements UserRepository {
         var user = session.get(User.class, id);
         session.close();
 
-        LOGGER.info("User with id = {} was found", id);
-
         return user;
     }
 
@@ -52,8 +50,6 @@ public class UserRepositoryImpl implements UserRepository {
         var users = query.list();
         session.close();
 
-        LOGGER.info("Users are retrieved");
-
         return users;
     }
 
@@ -66,8 +62,6 @@ public class UserRepositoryImpl implements UserRepository {
         var query = session.createQuery("from User");
         var users = query.list();
         session.close();
-
-        LOGGER.info("Users are retrieved");
 
         return users;
     }
@@ -82,8 +76,6 @@ public class UserRepositoryImpl implements UserRepository {
         session.delete(user);
         transaction.commit();
         session.close();
-
-        LOGGER.info("User with id = {} was deleted", id);
     }
 
     @Override
