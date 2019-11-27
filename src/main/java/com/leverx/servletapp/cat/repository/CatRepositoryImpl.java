@@ -6,18 +6,17 @@ import org.slf4j.Logger;
 
 import java.util.Collection;
 
-import static com.leverx.servletapp.db.HibernateConfig.getSessionFactory;
+import static com.leverx.servletapp.db.HibernateConfig.getInstance;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class CatRepositoryImpl implements CatRepository {
 
     private static final Logger LOGGER = getLogger(CatRepositoryImpl.class.getSimpleName());
 
-    private SessionFactory sessionFactory = getSessionFactory();
-
     @Override
     public void save(Cat cat) {
         LOGGER.info("Saving cat with name '{}'.", cat.getName());
+        SessionFactory sessionFactory = getInstance();
 
         var session = sessionFactory.openSession();
         var transaction = session.beginTransaction();
@@ -31,6 +30,7 @@ public class CatRepositoryImpl implements CatRepository {
     @Override
     public Cat findById(int id) {
         LOGGER.info("Getting cat with id = {}", id);
+        SessionFactory sessionFactory = getInstance();
 
         var session = sessionFactory.openSession();
         var cat = session.get(Cat.class, id);
@@ -43,6 +43,7 @@ public class CatRepositoryImpl implements CatRepository {
     @SuppressWarnings("unchecked")
     public Collection<Cat> findAll() {
         LOGGER.info("Getting all users");
+        SessionFactory sessionFactory = getInstance();
 
         var session = sessionFactory.openSession();
         var query = session.createQuery("from Cat");
