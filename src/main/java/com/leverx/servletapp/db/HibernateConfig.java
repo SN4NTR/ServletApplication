@@ -14,7 +14,7 @@ public class HibernateConfig {
 
     private static SessionFactory sessionFactory;
 
-    public static synchronized SessionFactory getInstance() {
+    public static synchronized SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             var configuration = new Configuration();
             configuration.addAnnotatedClass(User.class);
