@@ -34,15 +34,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             LOGGER.info("User was saved");
         } catch (Exception ex) {
-            if (nonNull(transaction)) {
-                transaction.rollback();
-            }
-            LOGGER.error("User can't be saved");
+            var message = "User can't be saved";
+            rollback(transaction, message);
             throw new InternalServerErrorException(ex);
         } finally {
-            if (nonNull(entityManager)) {
-                entityManager.close();
-            }
+            closeEntityManager(entityManager);
         }
     }
 
@@ -65,15 +61,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             return user;
         } catch (Exception ex) {
-            if (nonNull(transaction)) {
-                transaction.rollback();
-            }
-            LOGGER.error("User can't be found");
+            var message = "User can't be found";
+            rollback(transaction, message);
             throw new InternalServerErrorException(ex);
         } finally {
-            if (nonNull(entityManager)) {
-                entityManager.close();
-            }
+            closeEntityManager(entityManager);
         }
     }
 
@@ -99,15 +91,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             return users;
         } catch (Exception ex) {
-            if (nonNull(transaction)) {
-                transaction.rollback();
-            }
-            LOGGER.error("User can't be found");
+            var message = "User can't be found";
+            rollback(transaction, message);
             throw new InternalServerErrorException(ex);
         } finally {
-            if (nonNull(entityManager)) {
-                entityManager.close();
-            }
+            closeEntityManager(entityManager);
         }
     }
 
@@ -132,15 +120,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             return users;
         } catch (Exception ex) {
-            if (nonNull(transaction)) {
-                transaction.rollback();
-            }
-            LOGGER.error("Users cant' be found");
+            var message = "Users cant' be found";
+            rollback(transaction, message);
             throw new InternalServerErrorException(ex);
         } finally {
-            if (nonNull(entityManager)) {
-                entityManager.close();
-            }
+            closeEntityManager(entityManager);
         }
     }
 
@@ -163,15 +147,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             LOGGER.info("User with id = {} was deleted", id);
         } catch (Exception ex) {
-            if (nonNull(transaction)) {
-                transaction.rollback();
-            }
-            LOGGER.error("User can't be deleted");
+            var message = "User can't be deleted";
+            rollback(transaction, message);
             throw  new InternalServerErrorException(ex);
         } finally {
-            if (nonNull(entityManager)) {
-                entityManager.close();
-            }
+            closeEntityManager(entityManager);
         }
     }
 
@@ -193,15 +173,24 @@ public class UserRepositoryImpl implements UserRepository {
 
             LOGGER.info("User is updated");
         } catch (Exception ex) {
-            if (nonNull(transaction)) {
-                transaction.rollback();
-            }
-            LOGGER.error("User can't be updated");
+            var message = "User can't be updated";
+            rollback(transaction, message);
             throw  new InternalServerErrorException(ex);
         } finally {
-            if (nonNull(entityManager)) {
-                entityManager.close();
-            }
+            closeEntityManager(entityManager);
         }
+    }
+
+    private void closeEntityManager(EntityManager entityManager) {
+        if (nonNull(entityManager)) {
+            entityManager.close();
+        }
+    }
+
+    private void rollback(EntityTransaction transaction, String message) {
+        if (nonNull(transaction)) {
+            transaction.rollback();
+        }
+        LOGGER.error(message);
     }
 }
