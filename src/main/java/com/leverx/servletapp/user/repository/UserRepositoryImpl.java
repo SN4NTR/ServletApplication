@@ -3,13 +3,10 @@ package com.leverx.servletapp.user.repository;
 import com.leverx.servletapp.user.entity.User;
 import org.slf4j.Logger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
-import static com.leverx.servletapp.db.HibernateConfig.getEntityManagerFactory;
-import static java.util.Objects.nonNull;
+import static com.leverx.servletapp.db.HibernateConfig.getEntityManager;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserRepositoryImpl implements UserRepository {
@@ -20,25 +17,21 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user) {
         LOGGER.info("Saving user with name '{}'.", user.getFirstName());
 
-        var entityManagerFactory = getEntityManagerFactory();
-        EntityTransaction transaction = null;
-        EntityManager entityManager = null;
+        var entityManager = getEntityManager();
+        var transaction = entityManager.getTransaction();
 
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
             transaction.begin();
-
             entityManager.persist(user);
             transaction.commit();
 
             LOGGER.info("User was saved");
         } catch (Exception ex) {
-            var message = "User can't be saved";
-            rollback(transaction, message);
+            transaction.rollback();
+            LOGGER.error("User can't be saved");
             throw new InternalServerErrorException(ex);
         } finally {
-            closeEntityManager(entityManager);
+            entityManager.close();
         }
     }
 
@@ -46,26 +39,22 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(int id) {
         LOGGER.info("Getting user by id = {}", id);
 
-        var entityManagerFactory = getEntityManagerFactory();
-        EntityTransaction transaction = null;
-        EntityManager entityManager = null;
+        var entityManager = getEntityManager();
+        var transaction = entityManager.getTransaction();
 
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
             transaction.begin();
-
             var user = entityManager.find(User.class, id);
             transaction.commit();
-            LOGGER.info("User with id = {} was found", id);
 
+            LOGGER.info("User with id = {} was found", id);
             return user;
         } catch (Exception ex) {
-            var message = "User can't be found";
-            rollback(transaction, message);
+            transaction.rollback();
+            LOGGER.error("User can't be found");
             throw new InternalServerErrorException(ex);
         } finally {
-            closeEntityManager(entityManager);
+            entityManager.close();
         }
     }
 
@@ -74,28 +63,24 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findByName(String name) {
         LOGGER.info("Getting user by firstName = {}", name);
 
-        var entityManagerFactory = getEntityManagerFactory();
-        EntityTransaction transaction = null;
-        EntityManager entityManager = null;
+        var entityManager = getEntityManager();
+        var transaction = entityManager.getTransaction();
 
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
             transaction.begin();
-
             var query = entityManager.createQuery("from User where firstName=:firstName");
             query.setParameter("firstName", name);
             var users = query.getResultList();
             transaction.commit();
-            LOGGER.info("Users were found");
 
+            LOGGER.info("Users were found");
             return users;
         } catch (Exception ex) {
-            var message = "User can't be found";
-            rollback(transaction, message);
+            transaction.rollback();
+            LOGGER.error("User can't be found");
             throw new InternalServerErrorException(ex);
         } finally {
-            closeEntityManager(entityManager);
+            entityManager.close();
         }
     }
 
@@ -104,27 +89,23 @@ public class UserRepositoryImpl implements UserRepository {
     public Collection<User> findAll() {
         LOGGER.info("Getting all users");
 
-        var entityManagerFactory = getEntityManagerFactory();
-        EntityTransaction transaction = null;
-        EntityManager entityManager = null;
+        var entityManager = getEntityManager();
+        var transaction = entityManager.getTransaction();
 
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
             transaction.begin();
-
             var query = entityManager.createQuery("from User");
             var users = query.getResultList();
             transaction.commit();
-            LOGGER.info("Users were found");
 
+            LOGGER.info("Users were found");
             return users;
         } catch (Exception ex) {
-            var message = "Users cant' be found";
-            rollback(transaction, message);
+            transaction.rollback();
+            LOGGER.error("Users cant' be found");
             throw new InternalServerErrorException(ex);
         } finally {
-            closeEntityManager(entityManager);
+            entityManager.close();
         }
     }
 
@@ -132,26 +113,22 @@ public class UserRepositoryImpl implements UserRepository {
     public void delete(int id) {
         LOGGER.info("Deleting user with id = {}", id);
 
-        var entityManagerFactory = getEntityManagerFactory();
-        EntityTransaction transaction = null;
-        EntityManager entityManager = null;
+        var entityManager = getEntityManager();
+        var transaction = entityManager.getTransaction();
 
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
             transaction.begin();
-
             var user = entityManager.find(User.class, id);
             entityManager.remove(user);
             transaction.commit();
 
             LOGGER.info("User with id = {} was deleted", id);
         } catch (Exception ex) {
-            var message = "User can't be deleted";
-            rollback(transaction, message);
-            throw  new InternalServerErrorException(ex);
+            transaction.rollback();
+            LOGGER.error("User can't be deleted");
+            throw new InternalServerErrorException(ex);
         } finally {
-            closeEntityManager(entityManager);
+            entityManager.close();
         }
     }
 
@@ -160,37 +137,21 @@ public class UserRepositoryImpl implements UserRepository {
         var id = user.getId();
         LOGGER.info("Updating user with id = {}", id);
 
-        var entityManagerFactory = getEntityManagerFactory();
-        EntityTransaction transaction = null;
-        EntityManager entityManager = null;
+        var entityManager = getEntityManager();
+        var transaction = entityManager.getTransaction();
 
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.merge(user);
             transaction.commit();
 
             LOGGER.info("User is updated");
         } catch (Exception ex) {
-            var message = "User can't be updated";
-            rollback(transaction, message);
-            throw  new InternalServerErrorException(ex);
+            transaction.rollback();
+            LOGGER.error("User can't be updated");
+            throw new InternalServerErrorException(ex);
         } finally {
-            closeEntityManager(entityManager);
-        }
-    }
-
-    private void closeEntityManager(EntityManager entityManager) {
-        if (nonNull(entityManager)) {
             entityManager.close();
         }
-    }
-
-    private void rollback(EntityTransaction transaction, String message) {
-        if (nonNull(transaction)) {
-            transaction.rollback();
-        }
-        LOGGER.error(message);
     }
 }
