@@ -1,32 +1,24 @@
 package com.leverx.servletapp.db;
 
-import com.leverx.servletapp.cat.entity.Cat;
-import com.leverx.servletapp.user.entity.User;
 import lombok.NoArgsConstructor;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 
+import javax.persistence.EntityManagerFactory;
+
+import static java.util.Objects.isNull;
+import static javax.persistence.Persistence.createEntityManagerFactory;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public class HibernateConfig {
 
-    private static SessionFactory sessionFactory;
+    private static EntityManagerFactory entityManagerFactory;
 
-    public static synchronized SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            var configuration = new Configuration();
-            configuration.addAnnotatedClass(User.class);
-            configuration.addAnnotatedClass(Cat.class);
+    private static final String persistenceUnitName = "JpaPersistence";
 
-            var configProperties = configuration.getProperties();
-            var serviceRegistry = new StandardServiceRegistryBuilder()
-                    .applySettings(configProperties)
-                    .build();
-
-            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+    public static synchronized EntityManagerFactory getEntityManagerFactory() {
+        if (isNull(entityManagerFactory)) {
+            entityManagerFactory = createEntityManagerFactory(persistenceUnitName);
         }
-        return sessionFactory;
+        return entityManagerFactory;
     }
 }
