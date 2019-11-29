@@ -1,7 +1,6 @@
 package com.leverx.servletapp.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.leverx.servletapp.cat.entity.Cat;
 import lombok.Getter;
@@ -18,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -41,7 +39,6 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
-    @JsonInclude(NON_NULL)
     @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "owner")
     private List<Cat> cats;
 }

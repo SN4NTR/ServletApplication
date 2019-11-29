@@ -2,7 +2,6 @@ package com.leverx.servletapp.cat.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.leverx.servletapp.user.entity.User;
 import lombok.Getter;
@@ -22,7 +21,6 @@ import javax.persistence.Temporal;
 import java.util.Date;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.TemporalType.DATE;
@@ -51,7 +49,6 @@ public class Cat {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @JsonInclude(NON_NULL)
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;
