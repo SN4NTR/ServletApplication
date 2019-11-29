@@ -11,17 +11,14 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'root'
+    command: --init-file /docker-entrypoint-initdb.d
     expose:
       - '3306'
     volumes:
-      - ./src/main/resources:/docker-entrypoint-initdb.d
+      - ./src/main/resources/initdb:/docker-entrypoint-initdb.d
 
-  app:
-    image: app:latest
-    container_name: app_container
-    build:
-      context: .
-      dockerfile: Dockerfile
+  tomcat:
+    image: tomcat:9.0.27-jdk13-openjdk-oracle
     volumes:
       - ./target/servlet-app-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/app.war
     ports:
