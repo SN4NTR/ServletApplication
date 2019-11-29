@@ -1,6 +1,6 @@
 package com.leverx.servletapp.user.filter;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,15 +12,13 @@ import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.slf4j.LoggerFactory.getLogger;
 
+@Slf4j
 public class UserServletFilter implements Filter {
-
-    private static final Logger LOGGER = getLogger(UserServletFilter.class.getSimpleName());
 
     @Override
     public void init(FilterConfig filterConfig) {
-        LOGGER.info("UserServletFilter initialized.");
+        log.info("UserServletFilter initialized.");
     }
 
     @Override
@@ -33,6 +31,6 @@ public class UserServletFilter implements Filter {
 
     @Override
     public void destroy() {
-        LOGGER.info("UserServletFilter destroyed.");
+        log.info("UserServletFilter destroyed.");
     }
 }

@@ -1,16 +1,14 @@
 package com.leverx.servletapp.validator;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
 import java.util.Set;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
-import static org.slf4j.LoggerFactory.getLogger;
 
+@Slf4j
 public class EntityValidator {
-
-    private static final Logger LOGGER = getLogger(EntityValidator.class.getSimpleName());
 
     public static <T> boolean isEntityValid(T t) {
         var validatorFactory = buildDefaultValidatorFactory();
@@ -30,6 +28,6 @@ public class EntityValidator {
     private static <T> void logErrors(Set<ConstraintViolation<T>> violations) {
         violations.stream()
                 .map(ConstraintViolation::getMessage)
-                .forEach(LOGGER::error);
+                .forEach(log::error);
     }
 }

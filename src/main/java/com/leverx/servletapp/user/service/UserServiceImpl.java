@@ -8,7 +8,7 @@ import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,11 +19,9 @@ import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static org.slf4j.LoggerFactory.getLogger;
 
+@Slf4j
 public class UserServiceImpl implements UserService {
-
-    private static final Logger LOGGER = getLogger(UserServiceImpl.class.getSimpleName());
 
     private UserRepository userRepository = new UserRepositoryImpl();
     private CatRepository catRepository = new CatRepositoryImpl();
@@ -43,7 +41,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
-            LOGGER.error(message);
+            log.error(message);
             throw new IllegalArgumentException(message);
         }
     }
@@ -103,7 +101,7 @@ public class UserServiceImpl implements UserService {
             userRepository.update(user);
         } else {
             var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
-            LOGGER.error(message);
+            log.error(message);
             throw new IllegalArgumentException(message);
         }
     }
