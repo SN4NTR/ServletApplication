@@ -7,6 +7,7 @@ import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
 import static com.leverx.servletapp.db.HibernateConfig.getEntityManager;
+import static com.leverx.servletapp.user.entity.meta.User_.FIRST_NAME;
 
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
@@ -25,7 +26,9 @@ public class UserRepositoryImpl implements UserRepository {
 
             log.info("User was saved");
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("User can't be saved");
             throw new InternalServerErrorException(ex);
         } finally {
@@ -48,7 +51,9 @@ public class UserRepositoryImpl implements UserRepository {
             log.info("User with id = {} was found", id);
             return user;
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("User can't be found");
             throw new InternalServerErrorException(ex);
         } finally {
@@ -57,7 +62,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<User> findByName(String name) {
         log.info("Getting user by firstName = {}", name);
 
@@ -65,16 +69,26 @@ public class UserRepositoryImpl implements UserRepository {
         var transaction = entityManager.getTransaction();
 
         try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+            var root = criteriaQuery.from(User.class);
+            var fieldName = root.get(FIRST_NAME);
+
+            criteriaQuery.select(root)
+                    .where(criteriaBuilder.equal(fieldName, name));
+
             transaction.begin();
-            var query = entityManager.createQuery("from User where firstName=:firstName");
-            query.setParameter("firstName", name);
+            var query = entityManager.createQuery(criteriaQuery);
             var users = query.getResultList();
             transaction.commit();
 
             log.info("Users were found");
             return users;
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("User can't be found");
             throw new InternalServerErrorException(ex);
         } finally {
@@ -83,7 +97,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<User> findAll() {
         log.info("Getting all users");
 
@@ -91,15 +104,24 @@ public class UserRepositoryImpl implements UserRepository {
         var transaction = entityManager.getTransaction();
 
         try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+            var root = criteriaQuery.from(User.class);
+
+            criteriaQuery.select(root);
+
             transaction.begin();
-            var query = entityManager.createQuery("from User");
+            var query = entityManager.createQuery(criteriaQuery);
             var users = query.getResultList();
             transaction.commit();
 
             log.info("Users were found");
             return users;
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("Users cant' be found");
             throw new InternalServerErrorException(ex);
         } finally {
@@ -122,7 +144,9 @@ public class UserRepositoryImpl implements UserRepository {
 
             log.info("User with id = {} was deleted", id);
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("User can't be deleted");
             throw new InternalServerErrorException(ex);
         } finally {
@@ -145,7 +169,9 @@ public class UserRepositoryImpl implements UserRepository {
 
             log.info("User is updated");
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("User can't be updated");
             throw new InternalServerErrorException(ex);
         } finally {
