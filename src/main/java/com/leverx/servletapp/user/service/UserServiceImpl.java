@@ -58,21 +58,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<User> findAll() {
-        var users = userRepository.findAll();
-
-        return users.stream()
-                .peek(user -> user.setCats(null))
-                .collect(toList());
+        return userRepository.findAll();
     }
 
     @Override
     public Collection<Cat> findCatsByUserId(int id) {
         var user = userRepository.findById(id);
-        var cats = user.getCats();
-
-        return cats.stream()
-                .peek(cat -> cat.setOwner(null))
-                .collect(toList());
+        return user.getCats();
     }
 
     @Override

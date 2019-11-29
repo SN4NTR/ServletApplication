@@ -10,8 +10,6 @@ import java.util.Collection;
 import static com.leverx.servletapp.cat.mapper.CatMapper.catDtoToCat;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
 
 public class CatServiceImpl implements CatService {
 
@@ -37,21 +35,11 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public Cat findById(int id) {
-        var cat = catRepository.findById(id);
-        var owner = cat.getOwner();
-        if (!isNull(owner)) {
-            owner.setCats(null);
-            cat.setOwner(owner);
-        }
-        return cat;
+        return catRepository.findById(id);
     }
 
     @Override
     public Collection<Cat> findAll() {
-        var cats = catRepository.findAll();
-
-        return cats.stream()
-                .peek(cat -> cat.setOwner(null))
-                .collect(toList());
+        return catRepository.findAll();
     }
 }
