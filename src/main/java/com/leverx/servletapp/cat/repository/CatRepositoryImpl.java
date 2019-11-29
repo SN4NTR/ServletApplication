@@ -25,7 +25,9 @@ public class CatRepositoryImpl implements CatRepository {
 
             log.info("Cat was saved");
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("Cat can't be saved");
             throw new InternalServerErrorException(ex);
         } finally {
@@ -48,7 +50,9 @@ public class CatRepositoryImpl implements CatRepository {
             log.info("Cat with id = {} was found", id);
             return cat;
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("Cat with id = {} can't be found", id);
             throw new InternalServerErrorException(ex);
         } finally {
@@ -57,7 +61,6 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<Cat> findAll() {
         log.info("Getting all users");
 
@@ -65,15 +68,23 @@ public class CatRepositoryImpl implements CatRepository {
         var transaction = entityManager.getTransaction();
 
         try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+            var root = criteriaQuery.from(Cat.class);
+
+            criteriaQuery.select(root);
+
             transaction.begin();
-            var query = entityManager.createQuery("from Cat");
+            var query = entityManager.createQuery(criteriaQuery);
             var cats = query.getResultList();
             transaction.commit();
-            log.info("Cats were found");
 
+            log.info("Cats were found");
             return cats;
         } catch (Exception ex) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             log.error("Cats can't be found");
             throw new InternalServerErrorException(ex);
         } finally {
