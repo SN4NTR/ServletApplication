@@ -14,11 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
+
+// TODO simplify methods
 
 @Slf4j
 public class UserServiceImpl implements UserService {
@@ -32,7 +33,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserDto userDto) {
         if (isEntityValid(userDto)) {
-            var user = userDtoToUser(userDto);
+            var firstName = userDto.getFirstName();
+            var user = new User(firstName);
             var catsIdList = userDto.getCatsIdList();
             user.setCats(new ArrayList<>());
 
@@ -47,18 +49,83 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(int id) {
-        return userRepository.findById(id);
+    public UserDto findById(int id) {
+        var user = userRepository.findById(id);
+        var firstName = user.getFirstName();
+        var cats = user.getCats();
+        var catDtoList = new ArrayList<CatDto>();
+
+        for (var cat : cats) {
+            var catId = cat.getId();
+            var catName = cat.getName();
+            var catDateOfBirth = cat.getDateOfBirth();
+
+            var catDto = new CatDto();
+            catDto.setId(catId);
+            catDto.setName(catName);
+            catDto.setDateOfBirth(catDateOfBirth);
+
+            catDtoList.add(catDto);
+        }
+
+        var userDto = new UserDto();
+        userDto.setId(id);
+        userDto.setFirstName(firstName);
+        userDto.setCats(catDtoList);
+
+        return userDto;
     }
 
     @Override
-    public Collection<User> findByName(String name) {
-        return userRepository.findByName(name);
+    public Collection<UserDto> findByName(String name) {
+        var users = userRepository.findByName(name);
+        var userDtoList = new ArrayList<UserDto>();
+
+        for (var user : users) {
+            var id = user.getId();
+            var firstName = user.getFirstName();
+            var cats = user.getCats();
+            var catDtoList = new ArrayList<CatDto>();
+
+            for (var cat : cats) {
+                var catId = cat.getId();
+                var catName = cat.getName();
+                var catDateOfBirth = cat.getDateOfBirth();
+
+                var catDto = new CatDto();
+                catDto.setId(catId);
+                catDto.setName(catName);
+                catDto.setDateOfBirth(catDateOfBirth);
+
+                catDtoList.add(catDto);
+            }
+
+            var userDto = new UserDto();
+            userDto.setId(id);
+            userDto.setFirstName(firstName);
+            userDto.setCats(catDtoList);
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 
     @Override
-    public Collection<User> findAll() {
-        return userRepository.findAll();
+    public Collection<UserDto> findAll() {
+        var users = userRepository.findAll();
+        var userDtoList = new ArrayList<UserDto>();
+
+        for (var user : users) {
+            var id = user.getId();
+            var firstName = user.getFirstName();
+
+            var userDto = new UserDto();
+            userDto.setId(id);
+            userDto.setFirstName(firstName);
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 
     @Override
