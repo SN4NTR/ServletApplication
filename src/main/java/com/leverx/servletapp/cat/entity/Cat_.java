@@ -1,6 +1,4 @@
-package com.leverx.servletapp.cat.entity.meta;
-
-import com.leverx.servletapp.cat.entity.Cat;
+package com.leverx.servletapp.cat.entity;
 
 import javax.annotation.processing.Generated;
 import javax.persistence.metamodel.StaticMetamodel;
