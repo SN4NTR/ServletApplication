@@ -1,10 +1,5 @@
 package com.leverx.servletapp.cat.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.leverx.servletapp.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -31,7 +25,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "cats")
 @NoArgsConstructor
 @RequiredArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Cat {
 
     @Id
@@ -44,8 +37,6 @@ public class Cat {
     private String name;
 
     @NonNull
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
