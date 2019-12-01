@@ -8,7 +8,7 @@ import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
 import static com.leverx.servletapp.db.HibernateConfig.getEntityManager;
-import static com.leverx.servletapp.user.entity.meta.User_.FIRST_NAME;
+import static com.leverx.servletapp.user.entity.User_.FIRST_NAME;
 import static java.util.Objects.nonNull;
 
 @Slf4j
