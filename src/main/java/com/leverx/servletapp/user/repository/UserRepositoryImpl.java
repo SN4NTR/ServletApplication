@@ -66,7 +66,7 @@ public class UserRepositoryImpl implements UserRepository {
             transaction.commit();
             log.info("User with id = {} was found", id);
             return user;
-        } catch (NoResultException ex) {
+        } catch (Exception ex) {
             rollbackTransaction(transaction);
             log.error("User can't be found");
             return null;

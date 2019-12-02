@@ -1,6 +1,7 @@
 package com.leverx.servletapp.cat.repository;
 
 import com.leverx.servletapp.cat.entity.Cat;
+import com.leverx.servletapp.cat.entity.Cat_;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityTransaction;
@@ -45,10 +46,20 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+
+            var root = criteriaQuery.from(Cat.class);
+            var fieldName = root.get(Cat_.id);
+
+            criteriaQuery.select(root)
+                    .where(criteriaBuilder.equal(fieldName, id));
+
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var cat = entityManager.find(Cat.class, id);
+            var query = entityManager.createQuery(criteriaQuery);
+            var cat = query.getSingleResult();
 
             transaction.commit();
             log.info("Cat with id = {} was found", id);
@@ -56,7 +67,7 @@ public class CatRepositoryImpl implements CatRepository {
         } catch (Exception ex) {
             rollbackTransaction(transaction);
             log.error("Cat with id = {} can't be found", id);
-            throw new InternalServerErrorException(ex);
+            return null;
         } finally {
             entityManager.close();
         }
