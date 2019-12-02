@@ -16,7 +16,7 @@ public interface UserService {
 
     Collection<UserDto> findAll();
 
-    Collection<Cat> findCatsByUserId(int id);
+    Collection<CatDto> findCatsByUserId(int id);
 
     void delete(int id);
 

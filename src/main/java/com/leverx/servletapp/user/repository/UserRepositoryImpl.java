@@ -1,14 +1,16 @@
 package com.leverx.servletapp.user.repository;
 
 import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
 import static com.leverx.servletapp.db.HibernateConfig.getEntityManager;
-import static com.leverx.servletapp.user.entity.User_.FIRST_NAME;
+import static com.leverx.servletapp.user.entity.User_.firstName;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -46,18 +48,28 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+            var root = criteriaQuery.from(User.class);
+            var fieldName = root.get(User_.id);
+
+            criteriaQuery.select(root)
+                    .where(criteriaBuilder.equal(fieldName, id));
+
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var user = entityManager.find(User.class, id);
+            var query = entityManager.createQuery(criteriaQuery);
+            var user = query.getSingleResult();
 
             transaction.commit();
             log.info("User with id = {} was found", id);
             return user;
-        } catch (Exception ex) {
+        } catch (NoResultException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be found");
-            throw new InternalServerErrorException(ex);
+            return null;
         } finally {
             entityManager.close();
         }
@@ -75,7 +87,7 @@ public class UserRepositoryImpl implements UserRepository {
             var criteriaQuery = criteriaBuilder.createQuery(User.class);
 
             var root = criteriaQuery.from(User.class);
-            var fieldName = root.get(FIRST_NAME);
+            var fieldName = root.get(firstName);
 
             criteriaQuery.select(root)
                     .where(criteriaBuilder.equal(fieldName, name));
