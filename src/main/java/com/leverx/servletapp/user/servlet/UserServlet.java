@@ -117,7 +117,7 @@ public class UserServlet extends HttpServlet {
     private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
         var id = parseInt(idToString);
         var cats = userService.findCatsByUserId(id);
-        if (cats != null) {
+        if (!cats.isEmpty()) {
             var result = collectionToJson(cats);
             printWriter.print(result);
             resp.setStatus(SC_OK);
