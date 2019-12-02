@@ -1,7 +1,6 @@
 version: '3.3'
 services:
   database:
-    container_name: database_container
     image: mysql:latest
     restart: always
     ports:
@@ -10,8 +9,7 @@ services:
       MYSQL_DATABASE: 'db'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'root'
-    command: --init-file /docker-entrypoint-initdb.d
+      MYSQL_ROOT_PASSWORD: 'password'
     expose:
       - '3306'
     volumes:
@@ -22,6 +20,6 @@ services:
     volumes:
       - ./target/servlet-app-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/app.war
     ports:
-      - '8888:8080'
+      - '8080:8080'
     depends_on:
       - database
