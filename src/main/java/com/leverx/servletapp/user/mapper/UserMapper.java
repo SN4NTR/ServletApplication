@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import static com.leverx.servletapp.cat.mapper.CatMapper.catCollectionToDtoList;
+import static java.util.Objects.nonNull;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -51,7 +51,7 @@ public final class UserMapper {
     }
 
     public static UserDto userToDto(User user) {
-        if (Objects.nonNull(user)) {
+        if (nonNull(user)) {
             var id = user.getId();
             var firstName = user.getFirstName();
 

@@ -5,7 +5,6 @@ import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 
 import java.util.Collection;
-import java.util.Objects;
 
 import static com.leverx.servletapp.cat.mapper.CatMapper.catCollectionToDtoList;
 import static com.leverx.servletapp.cat.mapper.CatMapper.catDtoToCat;

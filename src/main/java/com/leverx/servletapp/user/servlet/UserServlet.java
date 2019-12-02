@@ -19,6 +19,7 @@ import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
 import static java.lang.Integer.parseInt;
+import static java.util.Objects.nonNull;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -140,7 +141,7 @@ public class UserServlet extends HttpServlet {
     private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) {
         var id = parseInt(value);
         var user = userService.findById(id);
-        if (user != null) {
+        if (nonNull(user)) {
             var result = entityToJson(user);
             printWriter.print(result);
             resp.setStatus(SC_OK);

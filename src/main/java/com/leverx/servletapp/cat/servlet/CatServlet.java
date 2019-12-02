@@ -16,7 +16,7 @@ import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
 import static java.lang.Integer.parseInt;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -63,7 +63,7 @@ public class CatServlet extends HttpServlet {
     private void printCatById(PrintWriter printWriter, String value, HttpServletResponse resp) {
         var id = parseInt(value);
         var cat = catService.findById(id);
-        if (!isNull(cat)) {
+        if (nonNull(cat)) {
             var result = entityToJson(cat);
             printWriter.print(result);
             resp.setStatus(SC_OK);
