@@ -1,44 +1,67 @@
 package com.leverx.servletapp.user.mapper;
 
-import com.google.gson.Gson;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import static java.util.stream.Collectors.joining;
+import static com.leverx.servletapp.cat.mapper.CatMapper.catCollectionToDtoList;
+import static java.util.Objects.nonNull;
+import static lombok.AccessLevel.PRIVATE;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public final class UserMapper {
-
-    private final static Gson GSON = new Gson();
-
-    public static String readJsonBody(BufferedReader reader) {
-        return reader.lines()
-                .collect(joining());
-    }
-
-    public static UserDto jsonToUserDto(String jsonBody) {
-        return GSON.fromJson(jsonBody, UserDto.class);
-    }
-
-    public static String userToJson(User user) {
-        return GSON.toJson(user);
-    }
-
-    public static String collectionToJson(Collection<User> users) {
-        return users.stream()
-                .map(UserMapper::userToJson)
-                .collect(joining("\n"));
-    }
 
     public static User userDtoToUser(UserDto userDto) {
         var firstName = userDto.getFirstName();
-        var user = new User();
-        user.setFirstName(firstName);
-        return user;
+        return new User(firstName);
+    }
+
+    public static List<UserDto> userCollectionToDtoList(Collection<User> users) {
+        var userDtoList = new ArrayList<UserDto>();
+
+        for (var user : users) {
+            var id = user.getId();
+            var firstName = user.getFirstName();
+
+            var userDto = new UserDto();
+            userDto.setId(id);
+            userDto.setFirstName(firstName);
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
+    }
+
+    public static UserDto userToDtoWithCats(User user) {
+        var id = user.getId();
+        var firstName = user.getFirstName();
+        var cats = user.getCats();
+        var catDtoList = catCollectionToDtoList(cats);
+
+        var userDto = new UserDto();
+        userDto.setId(id);
+        userDto.setFirstName(firstName);
+        userDto.setCats(catDtoList);
+
+        return userDto;
+    }
+
+    public static UserDto userToDto(User user) {
+        if (nonNull(user)) {
+            var id = user.getId();
+            var firstName = user.getFirstName();
+
+            var userDto = new UserDto();
+            userDto.setId(id);
+            userDto.setFirstName(firstName);
+
+            return userDto;
+        } else {
+            return null;
+        }
     }
 }

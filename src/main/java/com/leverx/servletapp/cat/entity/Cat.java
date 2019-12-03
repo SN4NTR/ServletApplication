@@ -1,6 +1,6 @@
-package com.leverx.servletapp.user.entity;
+package com.leverx.servletapp.cat.entity;
 
-import com.leverx.servletapp.cat.entity.Cat;
+import com.leverx.servletapp.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -11,21 +11,21 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.List;
+import java.time.LocalDate;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "cats")
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class User {
+public class Cat {
 
     @Id
     @Column(name = "id")
@@ -33,9 +33,14 @@ public class User {
     private int id;
 
     @NonNull
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "name")
+    private String name;
 
-    @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "owner")
-    private List<Cat> cats;
+    @NonNull
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 }

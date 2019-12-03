@@ -1,5 +1,7 @@
 package com.leverx.servletapp.user.servlet;
 
+import com.leverx.servletapp.cat.entity.CatDto;
+import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
@@ -7,23 +9,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import static com.leverx.servletapp.user.mapper.UserMapper.collectionToJson;
-import static com.leverx.servletapp.user.mapper.UserMapper.jsonToUserDto;
-import static com.leverx.servletapp.user.mapper.UserMapper.readJsonBody;
-import static com.leverx.servletapp.user.mapper.UserMapper.userToJson;
-import static com.leverx.servletapp.user.servlet.util.UserServletUtils.PATH;
-import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getIdFromUrl;
-import static com.leverx.servletapp.user.servlet.util.UserServletUtils.getValueFromUrl;
+import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
+import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
+import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
+import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
+import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
+import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
+import static java.lang.Integer.parseInt;
+import static java.util.Objects.nonNull;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
 
-    private final UserService userService = new UserServiceImpl();
+    private UserService userService = new UserServiceImpl();
+
+    private static final String USERS_ENDPOINT = "users";
+    private static final String CATS_ENDPOINT = "cats";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -31,24 +40,18 @@ public class UserServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getValueFromUrl(urlToString);
+        var value = getLastPartOFUrl(urlToString);
+        var idToString = getPenultimatePartOfUrl(urlToString);
 
-        if (PATH.equals(value)) {
-            var users = userService.findAll();
-            var result = collectionToJson(users);
-            printWriter.print(result);
+        if (USERS_ENDPOINT.equals(value)) {
+            printAllUsers(printWriter, resp);
+        } else if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
+            printCatsByOwner(printWriter, idToString, resp);
         } else if (isParsable(value)) {
-            var id = Integer.parseInt(value);
-            var user = userService.findById(id);
-            var result = userToJson(user);
-            printWriter.print(result);
+            printUserById(printWriter, value, resp);
         } else {
-            var users = userService.findByName(value);
-            var result = collectionToJson(users);
-            printWriter.print(result);
+            printUserByFirstName(printWriter, value, resp);
         }
-
-        resp.setStatus(SC_OK);
         printWriter.flush();
     }
 
@@ -56,10 +59,8 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var reader = req.getReader();
         var jsonBody = readJsonBody(reader);
-        var userDto = jsonToUserDto(jsonBody);
-
+        var userDto = jsonToEntity(jsonBody, UserDto.class);
         userService.save(userDto);
-
         resp.setStatus(SC_CREATED);
     }
 
@@ -71,7 +72,6 @@ public class UserServlet extends HttpServlet {
 
         if (idOpt.isPresent()) {
             var id = idOpt.get();
-
             userService.delete(id);
             resp.setStatus(SC_NO_CONTENT);
         } else {
@@ -83,18 +83,77 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var idOpt = getIdFromUrl(urlToString);
+        var value = getLastPartOFUrl(urlToString);
+        var idToString = getPenultimatePartOfUrl(urlToString);
 
+        var reader = req.getReader();
+        var jsonBody = readJsonBody(reader);
+
+        if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
+            assignCatToUser(resp, idToString, jsonBody);
+        } else {
+            updateUser(resp, urlToString, jsonBody);
+        }
+    }
+
+    private void updateUser(HttpServletResponse resp, String urlToString, String jsonBody) throws IOException {
+        var idOpt = getIdFromUrl(urlToString);
         if (idOpt.isPresent()) {
             var id = idOpt.get();
-            var reader = req.getReader();
-            var jsonBody = readJsonBody(reader);
-            var userDto = jsonToUserDto(jsonBody);
-
+            var userDto = jsonToEntity(jsonBody, UserDto.class);
             userService.update(id, userDto);
             resp.setStatus(SC_OK);
         } else {
             resp.sendError(SC_BAD_REQUEST, "User can't be found");
         }
+    }
+
+    private void assignCatToUser(HttpServletResponse resp, String idToString, String jsonBody) {
+        var catDto = jsonToEntity(jsonBody, CatDto.class);
+        var id = parseInt(idToString);
+        userService.assignCat(id, catDto);
+        resp.setStatus(SC_OK);
+    }
+
+    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
+        var id = parseInt(idToString);
+        var cats = userService.findCatsByUserId(id);
+        if (!cats.isEmpty()) {
+            var result = collectionToJson(cats);
+            printWriter.print(result);
+            resp.setStatus(SC_OK);
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
+        }
+    }
+
+    private void printUserByFirstName(PrintWriter printWriter, String value, HttpServletResponse resp) {
+        var users = userService.findByName(value);
+        if (!users.isEmpty()) {
+            var result = collectionToJson(users);
+            printWriter.print(result);
+            resp.setStatus(SC_OK);
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
+        }
+    }
+
+    private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) {
+        var id = parseInt(value);
+        var user = userService.findById(id);
+        if (nonNull(user)) {
+            var result = entityToJson(user);
+            printWriter.print(result);
+            resp.setStatus(SC_OK);
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
+        }
+    }
+
+    private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) {
+        var users = userService.findAll();
+        var result = collectionToJson(users);
+        printWriter.print(result);
+        resp.setStatus(SC_OK);
     }
 }
