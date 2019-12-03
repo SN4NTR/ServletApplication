@@ -1,4 +1,4 @@
-package com.leverx.servletapp.user.filter;
+package com.leverx.servletapp.cat.filter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,11 +14,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Slf4j
-public class UserServletFilter implements Filter {
+public class CatServletFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        log.info("UserServletFilter initialized.");
+        log.info("CatServletFilter initialized.");
     }
 
     @Override
@@ -31,6 +31,6 @@ public class UserServletFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("UserServletFilter destroyed.");
+        log.info("CatServletFilter destroyed.");
     }
 }

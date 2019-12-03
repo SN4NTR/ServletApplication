@@ -1,49 +1,72 @@
 package com.leverx.servletapp.user.service;
 
+import com.leverx.servletapp.cat.entity.CatDto;
+import com.leverx.servletapp.cat.repository.CatRepository;
+import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.UserDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
+import static com.leverx.servletapp.cat.mapper.CatMapper.catCollectionToDtoList;
+import static com.leverx.servletapp.user.mapper.UserMapper.userCollectionToDtoList;
 import static com.leverx.servletapp.user.mapper.UserMapper.userDtoToUser;
+import static com.leverx.servletapp.user.mapper.UserMapper.userToDtoWithCats;
+import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
 
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
+    private CatRepository catRepository = new CatRepositoryImpl();
 
-    private static final int FIRST_NAME_LENGTH = 60;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class.getSimpleName());
+    private static final int FIRST_NAME_LENGTH_MIN = 5;
+    private static final int FIRST_NAME_LENGTH_MAX = 60;
 
     @Override
     public void save(UserDto userDto) {
-        var firstName = userDto.getFirstName();
-
-        if (isFirstNameLengthValid(firstName)) {
+        if (isEntityValid(userDto)) {
             var user = userDtoToUser(userDto);
             userRepository.save(user);
         } else {
-            LOGGER.error("Length of firstName is bigger than {}", FIRST_NAME_LENGTH);
-            throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
+            var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            log.error(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
     @Override
-    public User findById(int id) {
-        return userRepository.findById(id);
+    public UserDto findById(int id) {
+        var user = userRepository.findById(id);
+        return nonNull(user) ? userToDtoWithCats(user) : null;
     }
 
     @Override
-    public Collection<User> findByName(String name) {
-        return userRepository.findByName(name);
+    public Collection<UserDto> findByName(String name) {
+        var users = userRepository.findByName(name);
+        return userCollectionToDtoList(users);
     }
 
     @Override
-    public Collection<User> findAll() {
-        return userRepository.findAll();
+    public Collection<UserDto> findAll() {
+        var users = userRepository.findAll();
+        return userCollectionToDtoList(users);
+    }
+
+    @Override
+    public Collection<CatDto> findCatsByUserId(int id) {
+        var user = userRepository.findById(id);
+        var cats = user.getCats();
+        return catCollectionToDtoList(cats);
     }
 
     @Override
@@ -52,20 +75,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(int id, UserDto userDto) {
-        var firstName = userDto.getFirstName();
+    public void assignCat(int userId, CatDto catDto) {
+        var user = userRepository.findById(userId);
+        var catsIdList = catDto.getIdList();
+        setCatList(user, catsIdList);
+        userRepository.update(user);
+    }
 
-        if (isFirstNameLengthValid(firstName)) {
-            var user = userDtoToUser(userDto);
-            user.setId(id);
+    @Override
+    public void update(int id, UserDto userDto) {
+        if (isEntityValid(userDto)) {
+            var user = userRepository.findById(id);
+            var firstName = userDto.getFirstName();
+            user.setFirstName(firstName);
+
+            var catsIdList = userDto.getCatsIdList();
+            setCatList(user, catsIdList);
+
             userRepository.update(user);
-        } else  {
-            LOGGER.error("Length of firstName is bigger than {}", FIRST_NAME_LENGTH);
-            throw new IllegalArgumentException("First name length must be lower than " + FIRST_NAME_LENGTH);
+        } else {
+            var message = format("Length of first name must be between %s and %s", FIRST_NAME_LENGTH_MIN, FIRST_NAME_LENGTH_MAX);
+            log.error(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
-    private boolean isFirstNameLengthValid(String firstName) {
-        return firstName.length() <= FIRST_NAME_LENGTH;
+    private void setCatList(User user, List<Integer> catsIdList) {
+        if (nonNull(catsIdList)) {
+            var catList = user.getCats();
+
+            var catsFromIdList = catsIdList.stream()
+                    .map(catRepository::findById)
+                    .filter(Objects::nonNull)
+                    .filter(cat -> isNull(cat.getOwner()))
+                    .peek(cat -> cat.setOwner(user))
+                    .collect(toList());
+
+            catList.addAll(catsFromIdList);
+        }
     }
 }

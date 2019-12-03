@@ -18,6 +18,16 @@
         <url-pattern>/users/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CatServlet</servlet-name>
+        <servlet-class>com.leverx.servletapp.cat.servlet.CatServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CatServlet</servlet-name>
+        <url-pattern>/cats</url-pattern>
+        <url-pattern>/cats/*</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>UserServletFilter</filter-name>
         <filter-class>com.leverx.servletapp.user.filter.UserServletFilter</filter-class>
@@ -26,6 +36,16 @@
         <filter-name>UserServletFilter</filter-name>
         <url-pattern>/users</url-pattern>
         <url-pattern>/users/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>CatServletFilter</filter-name>
+        <filter-class>com.leverx.servletapp.cat.filter.CatServletFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CatServletFilter</filter-name>
+        <url-pattern>/cats</url-pattern>
+        <url-pattern>/cats/*</url-pattern>
     </filter-mapping>
 
     <listener>

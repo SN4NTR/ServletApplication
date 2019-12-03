@@ -8,8 +8,18 @@ services:
     environment:
       MYSQL_DATABASE: 'db'
       MYSQL_USER: 'user'
-      MYSQL_ROOT_USER: 'root'
       MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'password'
     expose:
       - '3306'
+    volumes:
+      - ./src/main/resources/initdb:/docker-entrypoint-initdb.d
+
+  tomcat:
+    image: tomcat:9.0.27-jdk13-openjdk-oracle
+    volumes:
+      - ./target/servlet-app-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/app.war
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
