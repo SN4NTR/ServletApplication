@@ -9,7 +9,7 @@ import javax.persistence.NoResultException;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
-import static com.leverx.servletapp.db.HibernateConfig.getEntityManager;
+import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static com.leverx.servletapp.user.entity.User_.firstName;
 import static java.util.Objects.nonNull;
 

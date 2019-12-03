@@ -9,7 +9,7 @@ import static javax.persistence.Persistence.createEntityManagerFactory;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class HibernateConfig {
+public class EntityManagerConfig {
 
     private static final String persistenceUnitName = "JpaPersistence";
     private static final EntityManagerFactory entityManagerFactory;

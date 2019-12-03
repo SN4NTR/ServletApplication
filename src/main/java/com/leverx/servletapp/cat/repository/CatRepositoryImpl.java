@@ -8,7 +8,7 @@ import javax.persistence.EntityTransaction;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
-import static com.leverx.servletapp.db.HibernateConfig.getEntityManager;
+import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
 
 @Slf4j
