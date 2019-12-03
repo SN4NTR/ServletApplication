@@ -5,6 +5,7 @@ import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 
@@ -65,8 +66,8 @@ public class UserRepositoryImpl implements UserRepository {
             transaction.commit();
             log.info("User with id = {} was found", id);
             return user;
-        } catch (Exception ex) {
-            rollbackTransaction(transaction);
+        } catch (NoResultException ex) {
+            commitTransaction(transaction);
             log.error("User can't be found");
             return null;
         } finally {
@@ -100,10 +101,10 @@ public class UserRepositoryImpl implements UserRepository {
             transaction.commit();
             log.info("Users were found");
             return users;
-        } catch (Exception ex) {
-            rollbackTransaction(transaction);
+        } catch (NoResultException ex) {
+            commitTransaction(transaction);
             log.error("User can't be found");
-            throw new InternalServerErrorException(ex);
+            return null;
         } finally {
             entityManager.close();
         }
@@ -133,10 +134,10 @@ public class UserRepositoryImpl implements UserRepository {
             transaction.commit();
             log.info("Users were found");
             return users;
-        } catch (Exception ex) {
-            rollbackTransaction(transaction);
+        } catch (NoResultException ex) {
+            commitTransaction(transaction);
             log.error("Users cant' be found");
-            throw new InternalServerErrorException(ex);
+            return null;
         } finally {
             entityManager.close();
         }
@@ -189,6 +190,12 @@ public class UserRepositoryImpl implements UserRepository {
             throw new InternalServerErrorException(ex);
         } finally {
             entityManager.close();
+        }
+    }
+
+    private void commitTransaction(EntityTransaction transaction) {
+        if (nonNull(transaction) && transaction.isActive()) {
+            transaction.commit();
         }
     }
 
