@@ -22,3 +22,11 @@ mvn clean install
 docker-compose up
 ```
 
+* Go to the following `URL`:
+
+```
+http://localhost:8080/app/users
+```
+
+You will see the list of users.
+
