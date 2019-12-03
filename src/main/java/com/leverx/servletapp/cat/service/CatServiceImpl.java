@@ -10,15 +10,11 @@ import static com.leverx.servletapp.cat.mapper.CatMapper.catCollectionToDtoList;
 import static com.leverx.servletapp.cat.mapper.CatMapper.catDtoToCat;
 import static com.leverx.servletapp.cat.mapper.CatMapper.catToDtoWithOwner;
 import static com.leverx.servletapp.validator.EntityValidator.isEntityValid;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 public class CatServiceImpl implements CatService {
 
     private CatRepository catRepository = new CatRepositoryImpl();
-
-    private static final int NAME_LENGTH_MIN = 5;
-    private static final int NAME_LENGTH_MAX = 60;
 
     @Override
     public void save(CatDto catDto) {
@@ -26,11 +22,7 @@ public class CatServiceImpl implements CatService {
             var cat = catDtoToCat(catDto);
             catRepository.save(cat);
         } else {
-            String message = format(
-                    "Length of name must be between %s and %s\n" +
-                    "or date of birth can't be bigger than today's date.",
-                    NAME_LENGTH_MIN, NAME_LENGTH_MAX);
-
+            String message = "Wrong credentials";
             throw new IllegalArgumentException(message);
         }
     }
