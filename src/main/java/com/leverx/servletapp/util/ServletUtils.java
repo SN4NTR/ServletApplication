@@ -18,14 +18,14 @@ public final class ServletUtils {
         return urlComponents[penultimateElementIndex];
     }
 
-    public static String getLastPartOFUrl(String url) {
+    public static String getLastPartOfUrl(String url) {
         var urlComponents = url.split(DELIMITER);
         var lastElementIndex = urlComponents.length - 1;
         return urlComponents[lastElementIndex];
     }
 
     public static Optional<Integer> getIdFromUrl(String url) {
-        var value = getLastPartOFUrl(url);
+        var value = getLastPartOfUrl(url);
         return isParsable(value) ? Optional.of(Integer.parseInt(value)) : Optional.empty();
     }
 }

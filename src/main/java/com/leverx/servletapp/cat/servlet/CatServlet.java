@@ -14,7 +14,7 @@ import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
-import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
+import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
@@ -34,7 +34,7 @@ public class CatServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getLastPartOFUrl(urlToString);
+        var value = getLastPartOfUrl(urlToString);
 
         if (CATS_ENDPOINT.equals(value)) {
             printAllCats(printWriter, resp);

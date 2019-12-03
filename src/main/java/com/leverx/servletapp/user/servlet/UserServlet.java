@@ -16,7 +16,7 @@ import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
-import static com.leverx.servletapp.util.ServletUtils.getLastPartOFUrl;
+import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
@@ -40,7 +40,7 @@ public class UserServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getLastPartOFUrl(urlToString);
+        var value = getLastPartOfUrl(urlToString);
         var idToString = getPenultimatePartOfUrl(urlToString);
 
         if (USERS_ENDPOINT.equals(value)) {
@@ -83,7 +83,7 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getLastPartOFUrl(urlToString);
+        var value = getLastPartOfUrl(urlToString);
         var idToString = getPenultimatePartOfUrl(urlToString);
 
         var reader = req.getReader();
