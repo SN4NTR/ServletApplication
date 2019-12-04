@@ -12,20 +12,21 @@ public final class ServletUtils {
 
     private static final String DELIMITER = "/";
 
-    public static String getPenultimatePartOfUrl(String url) {
+    public static Optional<String> getPenultimatePartOfUrl(String url) {
         var urlComponents = url.split(DELIMITER);
         var penultimateElementIndex = urlComponents.length - 2;
-        return urlComponents[penultimateElementIndex];
+        return Optional.of(urlComponents[penultimateElementIndex]);
     }
 
-    public static String getLastPartOfUrl(String url) {
+    public static Optional<String> getLastPartOfUrl(String url) {
         var urlComponents = url.split(DELIMITER);
         var lastElementIndex = urlComponents.length - 1;
-        return urlComponents[lastElementIndex];
+        return Optional.of(urlComponents[lastElementIndex]);
     }
 
     public static Optional<Integer> getIdFromUrl(String url) {
-        var value = getLastPartOfUrl(url);
+        var valueOpt = getLastPartOfUrl(url);
+        var value = valueOpt.orElseThrow();
         return isParsable(value) ? Optional.of(Integer.parseInt(value)) : Optional.empty();
     }
 }
