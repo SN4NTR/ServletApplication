@@ -10,18 +10,14 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 @Slf4j
 public class EntityValidator {
 
-    public static <T> boolean isEntityValid(T t) {
+    public static <T> void validateEntity(T t) throws IllegalArgumentException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
 
         var violations = validator.validate(t);
-        var violationsSize = violations.size();
-
-        if (violationsSize == 0) {
-            return true;
-        } else {
+        if (violations.size() > 0) {
             logErrors(violations);
-            return false;
+            throw new IllegalArgumentException();
         }
     }
 
