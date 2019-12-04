@@ -1,6 +1,6 @@
 package com.leverx.servletapp.cat.servlet;
 
-import com.leverx.servletapp.cat.entity.CatDto;
+import com.leverx.servletapp.cat.entity.dto.CatInputDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 
@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
-import static com.leverx.servletapp.mapper.EntityMapper.readJsonBody;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
@@ -34,7 +33,8 @@ public class CatServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var value = getLastPartOfUrl(urlToString);
+        var valueOpt = getLastPartOfUrl(urlToString);
+        var value = valueOpt.orElseThrow();
 
         if (CATS_ENDPOINT.equals(value)) {
             printAllCats(printWriter, resp);
@@ -47,8 +47,7 @@ public class CatServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var reader = req.getReader();
-        var jsonBody = readJsonBody(reader);
-        var catDto = jsonToEntity(jsonBody, CatDto.class);
+        var catDto = jsonToEntity(reader, CatInputDto.class);
         catService.save(catDto);
         resp.setStatus(SC_CREATED);
     }
