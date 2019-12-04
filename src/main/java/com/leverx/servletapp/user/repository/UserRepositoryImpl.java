@@ -8,6 +8,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static com.leverx.servletapp.user.entity.User_.firstName;
@@ -41,7 +42,57 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findById(int id) {
+    public void delete(int id) {
+        log.info("Deleting user with id = {}", id);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var user = entityManager.find(User.class, id);
+            entityManager.remove(user);
+
+            transaction.commit();
+            log.info("User with id = {} was deleted", id);
+        } catch (Exception ex) {
+            rollbackTransaction(transaction);
+            log.error("User can't be deleted");
+            throw new InternalServerErrorException(ex);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public void update(User user) {
+        var id = user.getId();
+        log.info("Updating user with id = {}", id);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            entityManager.merge(user);
+
+            transaction.commit();
+            log.info("User is updated");
+        } catch (Exception ex) {
+            rollbackTransaction(transaction);
+            log.error("User can't be updated");
+            throw new InternalServerErrorException(ex);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public Optional<User> findById(int id) {
         log.info("Getting user by id = {}", id);
 
         var entityManager = getEntityManager();
@@ -65,11 +116,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User with id = {} was found", id);
-            return user;
+            return nonNull(user) ? Optional.of(user) : Optional.empty();
         } catch (NoResultException ex) {
             commitTransaction(transaction);
             log.error("User can't be found");
-            return null;
+            return Optional.empty();
         } finally {
             entityManager.close();
         }
@@ -138,56 +189,6 @@ public class UserRepositoryImpl implements UserRepository {
             commitTransaction(transaction);
             log.error("Users cant' be found");
             return null;
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
-    public void delete(int id) {
-        log.info("Deleting user with id = {}", id);
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            var user = entityManager.find(User.class, id);
-            entityManager.remove(user);
-
-            transaction.commit();
-            log.info("User with id = {} was deleted", id);
-        } catch (Exception ex) {
-            rollbackTransaction(transaction);
-            log.error("User can't be deleted");
-            throw new InternalServerErrorException(ex);
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
-    public void update(User user) {
-        var id = user.getId();
-        log.info("Updating user with id = {}", id);
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            entityManager.merge(user);
-
-            transaction.commit();
-            log.info("User is updated");
-        } catch (Exception ex) {
-            rollbackTransaction(transaction);
-            log.error("User can't be updated");
-            throw new InternalServerErrorException(ex);
         } finally {
             entityManager.close();
         }

@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.EntityTransaction;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -39,7 +41,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public Cat findById(int id) {
+    public Optional<Cat> findById(int id) {
         log.info("Getting cat with id = {}", id);
 
         var entityManager = getEntityManager();
@@ -63,11 +65,46 @@ public class CatRepositoryImpl implements CatRepository {
 
             transaction.commit();
             log.info("Cat with id = {} was found", id);
-            return cat;
+            return nonNull(cat) ? Optional.of(cat) : Optional.empty();
         } catch (Exception ex) {
             rollbackTransaction(transaction);
             log.error("Cat with id = {} can't be found", id);
-            return null;
+            return Optional.empty();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public Collection<Cat> findByOwnerId(int id) {
+        log.info("Getting cat by owner id = {}", id);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+
+            var root = criteriaQuery.from(Cat.class);
+            var fieldName = root.get(Cat_.owner);
+
+            criteriaQuery.select(root)
+                    .where(criteriaBuilder.equal(fieldName, id));
+
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(criteriaQuery);
+            var cats = query.getResultList();
+
+            transaction.commit();
+            log.info("Cats were found");
+            return cats;
+        } catch (Exception ex) {
+            rollbackTransaction(transaction);
+            log.error("Cat with id = {} can't be found", id);
+            return emptyList();
         } finally {
             entityManager.close();
         }
