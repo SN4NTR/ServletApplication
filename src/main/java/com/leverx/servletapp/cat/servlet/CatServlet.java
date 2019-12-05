@@ -17,6 +17,7 @@ import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
+import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
 import static java.lang.Integer.parseInt;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
@@ -27,8 +28,6 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 public class CatServlet extends HttpServlet {
 
     private CatService catService = new CatServiceImpl();
-
-    private static final String CATS_ENDPOINT = "cats";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

@@ -21,6 +21,8 @@ import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
+import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
+import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
 import static java.lang.Integer.parseInt;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
@@ -33,9 +35,6 @@ public class UserServlet extends HttpServlet {
 
     private UserService userService = new UserServiceImpl();
     private CatService catService = new CatServiceImpl();
-
-    private static final String USERS_ENDPOINT = "users";
-    private static final String CATS_ENDPOINT = "cats";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
