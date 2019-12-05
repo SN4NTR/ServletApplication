@@ -4,13 +4,15 @@ import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.Cat_;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -31,7 +33,7 @@ public class CatRepositoryImpl implements CatRepository {
 
             transaction.commit();
             log.info("Cat was saved");
-        } catch (Exception ex) {
+        } catch (EntityExistsException ex) {
             rollbackTransaction(transaction);
             log.error("Cat can't be saved");
             throw new InternalServerErrorException(ex);
@@ -66,10 +68,11 @@ public class CatRepositoryImpl implements CatRepository {
             transaction.commit();
             log.info("Cat with id = {} was found", id);
             return nonNull(cat) ? Optional.of(cat) : Optional.empty();
-        } catch (Exception ex) {
+        } catch (NoResultException ex) {
             rollbackTransaction(transaction);
-            log.error("Cat with id = {} can't be found", id);
-            return Optional.empty();
+            var message = "Cat can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
         } finally {
             entityManager.close();
         }
@@ -101,10 +104,11 @@ public class CatRepositoryImpl implements CatRepository {
             transaction.commit();
             log.info("Cats were found");
             return cats;
-        } catch (Exception ex) {
+        } catch (IllegalStateException ex) {
             rollbackTransaction(transaction);
-            log.error("Cat with id = {} can't be found", id);
-            return emptyList();
+            var message = "Cat can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
         } finally {
             entityManager.close();
         }
@@ -133,10 +137,11 @@ public class CatRepositoryImpl implements CatRepository {
             transaction.commit();
             log.info("Cats were found");
             return cats;
-        } catch (Exception ex) {
+        } catch (NoResultException ex) {
             rollbackTransaction(transaction);
-            log.error("Cats can't be found");
-            throw new InternalServerErrorException(ex);
+            var message = "Cat can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
         } finally {
             entityManager.close();
         }

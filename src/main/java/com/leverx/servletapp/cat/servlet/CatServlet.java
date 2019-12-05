@@ -1,14 +1,19 @@
 package com.leverx.servletapp.cat.servlet;
 
 import com.leverx.servletapp.cat.entity.dto.CatInputDto;
+import com.leverx.servletapp.cat.entity.dto.CatOutputDto;
+import com.leverx.servletapp.cat.entity.dto.CatWithOwnerDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.InputDataException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
@@ -16,6 +21,7 @@ import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -48,26 +54,35 @@ public class CatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var reader = req.getReader();
         var catDto = jsonToEntity(reader, CatInputDto.class);
-        catService.save(catDto);
-        resp.setStatus(SC_CREATED);
+        try {
+            catService.save(catDto);
+            resp.setStatus(SC_CREATED);
+        } catch (InputDataException ex) {
+            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
+        }
     }
 
-    private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) {
-        var cats = catService.findAll();
-        var result = collectionToJson(cats);
-        printWriter.print(result);
-        resp.setStatus(SC_OK);
+    private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) throws IOException {
+        try {
+            var cats = catService.findAll();
+            var result = collectionToJson(cats);
+            printWriter.print(result);
+            resp.setStatus(SC_OK);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+        }
     }
 
-    private void printCatById(PrintWriter printWriter, String value, HttpServletResponse resp) {
-        var id = parseInt(value);
-        var cat = catService.findById(id);
-        if (nonNull(cat)) {
+    private void printCatById(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
+        try {
+            var id = parseInt(value);
+            var catOpt = catService.findById(id);
+            var cat = catOpt.orElseThrow();
             var result = entityToJson(cat);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(SC_NOT_FOUND);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
         }
     }
 }

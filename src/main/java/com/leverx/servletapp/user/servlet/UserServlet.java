@@ -1,9 +1,10 @@
 package com.leverx.servletapp.user.servlet;
 
-import com.leverx.servletapp.cat.entity.dto.CatInputDto;
 import com.leverx.servletapp.cat.entity.dto.CatWithIdsDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.InputDataException;
 import com.leverx.servletapp.user.entity.dto.UserInputDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
@@ -21,7 +22,6 @@ import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
 import static java.lang.Integer.parseInt;
-import static java.util.Objects.nonNull;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -62,10 +62,14 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        var reader = req.getReader();
-        var userDto = jsonToEntity(reader, UserInputDto.class);
-        userService.save(userDto);
-        resp.setStatus(SC_CREATED);
+        try {
+            var reader = req.getReader();
+            var userDto = jsonToEntity(reader, UserInputDto.class);
+            userService.save(userDto);
+            resp.setStatus(SC_CREATED);
+        } catch (InputDataException ex) {
+            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @Override
@@ -95,61 +99,75 @@ public class UserServlet extends HttpServlet {
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {
-        var idOpt = getIdFromUrl(urlToString);
-        var id = idOpt.orElseThrow();
-        var reader = req.getReader();
-        var userInputDto = jsonToEntity(reader, UserInputDto.class);
-        userService.update(id, userInputDto);
-        resp.setStatus(SC_OK);
+        try {
+            var idOpt = getIdFromUrl(urlToString);
+            var id = idOpt.orElseThrow();
+            var reader = req.getReader();
+            var userInputDto = jsonToEntity(reader, UserInputDto.class);
+            userService.update(id, userInputDto);
+            resp.setStatus(SC_OK);
+        } catch (InputDataException | EntityNotFoundException ex) {
+            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
+        }
     }
 
     private void assignCatToUser(HttpServletRequest req, HttpServletResponse resp, String idToString) throws IOException {
-        var id = parseInt(idToString);
-        var reader = req.getReader();
-        var catDtoWithIdsDto = jsonToEntity(reader, CatWithIdsDto.class);
-        catService.assignCat(id, catDtoWithIdsDto);
-        resp.setStatus(SC_OK);
+        try {
+            var id = parseInt(idToString);
+            var reader = req.getReader();
+            var catDtoWithIdsDto = jsonToEntity(reader, CatWithIdsDto.class);
+            catService.assignCat(id, catDtoWithIdsDto);
+            resp.setStatus(SC_OK);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
+        }
     }
 
-    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
-        var id = parseInt(idToString);
-        var cats = catService.findByOwnerId(id);
-        if (!cats.isEmpty()) {
+    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
+        try {
+            var id = parseInt(idToString);
+            var cats = catService.findByOwnerId(id);
             var result = collectionToJson(cats);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(SC_NOT_FOUND);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
         }
+
     }
 
-    private void printUserByFirstName(PrintWriter printWriter, String value, HttpServletResponse resp) {
-        var users = userService.findByName(value);
-        if (!users.isEmpty()) {
+    private void printUserByFirstName(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
+        try {
+            var users = userService.findByName(value);
             var result = collectionToJson(users);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(SC_NOT_FOUND);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
         }
     }
 
-    private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) {
-        var id = parseInt(value);
-        var user = userService.findById(id);
-        if (nonNull(user)) {
+    private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
+        try {
+            var id = parseInt(value);
+            var userOpt = userService.findById(id);
+            var user = userOpt.orElseThrow();
             var result = entityToJson(user);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(SC_NOT_FOUND);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
         }
     }
 
-    private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) {
-        var users = userService.findAll();
-        var result = collectionToJson(users);
-        printWriter.print(result);
-        resp.setStatus(SC_OK);
+    private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) throws IOException {
+        try {
+            var users = userService.findAll();
+            var result = collectionToJson(users);
+            printWriter.print(result);
+            resp.setStatus(SC_OK);
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+        }
     }
 }

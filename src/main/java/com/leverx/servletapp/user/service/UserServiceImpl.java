@@ -1,5 +1,7 @@
 package com.leverx.servletapp.user.service;
 
+import com.leverx.servletapp.exception.InputDataException;
+import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.entity.dto.UserInputDto;
 import com.leverx.servletapp.user.entity.dto.UserOutputDto;
 import com.leverx.servletapp.user.entity.dto.UserWithCatsDto;
@@ -8,7 +10,7 @@ import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.leverx.servletapp.user.mapper.UserMapper.collectionToOutputDtoList;
 import static com.leverx.servletapp.user.mapper.UserMapper.fromInputDto;
@@ -21,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository = new UserRepositoryImpl();
 
     @Override
-    public void save(UserInputDto userInputDto) throws IllegalArgumentException {
+    public void save(UserInputDto userInputDto) throws InputDataException {
         validateEntity(userInputDto);
         var user = fromInputDto(userInputDto);
         userRepository.save(user);
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(int id, UserInputDto userInputDto) throws IllegalArgumentException, NoSuchElementException {
+    public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, InputDataException {
         validateEntity(userInputDto);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow();
@@ -43,20 +45,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserWithCatsDto findById(int id) throws NoSuchElementException {
+    public Optional<UserWithCatsDto> findById(int id) throws EntityNotFoundException {
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow();
-        return toWithCatsDto(user);
+        var userWithCatsDto = toWithCatsDto(user);
+        return Optional.of(userWithCatsDto);
     }
 
     @Override
-    public Collection<UserOutputDto> findByName(String name) throws NoSuchElementException {
+    public Collection<UserOutputDto> findByName(String name) throws EntityNotFoundException {
         var users = userRepository.findByName(name);
         return collectionToOutputDtoList(users);
     }
 
     @Override
-    public Collection<UserOutputDto> findAll() throws NoSuchElementException {
+    public Collection<UserOutputDto> findAll() throws EntityNotFoundException {
         var users = userRepository.findAll();
         return collectionToOutputDtoList(users);
     }

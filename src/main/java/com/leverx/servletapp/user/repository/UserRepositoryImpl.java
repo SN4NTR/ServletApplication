@@ -1,12 +1,13 @@
 package com.leverx.servletapp.user.repository;
 
+import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -32,10 +33,10 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User was saved");
-        } catch (Exception ex) {
+        } catch (EntityExistsException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be saved");
-            throw new InternalServerErrorException(ex);
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }
@@ -57,10 +58,10 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User with id = {} was deleted", id);
-        } catch (Exception ex) {
+        } catch (IllegalArgumentException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be deleted");
-            throw new InternalServerErrorException(ex);
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }
@@ -82,17 +83,17 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User is updated");
-        } catch (Exception ex) {
+        } catch (IllegalArgumentException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be updated");
-            throw new InternalServerErrorException(ex);
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Optional<User> findById(int id) {
+    public Optional<User> findById(int id) throws EntityNotFoundException {
         log.info("Getting user by id = {}", id);
 
         var entityManager = getEntityManager();
@@ -116,18 +117,20 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User with id = {} was found", id);
+
             return nonNull(user) ? Optional.of(user) : Optional.empty();
         } catch (NoResultException ex) {
-            commitTransaction(transaction);
-            log.error("User can't be found");
-            return Optional.empty();
+            rollbackTransaction(transaction);
+            var message = "User can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<User> findByName(String name) {
+    public Collection<User> findByName(String name) throws EntityNotFoundException {
         log.info("Getting user by firstName = {}", name);
 
         var entityManager = getEntityManager();
@@ -151,18 +154,20 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("Users were found");
+
             return users;
         } catch (NoResultException ex) {
-            commitTransaction(transaction);
-            log.error("User can't be found");
-            return null;
+            rollbackTransaction(transaction);
+            var message = "User can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<User> findAll() {
+    public Collection<User> findAll() throws EntityNotFoundException {
         log.info("Getting all users");
 
         var entityManager = getEntityManager();
@@ -186,17 +191,12 @@ public class UserRepositoryImpl implements UserRepository {
             log.info("Users were found");
             return users;
         } catch (NoResultException ex) {
-            commitTransaction(transaction);
-            log.error("Users cant' be found");
-            return null;
+            rollbackTransaction(transaction);
+            var message = "Users cant' be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
         } finally {
             entityManager.close();
-        }
-    }
-
-    private void commitTransaction(EntityTransaction transaction) {
-        if (nonNull(transaction) && transaction.isActive()) {
-            transaction.commit();
         }
     }
 
