@@ -6,13 +6,15 @@ import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.metamodel.SingularAttribute;
 import java.util.Collection;
 import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
-import static com.leverx.servletapp.user.entity.User_.firstName;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -100,15 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-            var root = criteriaQuery.from(User.class);
-            var fieldName = root.get(User_.id);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, id));
-
+            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.id, id);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -137,15 +131,7 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-            var root = criteriaQuery.from(User.class);
-            var fieldName = root.get(firstName);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, name));
-
+            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.firstName, name);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -174,13 +160,7 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-            var root = criteriaQuery.from(User.class);
-
-            criteriaQuery.select(root);
-
+            var criteriaQuery = getCriteriaQuery(entityManager);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -198,6 +178,26 @@ public class UserRepositoryImpl implements UserRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+    private CriteriaQuery<User> getCriteriaQuery(EntityManager entityManager) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(User.class);
+        var root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root);
+        return criteriaQuery;
+    }
+
+    private CriteriaQuery<User> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<User, ?> attribute, Object compareWith) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(User.class);
+        var root = criteriaQuery.from(User.class);
+        var fieldName = root.get(attribute);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(fieldName, compareWith));
+
+        return criteriaQuery;
     }
 
     private void rollbackTransaction(EntityTransaction transaction) {

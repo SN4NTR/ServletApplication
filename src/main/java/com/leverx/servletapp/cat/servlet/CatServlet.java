@@ -23,7 +23,6 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
-// TODO get rid of duplication
 public class CatServlet extends HttpServlet {
 
     private CatService catService = new CatServiceImpl();
