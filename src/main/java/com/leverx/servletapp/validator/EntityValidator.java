@@ -1,5 +1,6 @@
 package com.leverx.servletapp.validator;
 
+import com.leverx.servletapp.exception.InputDataException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -11,16 +12,16 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 @Slf4j
 public class EntityValidator {
 
-    private static final String DELIMITER = ".\n";
+    private static final String DELIMITER = "; ";
 
-    public static <T> void validateEntity(T t) throws IllegalArgumentException {
+    public static <T> void validateEntity(T t) throws InputDataException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
 
         var violations = validator.validate(t);
         if (violations.size() > 0) {
             var message = logErrors(violations);
-            throw new IllegalArgumentException(message);
+            throw new InputDataException(message);
         }
     }
 
