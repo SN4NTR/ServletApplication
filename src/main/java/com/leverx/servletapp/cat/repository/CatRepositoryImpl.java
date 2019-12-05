@@ -2,12 +2,11 @@ package com.leverx.servletapp.cat.repository;
 
 import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.Cat_;
-import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,6 +17,7 @@ import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
 public class CatRepositoryImpl implements CatRepository {
@@ -47,7 +47,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public Optional<Cat> findById(int id) {
+    public Optional<Cat> findById(int id) throws EntityNotFoundException {
         log.info("Getting cat with id = {}", id);
 
         var entityManager = getEntityManager();
@@ -64,7 +64,7 @@ public class CatRepositoryImpl implements CatRepository {
             transaction.commit();
             log.info("Cat with id = {} was found", id);
 
-            return nonNull(cat) ? Optional.of(cat) : Optional.empty();
+            return Optional.of(cat);
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);
             var message = "Cat can't be found";
@@ -76,7 +76,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public Collection<Cat> findByOwnerId(int id) {
+    public Collection<Cat> findByOwnerId(int id) throws EntityNotFoundException {
         log.info("Getting cat by owner id = {}", id);
 
         var entityManager = getEntityManager();
@@ -89,14 +89,17 @@ public class CatRepositoryImpl implements CatRepository {
 
             var query = entityManager.createQuery(criteriaQuery);
             var cats = query.getResultList();
+            if (isEmpty(cats)) {
+                throw new NoResultException();
+            }
 
             transaction.commit();
             log.info("Cats were found");
 
             return cats;
-        } catch (IllegalStateException ex) {
+        } catch (NoResultException ex) {
             rollbackTransaction(transaction);
-            var message = "Cat can't be found";
+            var message = "Cats can't be found";
             log.error(message);
             throw new EntityNotFoundException(message);
         } finally {
@@ -105,7 +108,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public Collection<Cat> findAll() {
+    public Collection<Cat> findAll() throws EntityNotFoundException {
         log.info("Getting all users");
 
         var entityManager = getEntityManager();

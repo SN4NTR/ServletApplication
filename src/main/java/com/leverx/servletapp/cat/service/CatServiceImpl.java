@@ -34,7 +34,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public void assignCat(int userId, CatWithIdsDto catWithIdsDto) throws EntityNotFoundException {
+    public void assignToUser(int userId, CatWithIdsDto catWithIdsDto) throws EntityNotFoundException {
         var userOpt = userRepository.findById(userId);
         var user = userOpt.orElseThrow();
         assignCatsToUser(user, catWithIdsDto);

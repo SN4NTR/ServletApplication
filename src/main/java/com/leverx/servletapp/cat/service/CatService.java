@@ -14,7 +14,7 @@ public interface CatService {
 
     void save(CatInputDto catInputDto) throws InputDataException;
 
-    void assignCat(int userId, CatWithIdsDto catWithIdsDto) throws EntityNotFoundException;
+    void assignToUser(int userId, CatWithIdsDto catWithIdsDto) throws EntityNotFoundException;
 
     Optional<CatWithOwnerDto> findById(int id) throws EntityNotFoundException;
 

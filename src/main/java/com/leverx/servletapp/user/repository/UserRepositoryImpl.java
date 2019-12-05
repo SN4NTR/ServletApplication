@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
@@ -112,7 +113,7 @@ public class UserRepositoryImpl implements UserRepository {
             transaction.commit();
             log.info("User with id = {} was found", id);
 
-            return nonNull(user) ? Optional.of(user) : Optional.empty();
+            return Optional.of(user);
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);
             var message = "User can't be found";
@@ -137,6 +138,9 @@ public class UserRepositoryImpl implements UserRepository {
 
             var query = entityManager.createQuery(criteriaQuery);
             var users = query.getResultList();
+            if (isEmpty(users)) {
+                throw new NoResultException();
+            }
 
             transaction.commit();
             log.info("Users were found");
@@ -169,6 +173,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("Users were found");
+
             return users;
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);

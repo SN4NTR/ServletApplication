@@ -116,7 +116,7 @@ public class UserServlet extends HttpServlet {
             var id = parseInt(idToString);
             var reader = req.getReader();
             var catDtoWithIdsDto = jsonToEntity(reader, CatWithIdsDto.class);
-            catService.assignCat(id, catDtoWithIdsDto);
+            catService.assignToUser(id, catDtoWithIdsDto);
             resp.setStatus(SC_OK);
         } catch (EntityNotFoundException ex) {
             resp.sendError(SC_BAD_REQUEST, ex.getMessage());
