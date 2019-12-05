@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 
 @Slf4j
 public class EntityValidator {
+
+    private static final String DELIMITER = ".\n";
 
     public static <T> void validateEntity(T t) throws IllegalArgumentException {
         var validatorFactory = buildDefaultValidatorFactory();
@@ -16,14 +19,18 @@ public class EntityValidator {
 
         var violations = validator.validate(t);
         if (violations.size() > 0) {
-            logErrors(violations);
-            throw new IllegalArgumentException();
+            var message = logErrors(violations);
+            throw new IllegalArgumentException(message);
         }
     }
 
-    private static <T> void logErrors(Set<ConstraintViolation<T>> violations) {
+    private static <T> String logErrors(Set<ConstraintViolation<T>> violations) {
+        var joiner = new StringJoiner(DELIMITER);
         violations.stream()
                 .map(ConstraintViolation::getMessage)
-                .forEach(log::error);
+                .peek(log::error)
+                .forEach(joiner::add);
+
+        return joiner.toString();
     }
 }
