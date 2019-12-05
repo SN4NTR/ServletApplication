@@ -44,37 +44,12 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public synchronized void transfer(int userIdFrom, int userIdTo, Collection<Integer> catIds) throws EntityNotFoundException {
+    public void transfer(int userIdFrom, int userIdTo, Collection<Integer> catIds) throws EntityNotFoundException {
         var userFromOpt = userRepository.findById(userIdFrom);
         var userFrom = userFromOpt.orElseThrow();
         var userToOpt = userRepository.findById(userIdTo);
         var userTo = userToOpt.orElseThrow();
-
-        var catsOfUserFrom = userFrom.getCats();
-        var newCatListOfUserFrom = new ArrayList<Cat>();
-
-        var existedCatListOfUserTo = userTo.getCats();
-        var newCatListOfUserTo = new ArrayList<Cat>();
-
-        for (var cat : catsOfUserFrom) {
-            for (var id : catIds) {
-                var catId = cat.getId();
-
-                if (id == catId) {
-                    cat.setOwner(userTo);
-                    newCatListOfUserTo.add(cat);
-                } else {
-                    newCatListOfUserFrom.add(cat);
-                }
-            }
-        }
-
-        if (newCatListOfUserTo.size() != catIds.size()) {
-            throw new EntityNotFoundException("Cat can't be found");
-        }
-        userFrom.setCats(newCatListOfUserFrom);
-        existedCatListOfUserTo.addAll(newCatListOfUserTo);
-
+        transferCats(catIds, userFrom, userTo);
         userRepository.update(userFrom);
         userRepository.update(userTo);
     }
@@ -97,6 +72,33 @@ public class CatServiceImpl implements CatService {
     public Collection<CatOutputDto> findByOwnerId(int id) throws EntityNotFoundException {
         var cats = catRepository.findByOwnerId(id);
         return collectionToOutputDtoList(cats);
+    }
+
+    private synchronized void transferCats(Collection<Integer> catIds, User userFrom, User userTo) throws EntityNotFoundException {
+        var catsOfUserFrom = userFrom.getCats();
+        var newCatsOfUserFrom = new ArrayList<Cat>();
+
+        var existingCatsOfUserTo = userTo.getCats();
+        var newCatsOfUserTo = new ArrayList<Cat>();
+
+        for (var cat : catsOfUserFrom) {
+            for (var id : catIds) {
+                var catId = cat.getId();
+
+                if (id == catId) {
+                    cat.setOwner(userTo);
+                    newCatsOfUserTo.add(cat);
+                } else {
+                    newCatsOfUserFrom.add(cat);
+                }
+            }
+        }
+
+        if (newCatsOfUserTo.size() != catIds.size()) {
+            throw new EntityNotFoundException("Cat can't be found");
+        }
+        userFrom.setCats(newCatsOfUserFrom);
+        existingCatsOfUserTo.addAll(newCatsOfUserTo);
     }
 
     private void assignCatsToUser(User user, CatWithIdsDto catWithIdsDto) throws EntityNotFoundException {
