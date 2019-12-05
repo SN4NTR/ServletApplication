@@ -1,8 +1,6 @@
 package com.leverx.servletapp.cat.servlet;
 
 import com.leverx.servletapp.cat.entity.dto.CatInputDto;
-import com.leverx.servletapp.cat.entity.dto.CatOutputDto;
-import com.leverx.servletapp.cat.entity.dto.CatWithOwnerDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 import com.leverx.servletapp.exception.EntityNotFoundException;
@@ -13,20 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 
 import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
 import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static java.lang.Integer.parseInt;
-import static java.util.Objects.nonNull;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
+// TODO get rid of duplication
 public class CatServlet extends HttpServlet {
 
     private CatService catService = new CatServiceImpl();
