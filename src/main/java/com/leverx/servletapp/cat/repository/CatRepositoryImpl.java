@@ -2,12 +2,16 @@ package com.leverx.servletapp.cat.repository;
 
 import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.Cat_;
+import com.leverx.servletapp.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 import java.util.Optional;
@@ -50,15 +54,7 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
-
-            var root = criteriaQuery.from(Cat.class);
-            var fieldName = root.get(Cat_.id);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, id));
-
+            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, Cat_.id, id);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -67,6 +63,7 @@ public class CatRepositoryImpl implements CatRepository {
 
             transaction.commit();
             log.info("Cat with id = {} was found", id);
+
             return nonNull(cat) ? Optional.of(cat) : Optional.empty();
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);
@@ -86,15 +83,7 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
-
-            var root = criteriaQuery.from(Cat.class);
-            var fieldName = root.get(Cat_.owner);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, id));
-
+            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, Cat_.owner, id);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -103,6 +92,7 @@ public class CatRepositoryImpl implements CatRepository {
 
             transaction.commit();
             log.info("Cats were found");
+
             return cats;
         } catch (IllegalStateException ex) {
             rollbackTransaction(transaction);
@@ -122,12 +112,7 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
-            var root = criteriaQuery.from(Cat.class);
-
-            criteriaQuery.select(root);
-
+            var criteriaQuery = getCriteriaQuery(entityManager);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -136,6 +121,7 @@ public class CatRepositoryImpl implements CatRepository {
 
             transaction.commit();
             log.info("Cats were found");
+
             return cats;
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);
@@ -145,6 +131,26 @@ public class CatRepositoryImpl implements CatRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+    private CriteriaQuery<Cat> getCriteriaQuery(EntityManager entityManager) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+        var root = criteriaQuery.from(Cat.class);
+        criteriaQuery.select(root);
+        return criteriaQuery;
+    }
+
+    private CriteriaQuery<Cat> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<Cat, ?> attribute, Object compareWith) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+        var root = criteriaQuery.from(Cat.class);
+        var fieldName = root.get(attribute);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(fieldName, compareWith));
+
+        return criteriaQuery;
     }
 
     private void rollbackTransaction(EntityTransaction transaction) {
