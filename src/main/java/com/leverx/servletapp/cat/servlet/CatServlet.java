@@ -49,9 +49,9 @@ public class CatServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        var reader = req.getReader();
-        var catDto = jsonToEntity(reader, CatInputDto.class);
         try {
+            var reader = req.getReader();
+            var catDto = jsonToEntity(reader, CatInputDto.class);
             catService.save(catDto);
             resp.setStatus(SC_CREATED);
         } catch (InputDataException ex) {
@@ -61,9 +61,9 @@ public class CatServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        var reader = req.getReader();
-        var userTransitionDto = jsonToEntity(reader, UserTransitionDto.class);
         try {
+            var reader = req.getReader();
+            var userTransitionDto = jsonToEntity(reader, UserTransitionDto.class);
             var userIdFrom = userTransitionDto.getIdFrom();
             var userIdTo = userTransitionDto.getIdTo();
             var catIds = userTransitionDto.getCatIds();
