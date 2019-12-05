@@ -5,6 +5,7 @@ import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.InputDataException;
+import com.leverx.servletapp.user.entity.dto.UserTransitionDto;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +55,21 @@ public class CatServlet extends HttpServlet {
             catService.save(catDto);
             resp.setStatus(SC_CREATED);
         } catch (InputDataException ex) {
+            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        var reader = req.getReader();
+        var userTransitionDto = jsonToEntity(reader, UserTransitionDto.class);
+        try {
+            var userIdFrom = userTransitionDto.getIdFrom();
+            var userIdTo = userTransitionDto.getIdTo();
+            var catIds = userTransitionDto.getCatIds();
+            catService.transfer(userIdFrom, userIdTo, catIds);
+            resp.setStatus(SC_OK);
+        } catch (EntityNotFoundException ex) {
             resp.sendError(SC_BAD_REQUEST, ex.getMessage());
         }
     }

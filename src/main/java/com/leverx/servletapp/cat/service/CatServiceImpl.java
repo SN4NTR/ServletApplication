@@ -1,5 +1,6 @@
 package com.leverx.servletapp.cat.service;
 
+import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.dto.CatInputDto;
 import com.leverx.servletapp.cat.entity.dto.CatOutputDto;
 import com.leverx.servletapp.cat.entity.dto.CatWithIdsDto;
@@ -12,6 +13,7 @@ import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -39,6 +41,42 @@ public class CatServiceImpl implements CatService {
         var user = userOpt.orElseThrow();
         assignCatsToUser(user, catWithIdsDto);
         userRepository.update(user);
+    }
+
+    @Override
+    public synchronized void transfer(int userIdFrom, int userIdTo, Collection<Integer> catIds) throws EntityNotFoundException {
+        var userFromOpt = userRepository.findById(userIdFrom);
+        var userFrom = userFromOpt.orElseThrow();
+        var userToOpt = userRepository.findById(userIdTo);
+        var userTo = userToOpt.orElseThrow();
+
+        var catsOfUserFrom = userFrom.getCats();
+        var newCatListOfUserFrom = new ArrayList<Cat>();
+
+        var existedCatListOfUserTo = userTo.getCats();
+        var newCatListOfUserTo = new ArrayList<Cat>();
+
+        for (var cat : catsOfUserFrom) {
+            for (var id : catIds) {
+                var catId = cat.getId();
+
+                if (id == catId) {
+                    cat.setOwner(userTo);
+                    newCatListOfUserTo.add(cat);
+                } else {
+                    newCatListOfUserFrom.add(cat);
+                }
+            }
+        }
+
+        if (newCatListOfUserTo.size() != catIds.size()) {
+            throw new EntityNotFoundException("Cat can't be found");
+        }
+        userFrom.setCats(newCatListOfUserFrom);
+        existedCatListOfUserTo.addAll(newCatListOfUserTo);
+
+        userRepository.update(userFrom);
+        userRepository.update(userTo);
     }
 
     @Override

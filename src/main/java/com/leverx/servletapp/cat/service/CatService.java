@@ -16,6 +16,8 @@ public interface CatService {
 
     void assignToUser(int userId, CatWithIdsDto catWithIdsDto) throws EntityNotFoundException;
 
+    void transfer(int userIdFrom, int userIdTo, Collection<Integer> catIds) throws EntityNotFoundException;
+
     Optional<CatWithOwnerDto> findById(int id) throws EntityNotFoundException;
 
     Collection<CatOutputDto> findAll() throws EntityNotFoundException;
