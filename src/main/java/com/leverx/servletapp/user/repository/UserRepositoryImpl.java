@@ -1,17 +1,22 @@
 package com.leverx.servletapp.user.repository;
 
+import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.ws.rs.InternalServerErrorException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.metamodel.SingularAttribute;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
-import static com.leverx.servletapp.user.entity.User_.firstName;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
@@ -31,113 +36,10 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User was saved");
-        } catch (Exception ex) {
+        } catch (EntityExistsException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be saved");
-            throw new InternalServerErrorException(ex);
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
-    public User findById(int id) {
-        log.info("Getting user by id = {}", id);
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-            var root = criteriaQuery.from(User.class);
-            var fieldName = root.get(User_.id);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, id));
-
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            var query = entityManager.createQuery(criteriaQuery);
-            var user = query.getSingleResult();
-
-            transaction.commit();
-            log.info("User with id = {} was found", id);
-            return user;
-        } catch (NoResultException ex) {
-            commitTransaction(transaction);
-            log.error("User can't be found");
-            return null;
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
-    public Collection<User> findByName(String name) {
-        log.info("Getting user by firstName = {}", name);
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-            var root = criteriaQuery.from(User.class);
-            var fieldName = root.get(firstName);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, name));
-
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            var query = entityManager.createQuery(criteriaQuery);
-            var users = query.getResultList();
-
-            transaction.commit();
-            log.info("Users were found");
-            return users;
-        } catch (NoResultException ex) {
-            commitTransaction(transaction);
-            log.error("User can't be found");
-            return null;
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
-    public Collection<User> findAll() {
-        log.info("Getting all users");
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-            var root = criteriaQuery.from(User.class);
-
-            criteriaQuery.select(root);
-
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            var query = entityManager.createQuery(criteriaQuery);
-            var users = query.getResultList();
-
-            transaction.commit();
-            log.info("Users were found");
-            return users;
-        } catch (NoResultException ex) {
-            commitTransaction(transaction);
-            log.error("Users cant' be found");
-            return null;
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }
@@ -159,10 +61,10 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User with id = {} was deleted", id);
-        } catch (Exception ex) {
+        } catch (IllegalArgumentException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be deleted");
-            throw new InternalServerErrorException(ex);
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }
@@ -184,19 +86,123 @@ public class UserRepositoryImpl implements UserRepository {
 
             transaction.commit();
             log.info("User is updated");
-        } catch (Exception ex) {
+        } catch (IllegalArgumentException ex) {
             rollbackTransaction(transaction);
             log.error("User can't be updated");
-            throw new InternalServerErrorException(ex);
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }
     }
 
-    private void commitTransaction(EntityTransaction transaction) {
-        if (nonNull(transaction) && transaction.isActive()) {
+    @Override
+    public Optional<User> findById(int id) throws EntityNotFoundException {
+        log.info("Getting user by id = {}", id);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.id, id);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(criteriaQuery);
+            var user = query.getSingleResult();
+
             transaction.commit();
+            log.info("User with id = {} was found", id);
+
+            return Optional.of(user);
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "User can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
+        } finally {
+            entityManager.close();
         }
+    }
+
+    @Override
+    public Collection<User> findByName(String name) throws EntityNotFoundException {
+        log.info("Getting user by firstName = {}", name);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.firstName, name);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(criteriaQuery);
+            var users = query.getResultList();
+            if (isEmpty(users)) {
+                throw new NoResultException();
+            }
+
+            transaction.commit();
+            log.info("Users were found");
+
+            return users;
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "User can't be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public Collection<User> findAll() throws EntityNotFoundException {
+        log.info("Getting all users");
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaQuery = getCriteriaQuery(entityManager);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(criteriaQuery);
+            var users = query.getResultList();
+
+            transaction.commit();
+            log.info("Users were found");
+
+            return users;
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "Users cant' be found";
+            log.error(message);
+            throw new EntityNotFoundException(message);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    private CriteriaQuery<User> getCriteriaQuery(EntityManager entityManager) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(User.class);
+        var root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root);
+        return criteriaQuery;
+    }
+
+    private CriteriaQuery<User> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<User, ?> attribute, Object compareWith) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(User.class);
+        var root = criteriaQuery.from(User.class);
+        var fieldName = root.get(attribute);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(fieldName, compareWith));
+
+        return criteriaQuery;
     }
 
     private void rollbackTransaction(EntityTransaction transaction) {

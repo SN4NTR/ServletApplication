@@ -1,26 +1,25 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.cat.entity.Cat;
-import com.leverx.servletapp.cat.entity.CatDto;
-import com.leverx.servletapp.user.entity.UserDto;
+import com.leverx.servletapp.exception.InputDataException;
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.user.entity.dto.UserInputDto;
+import com.leverx.servletapp.user.entity.dto.UserOutputDto;
+import com.leverx.servletapp.user.entity.dto.UserWithCatsDto;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface UserService {
 
-    void save(UserDto user);
-
-    UserDto findById(int id);
-
-    Collection<UserDto> findByName(String name);
-
-    Collection<UserDto> findAll();
-
-    Collection<CatDto> findCatsByUserId(int id);
+    void save(UserInputDto user) throws InputDataException;
 
     void delete(int id);
 
-    void assignCat(int userId, CatDto catDto);
+    void update(int id, UserInputDto user) throws InputDataException, EntityNotFoundException;
 
-    void update(int id, UserDto user);
+    Optional<UserWithCatsDto> findById(int id) throws EntityNotFoundException;
+
+    Collection<UserOutputDto> findByName(String name) throws EntityNotFoundException;
+
+    Collection<UserOutputDto> findAll() throws EntityNotFoundException;
 }
