@@ -3,7 +3,6 @@
 ### Pre-requisites
 
 * Java 13
-* IntelliJ IDEA
 * Tomcat 9.0.27
 * Maven 3.1.0
 * Docker

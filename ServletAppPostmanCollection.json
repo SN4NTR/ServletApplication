@@ -197,7 +197,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"idList\": [1, 2]\n}",
+							"raw": "{\n\t\"ids\": [1, 2]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -298,6 +298,35 @@
 							"path": [
 								"cats",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move cat from one user to another",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"idFrom\": 1,\n\t\"idTo\": 2,\n\t\"catIds\": [1, 2]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/cats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cats"
 							]
 						}
 					},
