@@ -2,7 +2,6 @@ package com.leverx.servletapp.cat.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -21,7 +20,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Setter
