@@ -1,9 +1,9 @@
 package com.leverx.servletapp.cat.service;
 
-import com.leverx.servletapp.cat.entity.dto.CatInputDto;
-import com.leverx.servletapp.cat.entity.dto.CatOutputDto;
-import com.leverx.servletapp.cat.entity.dto.CatWithIdsDto;
-import com.leverx.servletapp.cat.entity.dto.CatWithOwnerDto;
+import com.leverx.servletapp.cat.dto.CatInputDto;
+import com.leverx.servletapp.cat.dto.CatOutputDto;
+import com.leverx.servletapp.cat.dto.CatWithIdsDto;
+import com.leverx.servletapp.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.InputDataException;
 

@@ -2,9 +2,9 @@ package com.leverx.servletapp.user.mapper;
 
 import com.leverx.servletapp.cat.mapper.CatMapper;
 import com.leverx.servletapp.user.entity.User;
-import com.leverx.servletapp.user.entity.dto.UserInputDto;
-import com.leverx.servletapp.user.entity.dto.UserOutputDto;
-import com.leverx.servletapp.user.entity.dto.UserWithCatsDto;
+import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.dto.UserOutputDto;
+import com.leverx.servletapp.user.dto.UserWithCatsDto;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;

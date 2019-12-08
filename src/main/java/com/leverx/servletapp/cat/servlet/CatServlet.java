@@ -1,11 +1,11 @@
 package com.leverx.servletapp.cat.servlet;
 
-import com.leverx.servletapp.cat.entity.dto.CatInputDto;
+import com.leverx.servletapp.cat.dto.CatInputDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.InputDataException;
-import com.leverx.servletapp.user.entity.dto.UserTransitionDto;
+import com.leverx.servletapp.user.dto.UserTransitionDto;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

@@ -2,9 +2,9 @@ package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.exception.InputDataException;
 import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.user.entity.dto.UserInputDto;
-import com.leverx.servletapp.user.entity.dto.UserOutputDto;
-import com.leverx.servletapp.user.entity.dto.UserWithCatsDto;
+import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.dto.UserOutputDto;
+import com.leverx.servletapp.user.dto.UserWithCatsDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
