@@ -1,4 +1,4 @@
-package com.leverx.servletapp.user.entity.dto;
+package com.leverx.servletapp.user.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

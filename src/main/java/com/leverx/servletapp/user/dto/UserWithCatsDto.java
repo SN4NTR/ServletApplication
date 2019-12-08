@@ -1,8 +1,8 @@
-package com.leverx.servletapp.user.entity.dto;
+package com.leverx.servletapp.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
-import com.leverx.servletapp.cat.entity.dto.CatOutputDto;
+import com.leverx.servletapp.cat.dto.CatOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

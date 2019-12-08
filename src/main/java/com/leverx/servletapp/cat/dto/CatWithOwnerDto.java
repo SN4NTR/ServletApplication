@@ -1,4 +1,4 @@
-package com.leverx.servletapp.cat.entity.dto;
+package com.leverx.servletapp.cat.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.leverx.servletapp.user.entity.dto.UserOutputDto;
+import com.leverx.servletapp.user.dto.UserOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;

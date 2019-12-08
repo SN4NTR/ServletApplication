@@ -1,4 +1,4 @@
-package com.leverx.servletapp.cat.entity.dto;
+package com.leverx.servletapp.cat.dto;
 
 import lombok.Getter;
 

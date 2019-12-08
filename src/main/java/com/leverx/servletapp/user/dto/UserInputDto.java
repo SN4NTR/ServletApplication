@@ -1,4 +1,4 @@
-package com.leverx.servletapp.user.entity.dto;
+package com.leverx.servletapp.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
