@@ -7,25 +7,49 @@
 * Maven 3.1.0
 * Docker
 
-### Start Application
+### Application Deployment
 
-* Open project package in cmd and build `war` file with Maven:
+#### With Docker
+
+1. Open project package in cmd and build `war` file with Maven:
 
 ```
 mvn clean install
 ```
 
-* Start application:
+2. Start docker containers by docker-compose:
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
-* Go to the following `URL`:
+3. Go to the following `URL`:
 
 ```
-http://localhost:8080/app/users
+http://localhost:8080/APP_NAME/users
 ```
 
 You will see the list of users.
+
+> To stop application type in cmd: `docker-compose stop`.
+
+#### Deployment on Tomcat
+
+1. Open project package in cmd and build `war` file with Maven:
+   
+```
+mvn clean install
+```
+
+2. Copy `war` file to `CATALINA_HOME/webapps`.
+3. Start file `startup.bat`.
+4. Go to the following `URL`:
+
+```
+http://localhost:8080/APP_NAME/users
+```
+
+You will see the list of users.
+
+> To stop application run `shutdown.bat`.
 
