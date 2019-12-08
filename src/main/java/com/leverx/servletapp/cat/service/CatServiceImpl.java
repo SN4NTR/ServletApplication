@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.leverx.servletapp.cat.mapper.CatMapper.collectionToOutputDtoList;
-import static com.leverx.servletapp.cat.mapper.CatMapper.fromInputDto;
-import static com.leverx.servletapp.cat.mapper.CatMapper.toDtoWithOwner;
+import static com.leverx.servletapp.cat.mapper.CatConverter.toOutputDtoList;
+import static com.leverx.servletapp.cat.mapper.CatConverter.fromInputDto;
+import static com.leverx.servletapp.cat.mapper.CatConverter.toDtoWithOwner;
 import static com.leverx.servletapp.validator.EntityValidator.validateEntity;
 import static java.util.Objects.nonNull;
 
@@ -65,13 +65,13 @@ public class CatServiceImpl implements CatService {
     @Override
     public Collection<CatOutputDto> findAll() throws EntityNotFoundException {
         var cats = catRepository.findAll();
-        return collectionToOutputDtoList(cats);
+        return toOutputDtoList(cats);
     }
 
     @Override
     public Collection<CatOutputDto> findByOwnerId(int id) throws EntityNotFoundException {
         var cats = catRepository.findByOwnerId(id);
-        return collectionToOutputDtoList(cats);
+        return toOutputDtoList(cats);
     }
 
     private synchronized void transferCats(Collection<Integer> catIds, User userFrom, User userTo) throws EntityNotFoundException {

@@ -4,7 +4,7 @@ import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.dto.CatInputDto;
 import com.leverx.servletapp.cat.dto.CatOutputDto;
 import com.leverx.servletapp.cat.dto.CatWithOwnerDto;
-import com.leverx.servletapp.user.mapper.UserMapper;
+import com.leverx.servletapp.user.mapper.UserConverter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import static java.util.Objects.nonNull;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class CatMapper {
+public final class CatConverter {
 
     public static Cat fromInputDto(CatInputDto catDto) {
         var name = catDto.getName();
@@ -30,14 +30,14 @@ public final class CatMapper {
         var owner = cat.getOwner();
 
         if (nonNull(owner)) {
-            var ownerOutputDto = UserMapper.toOutputDto(owner);
+            var ownerOutputDto = UserConverter.toOutputDto(owner);
             return new CatWithOwnerDto(id, name, dateOfBirth, ownerOutputDto);
         } else {
             return new CatWithOwnerDto(id, name, dateOfBirth);
         }
     }
 
-    public static List<CatOutputDto> collectionToOutputDtoList(Collection<Cat> cats) {
+    public static List<CatOutputDto> toOutputDtoList(Collection<Cat> cats) {
         var catDtoList = new ArrayList<CatOutputDto>();
 
         for (var cat : cats) {

@@ -5,6 +5,7 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
 import com.leverx.servletapp.user.dto.UserWithCatsDto;
+import com.leverx.servletapp.user.mapper.UserConverter;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.leverx.servletapp.user.mapper.UserMapper.collectionToOutputDtoList;
-import static com.leverx.servletapp.user.mapper.UserMapper.fromInputDto;
-import static com.leverx.servletapp.user.mapper.UserMapper.toWithCatsDto;
+import static com.leverx.servletapp.user.mapper.UserConverter.fromInputDto;
+import static com.leverx.servletapp.user.mapper.UserConverter.toWithCatsDto;
 import static com.leverx.servletapp.validator.EntityValidator.validateEntity;
 
 @Slf4j
@@ -55,12 +55,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<UserOutputDto> findByName(String name) throws EntityNotFoundException {
         var users = userRepository.findByName(name);
-        return collectionToOutputDtoList(users);
+        return UserConverter.toOutputDtoList(users);
     }
 
     @Override
     public Collection<UserOutputDto> findAll() throws EntityNotFoundException {
         var users = userRepository.findAll();
-        return collectionToOutputDtoList(users);
+        return UserConverter.toOutputDtoList(users);
     }
 }
