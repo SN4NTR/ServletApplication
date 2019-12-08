@@ -1,6 +1,6 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.exception.InputDataException;
+import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository = new UserRepositoryImpl();
 
     @Override
-    public void save(UserInputDto userInputDto) throws InputDataException {
+    public void save(UserInputDto userInputDto) throws ValidationException {
         validateEntity(userInputDto);
         var user = fromInputDto(userInputDto);
         userRepository.save(user);
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, InputDataException {
+    public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
         validateEntity(userInputDto);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow();

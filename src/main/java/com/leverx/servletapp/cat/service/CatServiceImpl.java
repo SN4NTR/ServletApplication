@@ -8,7 +8,7 @@ import com.leverx.servletapp.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.InputDataException;
+import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
@@ -29,7 +29,7 @@ public class CatServiceImpl implements CatService {
     private UserRepository userRepository = new UserRepositoryImpl();
 
     @Override
-    public void save(CatInputDto catInputDto) throws InputDataException {
+    public void save(CatInputDto catInputDto) throws ValidationException {
         validateEntity(catInputDto);
         var cat = fromInputDto(catInputDto);
         catRepository.save(cat);
