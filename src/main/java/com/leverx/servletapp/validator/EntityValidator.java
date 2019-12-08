@@ -12,6 +12,9 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 @Slf4j
 public class EntityValidator {
 
+    public static final int NAME_MIN_SIZE = 5;
+    public static final int NAME_MAX_SIZE = 60;
+
     private static final String DELIMITER = "; ";
 
     public static <T> void validateEntity(T t) throws ValidationException {

@@ -13,8 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MIN_SIZE;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -33,7 +37,9 @@ public class User {
     private int id;
 
     @NonNull
+    @NotNull
     @Column(name = "first_name")
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String firstName;
 
     @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "owner")

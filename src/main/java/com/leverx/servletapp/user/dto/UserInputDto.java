@@ -1,19 +1,15 @@
 package com.leverx.servletapp.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
 
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MIN_SIZE;
+
 @Data
 public class UserInputDto {
 
-    @Size(min = 5, max = 60)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String firstName;
-
-    @JsonIgnore
-    public static final int FIRST_NAME_LENGTH_MIN = 5;
-
-    @JsonIgnore
-    public static final int FIRST_NAME_LENGTH_MAX = 60;
 }

@@ -11,7 +11,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.ws.rs.InternalServerErrorException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ public class CatRepositoryImpl implements CatRepository {
         } catch (EntityExistsException ex) {
             rollbackTransaction(transaction);
             log.error("Cat can't be saved");
-            throw new InternalServerErrorException(ex);
+            throw new IllegalArgumentException(ex);
         } finally {
             entityManager.close();
         }

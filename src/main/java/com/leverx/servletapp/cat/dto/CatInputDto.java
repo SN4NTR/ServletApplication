@@ -10,16 +10,17 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
-
 import java.time.LocalDate;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MIN_SIZE;
 
 @Data
 public class CatInputDto {
 
     @NotNull
-    @Size(min = 5, max = 60)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
     @NotNull

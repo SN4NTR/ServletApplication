@@ -1,6 +1,6 @@
-package com.leverx.servletapp.user.mapper;
+package com.leverx.servletapp.user.converter;
 
-import com.leverx.servletapp.cat.mapper.CatConverter;
+import com.leverx.servletapp.cat.converter.CatConverter;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
@@ -41,11 +41,7 @@ public final class UserConverter {
         for (var user : users) {
             var id = user.getId();
             var firstName = user.getFirstName();
-
-            var userDto = new UserOutputDto();
-            userDto.setId(id);
-            userDto.setFirstName(firstName);
-
+            var userDto = new UserOutputDto(id, firstName);
             userDtoList.add(userDto);
         }
         return userDtoList;

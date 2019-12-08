@@ -5,7 +5,7 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
 import com.leverx.servletapp.user.dto.UserWithCatsDto;
-import com.leverx.servletapp.user.mapper.UserConverter;
+import com.leverx.servletapp.user.converter.UserConverter;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.leverx.servletapp.user.mapper.UserConverter.fromInputDto;
-import static com.leverx.servletapp.user.mapper.UserConverter.toWithCatsDto;
+import static com.leverx.servletapp.user.converter.UserConverter.fromInputDto;
+import static com.leverx.servletapp.user.converter.UserConverter.toWithCatsDto;
 import static com.leverx.servletapp.validator.EntityValidator.validateEntity;
 
 @Slf4j

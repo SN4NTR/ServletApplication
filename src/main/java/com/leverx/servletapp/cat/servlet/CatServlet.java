@@ -4,8 +4,7 @@ import com.leverx.servletapp.cat.dto.CatInputDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.InputDataException;
-import com.leverx.servletapp.user.dto.UserTransitionDto;
+import com.leverx.servletapp.exception.ValidationException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
-import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
-import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
+import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
+import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
+import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
 import static java.lang.Integer.parseInt;
@@ -53,22 +52,7 @@ public class CatServlet extends HttpServlet {
             var catDto = jsonToEntity(reader, CatInputDto.class);
             catService.save(catDto);
             resp.setStatus(SC_CREATED);
-        } catch (InputDataException ex) {
-            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
-        }
-    }
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            var reader = req.getReader();
-            var userTransitionDto = jsonToEntity(reader, UserTransitionDto.class);
-            var userIdFrom = userTransitionDto.getIdFrom();
-            var userIdTo = userTransitionDto.getIdTo();
-            var catIds = userTransitionDto.getCatIds();
-            catService.transfer(userIdFrom, userIdTo, catIds);
-            resp.setStatus(SC_OK);
-        } catch (EntityNotFoundException ex) {
+        } catch (ValidationException ex) {
             resp.sendError(SC_BAD_REQUEST, ex.getMessage());
         }
     }

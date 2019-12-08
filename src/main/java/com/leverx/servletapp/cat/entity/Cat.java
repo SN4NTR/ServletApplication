@@ -14,8 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.validator.EntityValidator.NAME_MIN_SIZE;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -33,10 +38,14 @@ public class Cat {
     private int id;
 
     @NonNull
+    @NotNull
     @Column(name = "name")
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
     @NonNull
+    @NotNull
+    @PastOrPresent
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 

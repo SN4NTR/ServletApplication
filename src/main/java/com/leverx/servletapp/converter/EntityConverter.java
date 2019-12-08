@@ -1,15 +1,15 @@
-package com.leverx.servletapp.mapper;
+package com.leverx.servletapp.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leverx.servletapp.exception.InternalServerErrorException;
 
-import javax.ws.rs.InternalServerErrorException;
 import java.io.BufferedReader;
 import java.util.Collection;
 
 import static java.util.stream.Collectors.joining;
 
-public class EntityMapper {
+public class EntityConverter {
 
     private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -37,7 +37,7 @@ public class EntityMapper {
 
     public static <T> String collectionToJson(Collection<T> t) {
         return t.stream()
-                .map(EntityMapper::entityToJson)
+                .map(EntityConverter::entityToJson)
                 .collect(joining("\n"));
     }
 }

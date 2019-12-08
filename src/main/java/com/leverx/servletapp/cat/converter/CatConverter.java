@@ -1,10 +1,10 @@
-package com.leverx.servletapp.cat.mapper;
+package com.leverx.servletapp.cat.converter;
 
 import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.dto.CatInputDto;
 import com.leverx.servletapp.cat.dto.CatOutputDto;
 import com.leverx.servletapp.cat.dto.CatWithOwnerDto;
-import com.leverx.servletapp.user.mapper.UserConverter;
+import com.leverx.servletapp.user.converter.UserConverter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;

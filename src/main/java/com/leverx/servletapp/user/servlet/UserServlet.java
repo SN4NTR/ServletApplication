@@ -1,11 +1,10 @@
 package com.leverx.servletapp.user.servlet;
 
-import com.leverx.servletapp.cat.entity.dto.CatWithIdsDto;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.cat.service.CatServiceImpl;
 import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.InputDataException;
-import com.leverx.servletapp.user.entity.dto.UserInputDto;
+import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.service.UserService;
 import com.leverx.servletapp.user.service.UserServiceImpl;
 
@@ -15,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.mapper.EntityMapper.collectionToJson;
-import static com.leverx.servletapp.mapper.EntityMapper.entityToJson;
-import static com.leverx.servletapp.mapper.EntityMapper.jsonToEntity;
+import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
+import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
+import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
-import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
-import static com.leverx.servletapp.util.ServletUtils.getPenultimatePartOfUrl;
+import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
+import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
 import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
 import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
 import static java.lang.Integer.parseInt;
@@ -42,10 +41,13 @@ public class UserServlet extends HttpServlet {
 
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var valueOpt = getLastPartOfUrl(urlToString);
-        var value = valueOpt.orElseThrow();
-        var idToStringOpt = getPenultimatePartOfUrl(urlToString);
+
+        var idToStringOpt = getUserIdFormUrl(urlToString);
         var idToString = idToStringOpt.orElseThrow();
+
+        var param = req.getParameter("firstName");
+        var valueOpt = getValueFromUrl(urlToString, param);
+        var value = valueOpt.orElseThrow();
 
         if (USERS_ENDPOINT.equals(value)) {
             printAllUsers(printWriter, resp);
@@ -66,7 +68,7 @@ public class UserServlet extends HttpServlet {
             var userDto = jsonToEntity(reader, UserInputDto.class);
             userService.save(userDto);
             resp.setStatus(SC_CREATED);
-        } catch (InputDataException ex) {
+        } catch (ValidationException ex) {
             resp.sendError(SC_BAD_REQUEST, ex.getMessage());
         }
     }
@@ -85,16 +87,7 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var valueOpt = getLastPartOfUrl(urlToString);
-        var value = valueOpt.orElseThrow();
-        var idToStringOpt = getPenultimatePartOfUrl(urlToString);
-        var idToString = idToStringOpt.orElseThrow();
-
-        if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
-            assignCatToUser(req, resp, idToString);
-        } else {
-            updateUser(req, resp, urlToString);
-        }
+        updateUser(req, resp, urlToString);
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {
@@ -105,19 +98,7 @@ public class UserServlet extends HttpServlet {
             var userInputDto = jsonToEntity(reader, UserInputDto.class);
             userService.update(id, userInputDto);
             resp.setStatus(SC_OK);
-        } catch (InputDataException | EntityNotFoundException ex) {
-            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
-        }
-    }
-
-    private void assignCatToUser(HttpServletRequest req, HttpServletResponse resp, String idToString) throws IOException {
-        try {
-            var id = parseInt(idToString);
-            var reader = req.getReader();
-            var catDtoWithIdsDto = jsonToEntity(reader, CatWithIdsDto.class);
-            catService.assignToUser(id, catDtoWithIdsDto);
-            resp.setStatus(SC_OK);
-        } catch (EntityNotFoundException ex) {
+        } catch (ValidationException | EntityNotFoundException ex) {
             resp.sendError(SC_BAD_REQUEST, ex.getMessage());
         }
     }
