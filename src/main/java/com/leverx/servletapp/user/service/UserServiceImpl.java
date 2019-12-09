@@ -1,7 +1,6 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.cat.repository.CatRepository;
-import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
+import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
@@ -15,24 +14,26 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 import java.util.List;
 
+import static com.leverx.servletapp.cat.validator.CatValidator.ifValidIdsGetList;
 import static com.leverx.servletapp.user.converter.UserConverter.fromInputDto;
 import static com.leverx.servletapp.user.converter.UserConverter.toOutputDtoList;
 import static com.leverx.servletapp.user.converter.UserConverter.toWithCatsDto;
-import static com.leverx.servletapp.validator.EntityValidator.validateEntity;
+import static com.leverx.servletapp.user.validator.UserValidator.validateInputDto;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository = new UserRepositoryImpl();
-    private CatRepository catRepository = new CatRepositoryImpl();
 
     @Override
     public void save(UserInputDto userInputDto) throws ValidationException {
-        validateEntity(userInputDto);
+        validateInputDto(userInputDto);
         var user = fromInputDto(userInputDto);
         userRepository.save(user);
         var catIds = userInputDto.getCatIds();
-        addCats(user, catIds);
+        var cats = ifValidIdsGetList(catIds);
+        addCats(user, cats);
         userRepository.update(user);
     }
 
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
-        validateEntity(userInputDto);
+        validateInputDto(userInputDto);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
         var firstName = userInputDto.getFirstName();
@@ -70,13 +71,12 @@ public class UserServiceImpl implements UserService {
         return toOutputDtoList(users);
     }
 
-    private void addCats(User user, List<Integer> ids) {
-        var existingCats = user.getCats();
-        for (var id : ids) {
-            var catOpt = catRepository.findById(id);
-            var cat = catOpt.orElseThrow();
-            existingCats.add(cat);
-            cat.setOwner(user);
+    private void addCats(User user, List<Cat> cats) {
+        if (isNotEmpty(cats)) {
+            var existingCats = user.getCats();
+            cats.stream()
+                    .peek(existingCats::add)
+                    .forEach(cat -> cat.setOwner(user));
         }
     }
 }

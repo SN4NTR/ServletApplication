@@ -20,8 +20,8 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.leverx.servletapp.validator.EntityValidator.NAME_MAX_SIZE;
-import static com.leverx.servletapp.validator.EntityValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.cat.validator.CatValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.cat.validator.CatValidator.NAME_MIN_SIZE;
 
 @Getter
 @Setter

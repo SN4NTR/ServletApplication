@@ -13,7 +13,7 @@ import java.util.Collection;
 import static com.leverx.servletapp.cat.converter.CatConverter.fromInputDto;
 import static com.leverx.servletapp.cat.converter.CatConverter.toDtoWithOwner;
 import static com.leverx.servletapp.cat.converter.CatConverter.toOutputDtoList;
-import static com.leverx.servletapp.validator.EntityValidator.validateEntity;
+import static com.leverx.servletapp.cat.validator.CatValidator.validateInputDto;
 
 public class CatServiceImpl implements CatService {
 
@@ -21,7 +21,7 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public void save(CatInputDto catInputDto) throws ValidationException {
-        validateEntity(catInputDto);
+        validateInputDto(catInputDto);
         var cat = fromInputDto(catInputDto);
         catRepository.save(cat);
     }

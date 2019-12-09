@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-import static com.leverx.servletapp.validator.EntityValidator.NAME_MAX_SIZE;
-import static com.leverx.servletapp.validator.EntityValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.user.validator.UserValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.user.validator.UserValidator.NAME_MIN_SIZE;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
