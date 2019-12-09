@@ -22,9 +22,10 @@ public class CatValidator {
 
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
-    private static final String DELIMITER = "; ";
-
+    public static final String DELIMITER = "; ";
     private static final String CAT_DOES_NOT_EXIST = "Cat doesn't exist";
+    public static final String WRONG_NAME_SIZE_MSG = "First name must be between " + NAME_MIN_SIZE + " and " + NAME_MAX_SIZE;
+    public static final String WRONG_DATE_MSG = "Date must be past or present";
 
     private static final CatRepository CAT_REPOSITORY = new CatRepositoryImpl();
 
@@ -33,7 +34,7 @@ public class CatValidator {
         var validator = validatorFactory.getValidator();
         var violations = validator.validate(catInputDto);
         if (isNotEmpty(violations)) {
-            var message = "Cat: " + logErrors(violations);
+            var message = logErrors(violations);
             throw new ValidationException(message);
         }
     }

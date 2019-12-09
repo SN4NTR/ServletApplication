@@ -19,6 +19,7 @@ import java.util.List;
 
 import static com.leverx.servletapp.user.validator.UserValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.user.validator.UserValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.user.validator.UserValidator.WRONG_NAME_SIZE_MSG;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -39,7 +40,7 @@ public class User {
     @NonNull
     @NotNull
     @Column(name = "first_name")
-    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String firstName;
 
     @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "owner")

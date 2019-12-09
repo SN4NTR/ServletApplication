@@ -21,6 +21,8 @@ import java.time.LocalDate;
 
 import static com.leverx.servletapp.cat.validator.CatValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.cat.validator.CatValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.cat.validator.CatValidator.WRONG_DATE_MSG;
+import static com.leverx.servletapp.cat.validator.CatValidator.WRONG_NAME_SIZE_MSG;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -40,12 +42,12 @@ public class Cat {
     @NonNull
     @NotNull
     @Column(name = "name")
-    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String name;
 
     @NonNull
     @NotNull
-    @PastOrPresent
+    @PastOrPresent(message = WRONG_DATE_MSG)
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 

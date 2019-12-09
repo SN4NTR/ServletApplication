@@ -2,8 +2,6 @@ package com.leverx.servletapp.user.validator;
 
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
-import com.leverx.servletapp.user.repository.UserRepository;
-import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -11,22 +9,22 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import static javax.validation.Validation.buildDefaultValidatorFactory;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
 public class UserValidator {
 
-    private static final UserRepository USER_REPOSITORY = new UserRepositoryImpl();
-
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
-    private static final String DELIMITER = "; ";
+    public static final String DELIMITER = "; ";
+    public static final String WRONG_NAME_SIZE_MSG = "First name must be between " + NAME_MIN_SIZE + " and " + NAME_MAX_SIZE;
 
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
         var violations = validator.validate(userInputDto);
-        if (violations.size() > 0) {
-            var message = "User: " + logErrors(violations);
+        if (isNotEmpty(violations)) {
+            var message = logErrors(violations);
             throw new ValidationException(message);
         }
     }
