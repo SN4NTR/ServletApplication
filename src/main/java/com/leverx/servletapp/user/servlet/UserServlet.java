@@ -28,6 +28,7 @@ import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
@@ -103,35 +104,33 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
-        try {
-            var id = parseInt(idToString);
-            var cats = catService.findByOwnerId(id);
+    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
+        var id = parseInt(idToString);
+        var cats = catService.findByOwnerId(id);
+        if (isNotEmpty(cats)) {
             var result = collectionToJson(cats);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } catch (EntityNotFoundException ex) {
-            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
         }
-
     }
 
-    private void printUserByFirstName(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
-        try {
-            var users = userService.findByName(value);
+    private void printUserByFirstName(PrintWriter printWriter, String value, HttpServletResponse resp) {
+        var users = userService.findByName(value);
+        if (isNotEmpty(users)) {
             var result = collectionToJson(users);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } catch (EntityNotFoundException ex) {
-            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
         }
     }
 
     private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
         try {
             var id = parseInt(value);
-            var userOpt = userService.findById(id);
-            var user = userOpt.orElseThrow();
+            var user = userService.findById(id);
             var result = entityToJson(user);
             printWriter.print(result);
             resp.setStatus(SC_OK);
@@ -140,14 +139,14 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) throws IOException {
-        try {
-            var users = userService.findAll();
+    private void printAllUsers(PrintWriter printWriter, HttpServletResponse resp) {
+        var users = userService.findAll();
+        if (isNotEmpty(users)) {
             var result = collectionToJson(users);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } catch (EntityNotFoundException ex) {
-            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
         }
     }
 }

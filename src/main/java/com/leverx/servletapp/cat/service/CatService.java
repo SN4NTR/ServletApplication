@@ -7,15 +7,14 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface CatService {
 
     void save(CatInputDto catInputDto) throws ValidationException;
 
-    Optional<CatWithOwnerDto> findById(int id) throws EntityNotFoundException;
+    CatWithOwnerDto findById(int id) throws EntityNotFoundException;
 
-    Collection<CatOutputDto> findAll() throws EntityNotFoundException;
+    Collection<CatOutputDto> findAll();
 
-    Collection<CatOutputDto> findByOwnerId(int id) throws EntityNotFoundException;
+    Collection<CatOutputDto> findByOwnerId(int id);
 }

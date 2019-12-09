@@ -1,6 +1,5 @@
 package com.leverx.servletapp.user.repository;
 
-import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -96,7 +96,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(int id) throws EntityNotFoundException {
+    public Optional<User> findById(int id) {
         log.info("Getting user by id = {}", id);
 
         var entityManager = getEntityManager();
@@ -118,14 +118,14 @@ public class UserRepositoryImpl implements UserRepository {
             rollbackTransaction(transaction);
             var message = "User can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return Optional.empty();
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<User> findByName(String name) throws EntityNotFoundException {
+    public Collection<User> findByName(String name) {
         log.info("Getting user by firstName = {}", name);
 
         var entityManager = getEntityManager();
@@ -150,14 +150,14 @@ public class UserRepositoryImpl implements UserRepository {
             rollbackTransaction(transaction);
             var message = "User can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<User> findAll() throws EntityNotFoundException {
+    public Collection<User> findAll() {
         log.info("Getting all users");
 
         var entityManager = getEntityManager();
@@ -179,7 +179,7 @@ public class UserRepositoryImpl implements UserRepository {
             rollbackTransaction(transaction);
             var message = "Users cant' be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }

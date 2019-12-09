@@ -1,13 +1,12 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
 import com.leverx.servletapp.user.dto.UserWithCatsDto;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface UserService {
 
@@ -17,9 +16,9 @@ public interface UserService {
 
     void update(int id, UserInputDto user) throws ValidationException, EntityNotFoundException;
 
-    Optional<UserWithCatsDto> findById(int id) throws EntityNotFoundException;
+    UserWithCatsDto findById(int id) throws EntityNotFoundException;
 
-    Collection<UserOutputDto> findByName(String name) throws EntityNotFoundException;
+    Collection<UserOutputDto> findByName(String name);
 
-    Collection<UserOutputDto> findAll() throws EntityNotFoundException;
+    Collection<UserOutputDto> findAll();
 }

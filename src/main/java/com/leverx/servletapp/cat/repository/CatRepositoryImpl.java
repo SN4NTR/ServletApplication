@@ -2,7 +2,6 @@ package com.leverx.servletapp.cat.repository;
 
 import com.leverx.servletapp.cat.entity.Cat;
 import com.leverx.servletapp.cat.entity.Cat_;
-import com.leverx.servletapp.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
@@ -16,6 +15,7 @@ import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -46,7 +46,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public Optional<Cat> findById(int id) throws EntityNotFoundException {
+    public Optional<Cat> findById(int id) {
         log.info("Getting cat with id = {}", id);
 
         var entityManager = getEntityManager();
@@ -68,14 +68,14 @@ public class CatRepositoryImpl implements CatRepository {
             rollbackTransaction(transaction);
             var message = "Cat can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return Optional.empty();
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<Cat> findByOwnerId(int id) throws EntityNotFoundException {
+    public Collection<Cat> findByOwnerId(int id) {
         log.info("Getting cat by owner id = {}", id);
 
         var entityManager = getEntityManager();
@@ -100,14 +100,14 @@ public class CatRepositoryImpl implements CatRepository {
             rollbackTransaction(transaction);
             var message = "Cats can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<Cat> findAll() throws EntityNotFoundException {
+    public Collection<Cat> findAll() {
         log.info("Getting all users");
 
         var entityManager = getEntityManager();
@@ -129,7 +129,7 @@ public class CatRepositoryImpl implements CatRepository {
             rollbackTransaction(transaction);
             var message = "Cat can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }

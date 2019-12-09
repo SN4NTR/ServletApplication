@@ -9,7 +9,6 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.leverx.servletapp.cat.converter.CatConverter.fromInputDto;
 import static com.leverx.servletapp.cat.converter.CatConverter.toDtoWithOwner;
@@ -28,21 +27,20 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public Optional<CatWithOwnerDto> findById(int id) throws EntityNotFoundException {
+    public CatWithOwnerDto findById(int id) throws EntityNotFoundException {
         var catOtp = catRepository.findById(id);
-        var cat = catOtp.orElseThrow();
-        var catWithOwnerDto = toDtoWithOwner(cat);
-        return Optional.of(catWithOwnerDto);
+        var cat = catOtp.orElseThrow(EntityNotFoundException::new);
+        return toDtoWithOwner(cat);
     }
 
     @Override
-    public Collection<CatOutputDto> findAll() throws EntityNotFoundException {
+    public Collection<CatOutputDto> findAll() {
         var cats = catRepository.findAll();
         return toOutputDtoList(cats);
     }
 
     @Override
-    public Collection<CatOutputDto> findByOwnerId(int id) throws EntityNotFoundException {
+    public Collection<CatOutputDto> findByOwnerId(int id) {
         var cats = catRepository.findByOwnerId(id);
         return toOutputDtoList(cats);
     }

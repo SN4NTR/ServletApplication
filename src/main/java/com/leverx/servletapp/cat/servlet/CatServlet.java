@@ -22,6 +22,7 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class CatServlet extends HttpServlet {
@@ -57,22 +58,21 @@ public class CatServlet extends HttpServlet {
         }
     }
 
-    private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) throws IOException {
-        try {
-            var cats = catService.findAll();
+    private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) {
+        var cats = catService.findAll();
+        if (isNotEmpty(cats)) {
             var result = collectionToJson(cats);
             printWriter.print(result);
             resp.setStatus(SC_OK);
-        } catch (EntityNotFoundException ex) {
-            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
         }
     }
 
     private void printCatById(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
         try {
             var id = parseInt(value);
-            var catOpt = catService.findById(id);
-            var cat = catOpt.orElseThrow();
+            var cat = catService.findById(id);
             var result = entityToJson(cat);
             printWriter.print(result);
             resp.setStatus(SC_OK);

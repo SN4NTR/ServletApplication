@@ -16,10 +16,6 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ServletUtils {
 
-    public static Optional<String> getPenultimatePartOfUrl(String url) {
-        return getUrlPartByPosition(url, PENULTIMATE_ELEMENT_POSITION);
-    }
-
     public static Optional<String> getUserIdFormUrl(String url) {
         return getUrlPartByPosition(url, PENULTIMATE_ELEMENT_POSITION);
     }
