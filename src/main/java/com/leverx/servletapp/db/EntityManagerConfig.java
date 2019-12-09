@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.HashMap;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -16,11 +15,7 @@ public class EntityManagerConfig {
     private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
 
     public static void createEntityManagerFactory() {
-        var properties = new HashMap<String, Object>();
-        properties.put("javax.persistence.jdbc.driver", "com.mysql.cj.jdbc.Driver");
-        properties.put("javax.persistence.jdbc.url", "jdbc:mysql://database:3306/db");
-        properties.put("javax.persistence.jdbc.user", "user");
-        properties.put("javax.persistence.jdbc.password", "password");
+        var properties = PropertyLoader.getEnvVariable();
         ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
     }
 
