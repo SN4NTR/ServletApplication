@@ -9,7 +9,12 @@
 
 ### Application Deployment
 
-#### With Docker
+#### Setting up of system variables
+
+Set the following system variables: `DB_URL=jdbc:mysql://SERVICE_NAME:PORT/DB_NAME`, `DB_USER=YOUR_USERNAME`, 
+`DB_PASSWORD=YOUR_PASSWORD`.
+
+#### Deploying with Docker
 
 1. Open project package in cmd and build `war` file with Maven:
 
