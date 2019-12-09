@@ -1,4 +1,4 @@
-create database if not exists db;
+CREATE DATABASE IF NOT EXISTS db;
 USE db;
 CREATE TABLE IF NOT EXISTS users
 (
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS cats
 (
     id            INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(60) NOT NULL,
-    date_of_birth date        not null,
-    owner_id      INT         NOT NULL,
+    date_of_birth DATE        NOT NULL,
+    owner_id      INT         NULL,
     FOREIGN KEY (owner_id) references users (id)
 );
