@@ -65,7 +65,7 @@ mvn clean install
 5. Go to the following `URL`:
 
 ```
-http://localhost:8080/APP_NAME/users
+http://localhost:PORT_NUMBER/APP_NAME/users
 ```
 
 You will see the list of users.
