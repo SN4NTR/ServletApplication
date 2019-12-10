@@ -3,6 +3,10 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+### .env files ###
+db.env
+tomcat.env
+
 ### STS ###
 .apt_generated
 .classpath
