@@ -13,15 +13,21 @@ Application Deployment
 ### Deploying with Docker
 
 1. Go to folder `env` and open file `db_temp.env`. Fill the following fields:
-* `MYSQL_DATABASE=YOUR_DB_NAME`
-* `MYSQL_USER=YOUR_USERNAME`
-* `MYSQL_PASSWORD=YOUR_PASSWORD`
-* `MYSQL_ROOT_PASSWORD=YOUR_ROOT_PASSWORD`
+
+```
+MYSQL_DATABASE=YOUR_DB_NAME
+MYSQL_USER=YOUR_USERNAME
+MYSQL_PASSWORD=YOUR_PASSWORD
+MYSQL_ROOT_PASSWORD=YOUR_ROOT_PASSWORD
+```
 
 2. Open `tomcat_temp.env` and fill all fields:
-* `DB_URL=jdbc:mysql://DB_SERVICE_NAME:PORT/DB_NAME`
-* `DB_USER=YOUR_USERNAME`
-* `DB_PASSWORD=YOUR_PASSWORD`
+
+```
+DB_URL=jdbc:mysql://SERVICE_NAME:PORT/DB_NAME
+DB_USER=YOUR_USERNAME
+DB_PASSWORD=YOUR_PASSWORD
+```
 
 3. Rename `db_temp.env` to `db.env` and `tomcat_temp.env` to `tomcat.env`.
 
@@ -50,9 +56,12 @@ You will see the list of users.
 ### Deployment on Tomcat
 
 1. Open Control Panel and set the following system variables:
-* `DB_URL=jdbc:mysql://SERVICE_NAME:PORT/DB_NAME`
-* `DB_USER=YOUR_USERNAME`
-* `DB_PASSWORD=YOUR_PASSWORD`
+
+```
+DB_URL=jdbc:mysql://SERVICE_NAME:PORT/DB_NAME
+DB_USER=YOUR_USERNAME
+DB_PASSWORD=YOUR_PASSWORD
+```
 
 2. Open project package in cmd and build `war` file with Maven:
    
@@ -71,4 +80,3 @@ http://localhost:PORT_NUMBER/APP_NAME/users
 You will see the list of users.
 
 > To stop application run `shutdown.bat`.
-
