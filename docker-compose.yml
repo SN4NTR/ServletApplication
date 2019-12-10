@@ -7,7 +7,7 @@ services:
     ports:
       - '3307:3306'
     env_file:
-      - db.env
+      - env/db.env
     volumes:
       - ./src/main/resources/initdb:/docker-entrypoint-initdb.d
     healthcheck:
@@ -23,7 +23,7 @@ services:
     ports:
       - '8081:8080'
     env_file:
-      - tomcat.env
+      - env/tomcat.env
     depends_on:
       database:
         condition: service_healthy

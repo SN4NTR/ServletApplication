@@ -4,8 +4,8 @@ target/
 !**/src/test/**
 
 ### .env files ###
-db.env
-tomcat.env
+env/db.env
+env/tomcat.env
 
 ### STS ###
 .apt_generated
