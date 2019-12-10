@@ -6,8 +6,9 @@
     <persistence-unit name="JpaPersistence">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.leverx.servletapp.user.entity.User</class>
-        <class>com.leverx.servletapp.cat.entity.Cat</class>
+        <class>com.leverx.servletapp.model.user.entity.User</class>
+        <class>com.leverx.servletapp.model.animal.cat.entity.Cat</class>
+        <class>com.leverx.servletapp.model.animal.dog.entity.Dog</class>
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
