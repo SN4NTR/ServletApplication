@@ -69,7 +69,7 @@ public class UserServlet extends HttpServlet {
             var userDto = jsonToEntity(reader, UserInputDto.class);
             userService.save(userDto);
             resp.setStatus(SC_CREATED);
-        } catch (ValidationException ex) {
+        } catch (ValidationException | EntityNotFoundException ex) {
             resp.sendError(SC_BAD_REQUEST, ex.getMessage());
         }
     }
@@ -104,15 +104,19 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) {
-        var id = parseInt(idToString);
-        var cats = catService.findByOwnerId(id);
-        if (isNotEmpty(cats)) {
-            var result = collectionToJson(cats);
-            printWriter.print(result);
-            resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(SC_NOT_FOUND);
+    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
+        try {
+            var id = parseInt(idToString);
+            var cats = catService.findByOwnerId(id);
+            if (isNotEmpty(cats)) {
+                var result = collectionToJson(cats);
+                printWriter.print(result);
+                resp.setStatus(SC_OK);
+            } else {
+                resp.setStatus(SC_NOT_FOUND);
+            }
+        } catch (EntityNotFoundException ex) {
+            resp.sendError(SC_NOT_FOUND, ex.getMessage());
         }
     }
 

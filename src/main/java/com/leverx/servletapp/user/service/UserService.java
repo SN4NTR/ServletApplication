@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public interface UserService {
 
-    void save(UserInputDto user) throws ValidationException;
+    void save(UserInputDto user) throws ValidationException, EntityNotFoundException;
 
     void delete(int id);
 

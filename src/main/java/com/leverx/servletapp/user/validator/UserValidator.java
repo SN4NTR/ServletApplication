@@ -1,7 +1,10 @@
 package com.leverx.servletapp.user.validator;
 
+import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.repository.UserRepository;
+import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -19,6 +22,9 @@ public class UserValidator {
     public static final String DELIMITER = "; ";
     public static final String WRONG_NAME_SIZE_MSG = "First name must be between " + NAME_MIN_SIZE + " and " + NAME_MAX_SIZE;
 
+    private static final UserRepository USER_REPOSITORY = new UserRepositoryImpl();
+    private static final String USER_DOES_NOT_EXIST = "User doesn't exist";
+
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
@@ -27,6 +33,11 @@ public class UserValidator {
             var message = logErrors(violations);
             throw new ValidationException(message);
         }
+    }
+
+    public static void validateId(int id) throws EntityNotFoundException {
+        var userOpt = USER_REPOSITORY.findById(id);
+        userOpt.orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST));
     }
 
     private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {
