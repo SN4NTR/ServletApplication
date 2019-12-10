@@ -10,34 +10,46 @@
 Application Deployment
 ---
 
-#### Deploying with Docker
+### Deploying with Docker
 
-1. Open project package in cmd and build `war` file with Maven:
+1. Go to folder `env` and open file `db_temp.env`. Fill the following fields:
+* `MYSQL_DATABASE=YOUR_DB_NAME`
+* `MYSQL_USER=YOUR_USERNAME`
+* `MYSQL_PASSWORD=YOUR_PASSWORD`
+* `MYSQL_ROOT_PASSWORD=YOUR_ROOT_PASSWORD`
+
+2. Open `tomcat_temp.env` and fill all fields:
+* `DB_URL=jdbc:mysql://DB_SERVICE_NAME:PORT/DB_NAME`
+* `DB_USER=YOUR_USERNAME`
+* `DB_PASSWORD=YOUR_PASSWORD`
+
+3. Rename `db_temp.env` to `db.env` and `tomcat_temp.env` to `tomcat.env`.
+
+4. Open project package in cmd and build `war` file with Maven:
 
 ```
 mvn clean install
 ```
 
-2. Start docker containers by docker-compose:
+5. Start docker containers by docker-compose:
 
 ```
-docker-compose up -d
+docker-compose up
 ```
 
-3. Go to the following `URL`:
+6. Go to the following `URL`:
 
 ```
-http://localhost:8080/APP_NAME/users
+http://localhost:PORT_NUMBER/APP_NAME/users
 ```
 
 You will see the list of users.
 
 > To stop application type in cmd: `docker-compose stop`.
 
-#### Deployment on Tomcat
+### Deployment on Tomcat
 
 1. Open Control Panel and set the following system variables:
-
 * `DB_URL=jdbc:mysql://SERVICE_NAME:PORT/DB_NAME`
 * `DB_USER=YOUR_USERNAME`
 * `DB_PASSWORD=YOUR_PASSWORD`
