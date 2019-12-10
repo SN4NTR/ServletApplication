@@ -18,16 +18,15 @@ import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
 import static java.lang.Integer.parseInt;
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class CatServlet extends HttpServlet {
 
     private CatService catService = new CatServiceImpl();
+
+    private static final int UNPROCESSABLE_ENTITY = 422;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -54,19 +53,15 @@ public class CatServlet extends HttpServlet {
             catService.save(catDto);
             resp.setStatus(SC_CREATED);
         } catch (ValidationException ex) {
-            resp.sendError(SC_BAD_REQUEST, ex.getMessage());
+            resp.sendError(UNPROCESSABLE_ENTITY, ex.getMessage());
         }
     }
 
     private void printAllCats(PrintWriter printWriter, HttpServletResponse resp) {
         var cats = catService.findAll();
-        if (isNotEmpty(cats)) {
-            var result = collectionToJson(cats);
-            printWriter.print(result);
-            resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(SC_NOT_FOUND);
-        }
+        var result = collectionToJson(cats);
+        printWriter.print(result);
+        resp.setStatus(SC_OK);
     }
 
     private void printCatById(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
@@ -77,7 +72,7 @@ public class CatServlet extends HttpServlet {
             printWriter.print(result);
             resp.setStatus(SC_OK);
         } catch (EntityNotFoundException ex) {
-            resp.sendError(SC_NOT_FOUND, ex.getMessage());
+            resp.sendError(UNPROCESSABLE_ENTITY, ex.getMessage());
         }
     }
 }
