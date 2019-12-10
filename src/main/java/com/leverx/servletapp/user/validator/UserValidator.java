@@ -11,6 +11,7 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -31,13 +32,13 @@ public class UserValidator {
         var violations = validator.validate(userInputDto);
         if (isNotEmpty(violations)) {
             var message = logErrors(violations);
-            throw new ValidationException(message);
+            throw new ValidationException(message, UNPROCESSABLE_ENTITY);
         }
     }
 
     public static void validateId(int id) throws EntityNotFoundException {
         var userOpt = USER_REPOSITORY.findById(id);
-        userOpt.orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST));
+        userOpt.orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
     }
 
     private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {

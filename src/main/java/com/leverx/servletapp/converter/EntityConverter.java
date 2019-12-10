@@ -7,6 +7,7 @@ import com.leverx.servletapp.exception.InternalServerErrorException;
 import java.io.BufferedReader;
 import java.util.Collection;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static java.util.stream.Collectors.joining;
 
 public class EntityConverter {
@@ -23,7 +24,7 @@ public class EntityConverter {
             var jsonBody = readJsonBody(reader);
             return OBJECT_MAPPER.readValue(jsonBody, tClass);
         } catch (JsonProcessingException e) {
-            throw new InternalServerErrorException(e);
+            throw new InternalServerErrorException(e, INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -31,7 +32,7 @@ public class EntityConverter {
         try {
             return OBJECT_MAPPER.writeValueAsString(t);
         } catch (JsonProcessingException e) {
-            throw new InternalServerErrorException(e);
+            throw new InternalServerErrorException(e, INTERNAL_SERVER_ERROR);
         }
     }
 

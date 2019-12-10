@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -33,20 +34,20 @@ public class CatValidator {
         var violations = validator.validate(catInputDto);
         if (isNotEmpty(violations)) {
             var message = logErrors(violations);
-            throw new ValidationException(message);
+            throw new ValidationException(message, UNPROCESSABLE_ENTITY);
         }
     }
 
     public static void validateId(int id) throws EntityNotFoundException {
         var catOpt = CAT_REPOSITORY.findById(id);
-        catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST));
+        catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
     }
 
     public static void validateIds(List<Integer> ids) throws EntityNotFoundException {
         if (isNotEmpty(ids)) {
             for (var id : ids) {
                 var catOpt = CAT_REPOSITORY.findById(id);
-                catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST));
+                catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
             }
         }
     }

@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
+import static com.leverx.servletapp.constant.HttpResponseStatus.NO_CONTENT;
+import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -23,18 +26,12 @@ import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
 import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
 import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
 import static java.lang.Integer.parseInt;
-import static javax.servlet.http.HttpServletResponse.SC_CREATED;
-import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
 
     private UserService userService = new UserServiceImpl();
     private CatService catService = new CatServiceImpl();
-
-    private static final int UNPROCESSABLE_ENTITY = 422;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -68,9 +65,13 @@ public class UserServlet extends HttpServlet {
             var reader = req.getReader();
             var userDto = jsonToEntity(reader, UserInputDto.class);
             userService.save(userDto);
-            resp.setStatus(SC_CREATED);
-        } catch (ValidationException | EntityNotFoundException ex) {
-            resp.sendError(UNPROCESSABLE_ENTITY, ex.getMessage());
+            resp.setStatus(CREATED);
+        } catch (ValidationException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
+        } catch (EntityNotFoundException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
         }
     }
 
@@ -81,7 +82,7 @@ public class UserServlet extends HttpServlet {
         var idOpt = getIdFromUrl(urlToString);
         var id = idOpt.orElseThrow();
         userService.delete(id);
-        resp.setStatus(SC_NO_CONTENT);
+        resp.setStatus(NO_CONTENT);
     }
 
     @Override
@@ -98,9 +99,13 @@ public class UserServlet extends HttpServlet {
             var reader = req.getReader();
             var userInputDto = jsonToEntity(reader, UserInputDto.class);
             userService.update(id, userInputDto);
-            resp.setStatus(SC_OK);
-        } catch (ValidationException | EntityNotFoundException ex) {
-            resp.sendError(UNPROCESSABLE_ENTITY, ex.getMessage());
+            resp.setStatus(OK);
+        } catch (ValidationException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
+        } catch (EntityNotFoundException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
         }
     }
 
@@ -110,21 +115,18 @@ public class UserServlet extends HttpServlet {
             var cats = catService.findByOwnerId(id);
             var result = collectionToJson(cats);
             printWriter.print(result);
-            resp.setStatus(SC_OK);
+            resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
-            resp.sendError(UNPROCESSABLE_ENTITY, ex.getMessage());
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
         }
     }
 
     private void printUserByFirstName(PrintWriter printWriter, String value, HttpServletResponse resp) {
         var users = userService.findByName(value);
-        if (isNotEmpty(users)) {
-            var result = collectionToJson(users);
-            printWriter.print(result);
-            resp.setStatus(SC_OK);
-        } else {
-            resp.setStatus(UNPROCESSABLE_ENTITY);
-        }
+        var result = collectionToJson(users);
+        printWriter.print(result);
+        resp.setStatus(OK);
     }
 
     private void printUserById(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
@@ -133,9 +135,10 @@ public class UserServlet extends HttpServlet {
             var user = userService.findById(id);
             var result = entityToJson(user);
             printWriter.print(result);
-            resp.setStatus(SC_OK);
+            resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
-            resp.sendError(UNPROCESSABLE_ENTITY, ex.getMessage());
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
         }
     }
 
@@ -143,6 +146,6 @@ public class UserServlet extends HttpServlet {
         var users = userService.findAll();
         var result = collectionToJson(users);
         printWriter.print(result);
-        resp.setStatus(SC_OK);
+        resp.setStatus(OK);
     }
 }
