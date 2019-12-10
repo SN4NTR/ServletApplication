@@ -18,5 +18,6 @@ public class UserInputDto {
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String firstName;
 
-    private List<Integer> catIds = emptyList();
+    private List<Integer> catsIds = emptyList();
+    private List<Integer> dogsIds = emptyList();
 }

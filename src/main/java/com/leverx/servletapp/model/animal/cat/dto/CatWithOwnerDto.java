@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.NAME_MAX_SIZE;
@@ -48,5 +49,5 @@ public class CatWithOwnerDto {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
 
-    private UserOutputDto owner;
+    private List<UserOutputDto> owners;
 }

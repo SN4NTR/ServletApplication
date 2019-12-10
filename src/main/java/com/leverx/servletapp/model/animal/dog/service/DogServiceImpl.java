@@ -42,10 +42,10 @@ public class DogServiceImpl implements DogService {
         return toOutputDtoList(dogs);
     }
 
-//    @Override
-//    public Collection<DogOutputDto> findByOwnerId(int id) throws EntityNotFoundException {
-//        UserValidator.validateId(id);
-//        var dogs = dogRepository.findByOwnerId(id);
-//        return toOutputDtoList(dogs);
-//    }
+    @Override
+    public Collection<DogOutputDto> findByOwnerId(int id) throws EntityNotFoundException {
+        UserValidator.validateId(id);
+        var dogs = dogRepository.findByOwnerId(id);
+        return toOutputDtoList(dogs);
+    }
 }

@@ -1,6 +1,6 @@
 package com.leverx.servletapp.model.user.entity;
 
-import com.leverx.servletapp.model.animal.cat.entity.Cat;
+import com.leverx.servletapp.model.animal.Animal;
 import com.leverx.servletapp.model.user.validator.UserValidator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +12,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -41,6 +42,9 @@ public class User {
     @Size(min = UserValidator.NAME_MIN_SIZE, max = UserValidator.NAME_MAX_SIZE, message = UserValidator.WRONG_NAME_SIZE_MSG)
     private String firstName;
 
-    @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "owner")
-    private List<Cat> cats;
+    @ManyToMany(fetch = EAGER)
+    @JoinTable(name = "owner_animal",
+            joinColumns = {@JoinColumn(name = "owner_id")},
+            inverseJoinColumns = {@JoinColumn(name = "animal_id")})
+    private List<Animal> animals;
 }

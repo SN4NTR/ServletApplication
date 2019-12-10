@@ -16,5 +16,5 @@ public interface DogService {
 
     Collection<DogOutputDto> findAll();
 
-//    Collection<DogOutputDto> findByOwnerId(int id) throws EntityNotFoundException;
+    Collection<DogOutputDto> findByOwnerId(int id) throws EntityNotFoundException;
 }

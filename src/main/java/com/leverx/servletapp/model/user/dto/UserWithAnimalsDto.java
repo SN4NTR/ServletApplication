@@ -2,7 +2,7 @@ package com.leverx.servletapp.model.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
-import com.leverx.servletapp.model.animal.cat.dto.CatOutputDto;
+import com.leverx.servletapp.model.animal.AnimalOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import static java.util.Collections.emptyList;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @JsonIdentityInfo(generator = PropertyGenerator.class, property = "id")
-public class UserWithCatsDto {
+public class UserWithAnimalsDto {
 
     private int id;
 
@@ -30,5 +30,5 @@ public class UserWithCatsDto {
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String firstName;
 
-    private List<CatOutputDto> cats = emptyList();
+    private List<AnimalOutputDto> animals = emptyList();
 }

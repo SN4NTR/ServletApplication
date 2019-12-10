@@ -11,7 +11,7 @@ public interface DogRepository {
 
     Optional<Dog> findById(int id);
 
-//    Collection<Dog> findByOwnerId(int id);
+    Collection<Dog> findByOwnerId(int id);
 
     Collection<Dog> findAll();
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -20,31 +19,27 @@ public class DogConverter {
     public static Dog fromInputDto(DogInputDto dogInputDto) {
         var name = dogInputDto.getName();
         var dateOfBirth = dogInputDto.getDateOfBirth();
-        return new Dog(name, dateOfBirth);
+        var dog = new Dog();
+        dog.setName(name);
+        dog.setDateOfBirth(dateOfBirth);
+        return dog;
     }
 
     public static DogWithOwnerDto toDtoWithOwner(Dog dog) {
         var id = dog.getId();
         var name = dog.getName();
         var dateOfBirth = dog.getDateOfBirth();
-//        var owner = dog.getOwner();
-//
-//        if (nonNull(owner)) {
-//            var ownerOutputDto = UserConverter.toOutputDto(owner);
-//            return new DogWithOwnerDto(id, name, dateOfBirth, ownerOutputDto);
-//        } else {
-//            return new DogWithOwnerDto(id, name, dateOfBirth);
-//        }
-        return new DogWithOwnerDto(id, name, dateOfBirth);
+        var owners = dog.getOwners();
+        var ownerOutputDto = UserConverter.toOutputDtoList(owners);
+        return new DogWithOwnerDto(id, name, dateOfBirth, ownerOutputDto);
     }
 
     public static List<DogOutputDto> toOutputDtoList(Collection<Dog> dogs) {
         var dogDtoList = new ArrayList<DogOutputDto>();
+        dogs.stream()
+                .map(DogConverter::toOutputDto)
+                .forEach(dogDtoList::add);
 
-        for (var dog : dogs) {
-            var dogDto = toOutputDto(dog);
-            dogDtoList.add(dogDto);
-        }
         return dogDtoList;
     }
 
@@ -52,6 +47,10 @@ public class DogConverter {
         var id = dog.getId();
         var name = dog.getName();
         var dateOfBirth = dog.getDateOfBirth();
-        return new DogOutputDto(id, name, dateOfBirth);
+        var dogOutputDto = new DogOutputDto();
+        dogOutputDto.setId(id);
+        dogOutputDto.setName(name);
+        dogOutputDto.setDateOfBirth(dateOfBirth);
+        return dogOutputDto;
     }
 }

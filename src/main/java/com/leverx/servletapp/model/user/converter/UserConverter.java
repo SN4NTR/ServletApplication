@@ -1,11 +1,11 @@
 package com.leverx.servletapp.model.user.converter;
 
-import com.leverx.servletapp.model.animal.cat.converter.CatConverter;
-import com.leverx.servletapp.model.animal.cat.entity.Cat;
-import com.leverx.servletapp.model.user.entity.User;
+import com.leverx.servletapp.model.animal.Animal;
+import com.leverx.servletapp.model.animal.AnimalConverter;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
-import com.leverx.servletapp.model.user.dto.UserWithCatsDto;
+import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;
+import com.leverx.servletapp.model.user.entity.User;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -23,20 +23,20 @@ public final class UserConverter {
         return new UserOutputDto(id, firstName);
     }
 
-    public static UserWithCatsDto toWithCatsDto(User user) {
+    public static UserWithAnimalsDto toWithAnimalsDto(User user) {
         var id = user.getId();
         var firstName = user.getFirstName();
-        var cats = user.getCats();
-        var catOutputDtoList = CatConverter.toOutputDtoList(cats);
-        return new UserWithCatsDto(id, firstName, catOutputDtoList);
+        var animals = user.getAnimals();
+        var animalOutputDtos = AnimalConverter.toOutputDtoList(animals);
+        return new UserWithAnimalsDto(id, firstName, animalOutputDtos);
     }
 
     public static User fromInputDto(UserInputDto userDto) {
         var firstName = userDto.getFirstName();
-        var cats = new ArrayList<Cat>();
+        var animals = new ArrayList<Animal>();
         var user = new User();
         user.setFirstName(firstName);
-        user.setCats(cats);
+        user.setAnimals(animals);
         return user;
     }
 
@@ -46,8 +46,8 @@ public final class UserConverter {
         for (var user : users) {
             var id = user.getId();
             var firstName = user.getFirstName();
-            var userDto = new UserOutputDto(id, firstName);
-            userDtoList.add(userDto);
+            var userOutputDto = new UserOutputDto(id, firstName);
+            userDtoList.add(userOutputDto);
         }
         return userDtoList;
     }
