@@ -11,20 +11,16 @@ public class PropertyLoader {
     private static final String USER_ENV_NAME = "DB_LOGIN";
     private static final String PASSWORD_ENV_NAME = "DB_PASSWORD";
 
-    private static final String DRIVER_PROPERTY_NAME = "javax.persistence.jdbc.driver";
-    private static final String DRIVER_PROPERTY_VALUE = "com.mysql.cj.jdbc.Driver";
-
     private static final String URL_PROPERTY_NAME = "javax.persistence.jdbc.url";
     private static final String USER_PROPERTY_NAME = "javax.persistence.jdbc.user";
     private static final String PASSWORD_PROPERTY_NAME = "javax.persistence.jdbc.password";
 
-    public static Map<String, Object> getEnvVariable() {
+    public static Map<String, String> getEnvVariable() {
         var dbUrlValue = getenv(DB_URL_ENV_NAME);
         var userValue = getenv(USER_ENV_NAME);
         var passwordValue = getenv(PASSWORD_ENV_NAME);
 
-        var properties = new HashMap<String, Object>();
-        properties.put(DRIVER_PROPERTY_NAME, DRIVER_PROPERTY_VALUE);
+        var properties = new HashMap<String, String>();
         properties.put(URL_PROPERTY_NAME, dbUrlValue);
         properties.put(USER_PROPERTY_NAME, userValue);
         properties.put(PASSWORD_PROPERTY_NAME, passwordValue);
