@@ -3,6 +3,7 @@ package com.leverx.servletapp.converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leverx.servletapp.exception.InternalServerErrorException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import static com.leverx.servletapp.constant.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static java.util.stream.Collectors.joining;
 
+@Slf4j
 public class EntityConverter {
 
     private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -24,7 +26,9 @@ public class EntityConverter {
             var jsonBody = readJsonBody(reader);
             return OBJECT_MAPPER.readValue(jsonBody, tClass);
         } catch (JsonProcessingException e) {
-            throw new InternalServerErrorException(e, INTERNAL_SERVER_ERROR);
+            var message = "Failed to convert JSON to entity";
+            log.error(message);
+            throw new InternalServerErrorException(message, INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -32,7 +36,9 @@ public class EntityConverter {
         try {
             return OBJECT_MAPPER.writeValueAsString(t);
         } catch (JsonProcessingException e) {
-            throw new InternalServerErrorException(e, INTERNAL_SERVER_ERROR);
+            var message = "Failed to convert entity to JSON";
+            log.error(message);
+            throw new InternalServerErrorException(message, INTERNAL_SERVER_ERROR);
         }
     }
 
