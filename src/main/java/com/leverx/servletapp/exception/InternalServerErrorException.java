@@ -7,8 +7,8 @@ public class InternalServerErrorException extends RuntimeException {
 
     private int responseStatus;
 
-    public InternalServerErrorException(Exception ex, int responseStatus) {
-        super(ex);
+    public InternalServerErrorException(String message, int responseStatus) {
+        super(message);
         this.responseStatus = responseStatus;
     }
 }
