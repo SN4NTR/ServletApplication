@@ -11,6 +11,7 @@
         <class>com.leverx.servletapp.model.animal.dog.entity.Dog</class>
 
         <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="hibernate.connection.pool_size" value="10"/>
             <property name="hibernate.show_sql" value="true"/>
