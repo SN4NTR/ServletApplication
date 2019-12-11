@@ -1,7 +1,7 @@
 package com.leverx.servletapp.model.user.converter;
 
-import com.leverx.servletapp.model.animal.Animal;
-import com.leverx.servletapp.model.animal.AnimalConverter;
+import com.leverx.servletapp.model.animal.parent.Animal;
+import com.leverx.servletapp.model.animal.parent.converter.AnimalConverter;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;

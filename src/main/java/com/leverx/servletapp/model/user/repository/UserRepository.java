@@ -1,6 +1,6 @@
 package com.leverx.servletapp.model.user.repository;
 
-import com.leverx.servletapp.model.animal.Animal;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.user.entity.User;
 
 import java.util.Collection;

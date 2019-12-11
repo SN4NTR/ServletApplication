@@ -1,6 +1,6 @@
 package com.leverx.servletapp.model.user.entity;
 
-import com.leverx.servletapp.model.animal.Animal;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.user.validator.UserValidator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

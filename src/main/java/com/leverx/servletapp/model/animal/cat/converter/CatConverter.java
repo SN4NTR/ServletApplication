@@ -19,10 +19,7 @@ public final class CatConverter {
     public static Cat fromInputDto(CatInputDto catDto) {
         var name = catDto.getName();
         var dateOfBirth = catDto.getDateOfBirth();
-        var cat = new Cat();
-        cat.setName(name);
-        cat.setDateOfBirth(dateOfBirth);
-        return cat;
+        return new Cat(name, dateOfBirth);
     }
 
     public static CatWithOwnerDto toDtoWithOwner(Cat cat) {
@@ -36,11 +33,10 @@ public final class CatConverter {
 
     public static List<CatOutputDto> toOutputDtoList(Collection<Cat> cats) {
         var catDtoList = new ArrayList<CatOutputDto>();
+        cats.stream()
+                .map(CatConverter::toOutputDto)
+                .forEach(catDtoList::add);
 
-        for (var cat : cats) {
-            var catDto = toOutputDto(cat);
-            catDtoList.add(catDto);
-        }
         return catDtoList;
     }
 
@@ -48,10 +44,6 @@ public final class CatConverter {
         var id = cat.getId();
         var name = cat.getName();
         var dateOfBirth = cat.getDateOfBirth();
-        var catOutputDto = new CatOutputDto();
-        catOutputDto.setId(id);
-        catOutputDto.setName(name);
-        catOutputDto.setDateOfBirth(dateOfBirth);
-        return catOutputDto;
+        return new CatOutputDto(id, name, dateOfBirth);
     }
 }

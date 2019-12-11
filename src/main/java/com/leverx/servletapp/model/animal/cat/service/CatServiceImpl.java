@@ -14,7 +14,7 @@ import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.from
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.toDtoWithOwner;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.toOutputDtoList;
 import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.validateId;
-import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.validateInputDto;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.validateInputDto;
 
 public class CatServiceImpl implements CatService {
 
@@ -30,8 +30,8 @@ public class CatServiceImpl implements CatService {
     @Override
     public CatWithOwnerDto findById(int id) throws EntityNotFoundException {
         validateId(id);
-        var catOtp = catRepository.findById(id);
-        var cat = catOtp.orElseThrow();
+        var catOpt = catRepository.findById(id);
+        var cat = catOpt.orElseThrow();
         return toDtoWithOwner(cat);
     }
 

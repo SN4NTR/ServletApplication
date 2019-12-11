@@ -1,4 +1,7 @@
-package com.leverx.servletapp.model.animal;
+package com.leverx.servletapp.model.animal.parent.converter;
+
+import com.leverx.servletapp.model.animal.parent.Animal;
+import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 
 import java.util.ArrayList;
 import java.util.Collection;

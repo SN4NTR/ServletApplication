@@ -21,10 +21,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.NAME_MAX_SIZE;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.NAME_MIN_SIZE;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.WRONG_DATE_MSG;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.WRONG_NAME_SIZE_MSG;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_DATE_MSG;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_NAME_SIZE_MSG;
 
 @Getter
 @Setter

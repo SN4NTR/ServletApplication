@@ -1,10 +1,8 @@
 package com.leverx.servletapp.model.animal.cat.repository;
 
-import com.leverx.servletapp.model.animal.Animal;
 import com.leverx.servletapp.model.animal.cat.entity.Cat;
 import com.leverx.servletapp.model.animal.cat.entity.Cat_;
-import com.leverx.servletapp.model.user.entity.User;
-import com.leverx.servletapp.model.user.entity.User_;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
@@ -13,14 +11,12 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.SingularAttribute;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
 public class CatRepositoryImpl implements CatRepository {
@@ -62,7 +58,7 @@ public class CatRepositoryImpl implements CatRepository {
             transaction.begin();
 
             var query = entityManager.createQuery(criteriaQuery);
-            var cat = (Cat) query.getSingleResult();
+            var cat = query.getSingleResult();
 
             transaction.commit();
             log.info("Cat with id = {} was found", id);
@@ -115,10 +111,10 @@ public class CatRepositoryImpl implements CatRepository {
         return criteriaQuery;
     }
 
-    private CriteriaQuery<Animal> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<Animal, ?> attribute, Object compareWith) {
+    private CriteriaQuery<Cat> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<Animal, ?> attribute, Object compareWith) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-        var root = criteriaQuery.from(Animal.class);
+        var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+        var root = criteriaQuery.from(Cat.class);
         var fieldName = root.get(attribute);
 
         criteriaQuery.select(root)

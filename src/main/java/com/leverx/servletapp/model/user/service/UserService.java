@@ -2,7 +2,7 @@ package com.leverx.servletapp.model.user.service;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.model.animal.AnimalOutputDto;
+import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;

@@ -1,4 +1,4 @@
-package com.leverx.servletapp.model.animal;
+package com.leverx.servletapp.model.animal.parent.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -13,14 +13,13 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
-
 import java.time.LocalDate;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.NAME_MAX_SIZE;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.NAME_MIN_SIZE;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.WRONG_DATE_MSG;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.WRONG_NAME_SIZE_MSG;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_DATE_MSG;
+import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_NAME_SIZE_MSG;
 
 @Getter
 @Setter

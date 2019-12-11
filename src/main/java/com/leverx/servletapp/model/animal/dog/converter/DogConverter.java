@@ -19,10 +19,7 @@ public class DogConverter {
     public static Dog fromInputDto(DogInputDto dogInputDto) {
         var name = dogInputDto.getName();
         var dateOfBirth = dogInputDto.getDateOfBirth();
-        var dog = new Dog();
-        dog.setName(name);
-        dog.setDateOfBirth(dateOfBirth);
-        return dog;
+        return new Dog(name, dateOfBirth);
     }
 
     public static DogWithOwnerDto toDtoWithOwner(Dog dog) {
@@ -47,10 +44,6 @@ public class DogConverter {
         var id = dog.getId();
         var name = dog.getName();
         var dateOfBirth = dog.getDateOfBirth();
-        var dogOutputDto = new DogOutputDto();
-        dogOutputDto.setId(id);
-        dogOutputDto.setName(name);
-        dogOutputDto.setDateOfBirth(dateOfBirth);
-        return dogOutputDto;
+        return new DogOutputDto(id, name, dateOfBirth);
     }
 }

@@ -1,12 +1,13 @@
 package com.leverx.servletapp.model.animal.dog.entity;
 
-import com.leverx.servletapp.model.animal.Animal;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,4 +15,9 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "dogs")
 public class Dog extends Animal {
+
+    public Dog(String name, LocalDate dateOfBirth) {
+        setName(name);
+        setDateOfBirth(dateOfBirth);
+    }
 }

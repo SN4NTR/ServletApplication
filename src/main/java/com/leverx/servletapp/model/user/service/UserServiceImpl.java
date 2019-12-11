@@ -2,8 +2,8 @@ package com.leverx.servletapp.model.user.service;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.model.animal.AnimalConverter;
-import com.leverx.servletapp.model.animal.AnimalOutputDto;
+import com.leverx.servletapp.model.animal.parent.converter.AnimalConverter;
+import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.model.animal.cat.validator.CatValidator;

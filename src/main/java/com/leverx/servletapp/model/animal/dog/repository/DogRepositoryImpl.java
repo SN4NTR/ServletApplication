@@ -1,10 +1,8 @@
 package com.leverx.servletapp.model.animal.dog.repository;
 
-import com.leverx.servletapp.model.animal.Animal;
 import com.leverx.servletapp.model.animal.dog.entity.Dog;
 import com.leverx.servletapp.model.animal.dog.entity.Dog_;
-import com.leverx.servletapp.model.user.entity.User;
-import com.leverx.servletapp.model.user.entity.User_;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
@@ -19,7 +17,6 @@ import java.util.Optional;
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
 public class DogRepositoryImpl implements DogRepository {
@@ -61,7 +58,7 @@ public class DogRepositoryImpl implements DogRepository {
             transaction.begin();
 
             var query = entityManager.createQuery(criteriaQuery);
-            var dog = (Dog) query.getSingleResult();
+            var dog = query.getSingleResult();
 
             transaction.commit();
             log.info("Dog with id = {} was found", id);
@@ -72,46 +69,6 @@ public class DogRepositoryImpl implements DogRepository {
             var message = "Dog can't be found";
             log.error(message);
             return Optional.empty();
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
-    public Collection<Dog> findByOwnerId(int id) {
-        log.info("Getting dog by owner id = {}", id);
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Dog.class);
-
-            var root = criteriaQuery.from(Dog.class);
-            var fieldName = root.get(Dog_.OWNERS);
-
-            criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(fieldName, id));
-
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            var query = entityManager.createQuery(criteriaQuery);
-            var dogs = query.getResultList();
-            if (isEmpty(dogs)) {
-                throw new NoResultException();
-            }
-
-            transaction.commit();
-            log.info("Dogs were found");
-
-            return dogs;
-        } catch (NoResultException ex) {
-            rollbackTransaction(transaction);
-            var message = "Dogs can't be found";
-            log.error(message);
-            return emptyCollection();
         } finally {
             entityManager.close();
         }
@@ -154,10 +111,10 @@ public class DogRepositoryImpl implements DogRepository {
         return criteriaQuery;
     }
 
-    private CriteriaQuery<Animal> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<Animal, ?> attribute, Object compareWith) {
+    private CriteriaQuery<Dog> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<Animal, ?> attribute, Object compareWith) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-        var root = criteriaQuery.from(Animal.class);
+        var criteriaQuery = criteriaBuilder.createQuery(Dog.class);
+        var root = criteriaQuery.from(Dog.class);
         var fieldName = root.get(attribute);
 
         criteriaQuery.select(root)

@@ -1,6 +1,6 @@
 package com.leverx.servletapp.model.user.repository;
 
-import com.leverx.servletapp.model.animal.Animal;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
@@ -133,29 +133,20 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaBuilder = entityManager.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-
-            var root = criteriaQuery.from(User.class);
-            var fieldName = root.get(User_.id);
-
-            criteriaQuery.where(criteriaBuilder.equal(fieldName, id));
-            var owners = root.join(User_.animals);
-            var cq = criteriaQuery.select(owners);
-
+            var criteriaQuery = getAnimalCriteriaQuery(id, entityManager);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(cq);
-            var cats = query.getResultList();
-            if (isEmpty(cats)) {
+            var query = entityManager.createQuery(criteriaQuery);
+            var animals = query.getResultList();
+            if (isEmpty(animals)) {
                 throw new NoResultException();
             }
 
             transaction.commit();
             log.info("Animals were found");
 
-            return cats;
+            return animals;
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);
             var message = "Animals can't be found";
@@ -225,6 +216,18 @@ public class UserRepositoryImpl implements UserRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+    private CriteriaQuery<Animal> getAnimalCriteriaQuery(int id, EntityManager entityManager) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
+        var root = criteriaQuery.from(User.class);
+        var fieldName = root.get(User_.id);
+
+        criteriaQuery.where(criteriaBuilder.equal(fieldName, id));
+        var owners = root.join(User_.animals);
+
+        return criteriaQuery.select(owners);
     }
 
     private CriteriaQuery<User> getCriteriaQuery(EntityManager entityManager) {

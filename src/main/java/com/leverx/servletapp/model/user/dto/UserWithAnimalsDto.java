@@ -2,7 +2,7 @@ package com.leverx.servletapp.model.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
-import com.leverx.servletapp.model.animal.AnimalOutputDto;
+import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
