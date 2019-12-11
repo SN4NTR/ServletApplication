@@ -1,5 +1,6 @@
 package com.leverx.servletapp.model.user.repository;
 
+import com.leverx.servletapp.model.animal.Animal;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +120,47 @@ public class UserRepositoryImpl implements UserRepository {
             var message = "User can't be found";
             log.error(message);
             return Optional.empty();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public Collection<Animal> findAnimals(int id) {
+        log.info("Getting animals by owner id = {}", id);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaBuilder = entityManager.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
+
+            var root = criteriaQuery.from(User.class);
+            var fieldName = root.get(User_.id);
+
+            criteriaQuery.where(criteriaBuilder.equal(fieldName, id));
+            var owners = root.join(User_.animals);
+            var cq = criteriaQuery.select(owners);
+
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(cq);
+            var cats = query.getResultList();
+            if (isEmpty(cats)) {
+                throw new NoResultException();
+            }
+
+            transaction.commit();
+            log.info("Animals were found");
+
+            return cats;
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "Animals can't be found";
+            log.error(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }

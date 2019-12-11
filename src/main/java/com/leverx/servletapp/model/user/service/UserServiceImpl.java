@@ -2,6 +2,8 @@ package com.leverx.servletapp.model.user.service;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.model.animal.AnimalConverter;
+import com.leverx.servletapp.model.animal.AnimalOutputDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.model.animal.cat.validator.CatValidator;
@@ -73,6 +75,13 @@ public class UserServiceImpl implements UserService {
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
         return toWithAnimalsDto(user);
+    }
+
+    @Override
+    public Collection<AnimalOutputDto> findAnimals(int id) throws EntityNotFoundException {
+        validateId(id);
+        var animals = userRepository.findAnimals(id);
+        return AnimalConverter.toOutputDtoList(animals);
     }
 
     @Override

@@ -112,7 +112,7 @@ public class UserServlet extends HttpServlet {
     private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
         try {
             var id = parseInt(idToString);
-            var cats = catService.findByOwnerId(id);
+            var cats = userService.findAnimals(id);
             var result = collectionToJson(cats);
             printWriter.print(result);
             resp.setStatus(OK);

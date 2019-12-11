@@ -1,13 +1,12 @@
 package com.leverx.servletapp.model.animal.cat.service;
 
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.dto.CatInputDto;
 import com.leverx.servletapp.model.animal.cat.dto.CatOutputDto;
 import com.leverx.servletapp.model.animal.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
 
@@ -39,13 +38,6 @@ public class CatServiceImpl implements CatService {
     @Override
     public Collection<CatOutputDto> findAll() {
         var cats = catRepository.findAll();
-        return toOutputDtoList(cats);
-    }
-
-    @Override
-    public Collection<CatOutputDto> findByOwnerId(int id) throws EntityNotFoundException {
-        UserValidator.validateId(id);
-        var cats = catRepository.findByOwnerId(id);
         return toOutputDtoList(cats);
     }
 }
