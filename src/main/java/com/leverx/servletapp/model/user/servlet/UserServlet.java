@@ -1,11 +1,9 @@
 package com.leverx.servletapp.model.user.servlet;
 
-import com.leverx.servletapp.model.animal.cat.service.CatService;
-import com.leverx.servletapp.model.animal.cat.service.CatServiceImpl;
-import com.leverx.servletapp.model.user.service.UserService;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
+import com.leverx.servletapp.model.user.service.UserService;
 import com.leverx.servletapp.model.user.service.UserServiceImpl;
 
 import javax.servlet.http.HttpServlet;
@@ -23,7 +21,7 @@ import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
-import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
+import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
 import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
@@ -31,7 +29,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 public class UserServlet extends HttpServlet {
 
     private UserService userService = new UserServiceImpl();
-    private CatService catService = new CatServiceImpl();
+    private static final String FIRST_NAME_PARAMETER = "firstName";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -43,14 +41,14 @@ public class UserServlet extends HttpServlet {
         var idToStringOpt = getUserIdFormUrl(urlToString);
         var idToString = idToStringOpt.orElseThrow();
 
-        var param = req.getParameter("firstName");
+        var param = req.getParameter(FIRST_NAME_PARAMETER);
         var valueOpt = getValueFromUrl(urlToString, param);
         var value = valueOpt.orElseThrow();
 
         if (USERS_ENDPOINT.equals(value)) {
             printAllUsers(printWriter, resp);
-        } else if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
-            printCatsByOwner(printWriter, idToString, resp);
+        } else if (ANIMALS_ENDPOINT.equals(value) && isParsable(idToString)) {
+            printAnimalsByOwner(printWriter, idToString, resp);
         } else if (isParsable(value)) {
             printUserById(printWriter, value, resp);
         } else {
@@ -109,11 +107,11 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
+    private void printAnimalsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
         try {
             var id = parseInt(idToString);
-            var cats = userService.findAnimals(id);
-            var result = collectionToJson(cats);
+            var animals = userService.findAnimals(id);
+            var result = collectionToJson(animals);
             printWriter.print(result);
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
