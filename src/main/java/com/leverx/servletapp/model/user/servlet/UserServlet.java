@@ -87,13 +87,18 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        var url = req.getRequestURL();
-        var urlToString = url.toString();
-        var idOpt = getIdFromUrl(urlToString);
-        var id = idOpt.orElseThrow();
-        userService.delete(id);
-        resp.setStatus(NO_CONTENT);
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            var url = req.getRequestURL();
+            var urlToString = url.toString();
+            var idOpt = getIdFromUrl(urlToString);
+            var id = idOpt.orElseThrow();
+            userService.delete(id);
+            resp.setStatus(NO_CONTENT);
+        } catch (EntityNotFoundException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getMessage());
+        }
     }
 
     @Override
