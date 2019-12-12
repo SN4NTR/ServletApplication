@@ -1,7 +1,6 @@
 package com.leverx.servletapp.model.user.entity;
 
 import com.leverx.servletapp.model.animal.parent.Animal;
-import com.leverx.servletapp.model.user.validator.UserValidator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -20,6 +19,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static com.leverx.servletapp.model.user.validator.UserValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.model.user.validator.UserValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.model.user.validator.UserValidator.WRONG_NAME_SIZE_MSG;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -39,7 +41,7 @@ public class User {
     @NonNull
     @NotNull
     @Column(name = "first_name")
-    @Size(min = UserValidator.NAME_MIN_SIZE, max = UserValidator.NAME_MAX_SIZE, message = UserValidator.WRONG_NAME_SIZE_MSG)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String firstName;
 
     @ManyToMany(fetch = EAGER)
