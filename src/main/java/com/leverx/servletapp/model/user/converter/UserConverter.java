@@ -17,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public final class UserConverter {
 
-    public static UserOutputDto toOutputDto(User user) {
+    private static UserOutputDto toOutputDto(User user) {
         var id = user.getId();
         var firstName = user.getFirstName();
         return new UserOutputDto(id, firstName);
@@ -42,13 +42,10 @@ public final class UserConverter {
 
     public static List<UserOutputDto> toOutputDtoList(Collection<User> users) {
         var userDtoList = new ArrayList<UserOutputDto>();
+        users.stream()
+                .map(UserConverter::toOutputDto)
+                .forEach(userDtoList::add);
 
-        for (var user : users) {
-            var id = user.getId();
-            var firstName = user.getFirstName();
-            var userOutputDto = new UserOutputDto(id, firstName);
-            userDtoList.add(userOutputDto);
-        }
         return userDtoList;
     }
 }
