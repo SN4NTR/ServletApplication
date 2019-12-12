@@ -1,6 +1,5 @@
 package com.leverx.servletapp.model.user.repository;
 
-import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
