@@ -104,7 +104,7 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.id, id);
+            var criteriaQuery = getUserByCriteria(entityManager, User_.id, id);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -133,7 +133,7 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.firstName, name);
+            var criteriaQuery = getUserByCriteria(entityManager, User_.firstName, name);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -165,12 +165,10 @@ public class UserRepositoryImpl implements UserRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQuery(entityManager);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(criteriaQuery);
-            var users = query.getResultList();
+            var users = getUsers(entityManager);
 
             transaction.commit();
             log.info("Users were found");
@@ -186,27 +184,18 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private CriteriaQuery<Animal> getAnimalCriteriaQuery(int id, EntityManager entityManager) {
-        var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-        var root = criteriaQuery.from(User.class);
-        var fieldName = root.get(User_.id);
-
-        criteriaQuery.where(criteriaBuilder.equal(fieldName, id));
-        var owners = root.join(User_.animals);
-
-        return criteriaQuery.select(owners);
-    }
-
-    private CriteriaQuery<User> getCriteriaQuery(EntityManager entityManager) {
+    private Collection<User> getUsers(EntityManager entityManager) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(User.class);
         var root = criteriaQuery.from(User.class);
+
         criteriaQuery.select(root);
-        return criteriaQuery;
+
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
-    private CriteriaQuery<User> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<User, ?> attribute, Object compareWith) {
+    private CriteriaQuery<User> getUserByCriteria(EntityManager entityManager, SingularAttribute<User, ?> attribute, Object compareWith) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(User.class);
         var root = criteriaQuery.from(User.class);

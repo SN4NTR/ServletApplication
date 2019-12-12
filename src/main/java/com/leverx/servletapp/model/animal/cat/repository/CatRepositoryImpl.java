@@ -2,17 +2,13 @@ package com.leverx.servletapp.model.animal.cat.repository;
 
 import com.leverx.servletapp.model.animal.cat.entity.Cat;
 import com.leverx.servletapp.model.animal.cat.entity.Cat_;
-import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.metamodel.SingularAttribute;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -55,12 +51,10 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, Cat_.id, id);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(criteriaQuery);
-            var cat = query.getSingleResult();
+            var cat = getCatById(entityManager, id);
 
             transaction.commit();
             log.info("Cat with id = {} was found", id);
@@ -84,12 +78,10 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQuery(entityManager, ownerId);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(criteriaQuery);
-            var cats = query.getResultList();
+            var cats = getCatsByOwnerId(entityManager, ownerId);
 
             transaction.commit();
             log.info("Cats were found");
@@ -113,12 +105,10 @@ public class CatRepositoryImpl implements CatRepository {
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQuery(entityManager);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(criteriaQuery);
-            var cats = query.getResultList();
+            var cats = getCats(entityManager);
 
             transaction.commit();
             log.info("Cats were found");
@@ -134,34 +124,41 @@ public class CatRepositoryImpl implements CatRepository {
         }
     }
 
-    private CriteriaQuery<Cat> getCriteriaQuery(EntityManager entityManager, int ownerId) {
+    private Collection<Cat> getCatsByOwnerId(EntityManager entityManager, int ownerId) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
         var root = criteriaQuery.from(Cat.class);
         var users = root.join(Cat_.owners);
         var condition = criteriaBuilder.equal(users.get(User_.id), ownerId);
+
         criteriaQuery.select(root).where(condition);
-        return criteriaQuery;
+
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
-    private CriteriaQuery<Cat> getCriteriaQuery(EntityManager entityManager) {
+    private Collection<Cat> getCats(EntityManager entityManager) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
         var root = criteriaQuery.from(Cat.class);
+
         criteriaQuery.select(root);
-        return criteriaQuery;
+
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
-    private CriteriaQuery<Cat> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<Animal, ?> attribute, Object compareWith) {
+    private Cat getCatById(EntityManager entityManager, int id) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
         var root = criteriaQuery.from(Cat.class);
-        var fieldName = root.get(attribute);
+        var fieldName = root.get(Cat_.id);
 
         criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(fieldName, compareWith));
+                .where(criteriaBuilder.equal(fieldName, id));
 
-        return criteriaQuery;
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getSingleResult();
     }
 
     private void rollbackTransaction(EntityTransaction transaction) {
