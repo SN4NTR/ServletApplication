@@ -2,15 +2,15 @@ package com.leverx.servletapp.model.user.service;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.model.animal.parent.Animal;
-import com.leverx.servletapp.model.animal.parent.converter.AnimalConverter;
-import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.model.animal.cat.validator.CatValidator;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.model.animal.dog.validator.DogValidator;
+import com.leverx.servletapp.model.animal.parent.Animal;
+import com.leverx.servletapp.model.animal.parent.converter.AnimalConverter;
+import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;
@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,22 +48,23 @@ public class UserServiceImpl implements UserService {
         DogValidator.validateIds(dogsIds);
 
         var user = fromInputDto(userInputDto);
-
         userRepository.save(user);
+
         assignCats(user, catsIds);
         assignDogs(user, dogsIds);
         userRepository.update(user);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws EntityNotFoundException {
+        validateId(id);
         userRepository.delete(id);
     }
 
     @Override
     public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
-        validateInputDto(userInputDto);
         validateId(id);
+        validateInputDto(userInputDto);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
         var firstName = userInputDto.getFirstName();

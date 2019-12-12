@@ -13,7 +13,7 @@ public interface UserService {
 
     void save(UserInputDto user) throws ValidationException, EntityNotFoundException;
 
-    void delete(int id);
+    void delete(int id) throws EntityNotFoundException;
 
     void update(int id, UserInputDto user) throws ValidationException, EntityNotFoundException;
 
