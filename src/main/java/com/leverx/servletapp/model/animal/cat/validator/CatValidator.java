@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -18,7 +19,7 @@ public class CatValidator {
 
     public static void validateId(int id) throws EntityNotFoundException {
         var catOpt = CAT_REPOSITORY.findById(id);
-        catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
+        catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST, NOT_FOUND));
     }
 
     public static void validateIds(List<Integer> ids) throws EntityNotFoundException {

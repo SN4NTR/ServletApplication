@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -18,7 +19,7 @@ public class DogValidator {
 
     public static void validateId(int id) throws EntityNotFoundException {
         var dogOpt = DOG_REPOSITORY.findById(id);
-        dogOpt.orElseThrow(() -> new EntityNotFoundException(DOG_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
+        dogOpt.orElseThrow(() -> new EntityNotFoundException(DOG_DOES_NOT_EXIST, NOT_FOUND));
     }
 
     public static void validateIds(List<Integer> ids) throws EntityNotFoundException {

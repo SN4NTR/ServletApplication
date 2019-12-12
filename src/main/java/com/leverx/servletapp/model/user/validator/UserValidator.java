@@ -1,16 +1,17 @@
 package com.leverx.servletapp.model.user.validator;
 
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.repository.UserRepository;
 import com.leverx.servletapp.model.user.repository.UserRepositoryImpl;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -38,7 +39,7 @@ public class UserValidator {
 
     public static void validateId(int id) throws EntityNotFoundException {
         var userOpt = USER_REPOSITORY.findById(id);
-        userOpt.orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
+        userOpt.orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST, NOT_FOUND));
     }
 
     private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {
