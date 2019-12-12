@@ -3,8 +3,10 @@ package com.leverx.servletapp.model.animal.cat.repository;
 import com.leverx.servletapp.model.animal.cat.entity.Cat;
 import com.leverx.servletapp.model.animal.cat.entity.Cat_;
 import com.leverx.servletapp.model.animal.parent.Animal;
+import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -75,6 +77,35 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
+    public Collection<Cat> findByOwnerId(int ownerId) {
+        log.info("Getting cats by owner id");
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaQuery = getCriteriaQuery(entityManager, ownerId);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(criteriaQuery);
+            var cats = query.getResultList();
+
+            transaction.commit();
+            log.info("Cats were found");
+
+            return cats;
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "Cat can't be found";
+            log.error(message);
+            return emptyCollection();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
     public Collection<Cat> findAll() {
         log.info("Getting all cats");
 
@@ -101,6 +132,16 @@ public class CatRepositoryImpl implements CatRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+    private CriteriaQuery<Cat> getCriteriaQuery(EntityManager entityManager, int ownerId) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(Cat.class);
+        var root = criteriaQuery.from(Cat.class);
+        var users = root.join(Cat_.owners);
+        var condition = criteriaBuilder.equal(users.get(User_.id), ownerId);
+        criteriaQuery.select(root).where(condition);
+        return criteriaQuery;
     }
 
     private CriteriaQuery<Cat> getCriteriaQuery(EntityManager entityManager) {

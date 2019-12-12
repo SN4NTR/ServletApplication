@@ -1,8 +1,11 @@
 package com.leverx.servletapp.model.animal.dog.repository;
 
+import com.leverx.servletapp.model.animal.cat.entity.Cat;
+import com.leverx.servletapp.model.animal.cat.entity.Cat_;
 import com.leverx.servletapp.model.animal.dog.entity.Dog;
 import com.leverx.servletapp.model.animal.dog.entity.Dog_;
 import com.leverx.servletapp.model.animal.parent.Animal;
+import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityExistsException;
@@ -75,6 +78,35 @@ public class DogRepositoryImpl implements DogRepository {
     }
 
     @Override
+    public Collection<Dog> findByOwnerId(int ownerId) {
+        log.info("Getting dogs by owner id");
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            var criteriaQuery = getCriteriaQuery(entityManager, ownerId);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var query = entityManager.createQuery(criteriaQuery);
+            var dogs = query.getResultList();
+
+            transaction.commit();
+            log.info("Dogs were found");
+
+            return dogs;
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "Dogs can't be found";
+            log.error(message);
+            return emptyCollection();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
     public Collection<Dog> findAll() {
         log.info("Getting all dogs");
 
@@ -101,6 +133,16 @@ public class DogRepositoryImpl implements DogRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+    private CriteriaQuery<Dog> getCriteriaQuery(EntityManager entityManager, int ownerId) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(Dog.class);
+        var root = criteriaQuery.from(Dog.class);
+        var users = root.join(Dog_.owners);
+        var condition = criteriaBuilder.equal(users.get(User_.id), ownerId);
+        criteriaQuery.select(root).where(condition);
+        return criteriaQuery;
     }
 
     private CriteriaQuery<Dog> getCriteriaQuery(EntityManager entityManager) {

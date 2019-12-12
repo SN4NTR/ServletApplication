@@ -2,6 +2,7 @@ package com.leverx.servletapp.model.user.service;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.animal.parent.converter.AnimalConverter;
 import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
@@ -18,7 +19,9 @@ import com.leverx.servletapp.model.user.repository.UserRepository;
 import com.leverx.servletapp.model.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +83,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<AnimalOutputDto> findAnimals(int id) throws EntityNotFoundException {
         validateId(id);
-        var animals = userRepository.findAnimals(id);
+        var cats = catRepository.findByOwnerId(id);
+        var dogs = dogRepository.findByOwnerId(id);
+        var animals = new ArrayList<Animal>(cats);
+        animals.addAll(dogs);
         return AnimalConverter.toOutputDtoList(animals);
     }
 

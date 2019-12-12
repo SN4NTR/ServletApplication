@@ -7,6 +7,7 @@ import com.leverx.servletapp.model.animal.cat.dto.CatOutputDto;
 import com.leverx.servletapp.model.animal.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
+import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
 
@@ -33,6 +34,13 @@ public class CatServiceImpl implements CatService {
         var catOpt = catRepository.findById(id);
         var cat = catOpt.orElseThrow();
         return toDtoWithOwner(cat);
+    }
+
+    @Override
+    public Collection<CatOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException {
+        UserValidator.validateId(ownerId);
+        var cats = catRepository.findByOwnerId(ownerId);
+        return toOutputDtoList(cats);
     }
 
     @Override

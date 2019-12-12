@@ -14,5 +14,7 @@ public interface CatService {
 
     CatWithOwnerDto findById(int id) throws EntityNotFoundException;
 
+    Collection<CatOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException;
+
     Collection<CatOutputDto> findAll();
 }

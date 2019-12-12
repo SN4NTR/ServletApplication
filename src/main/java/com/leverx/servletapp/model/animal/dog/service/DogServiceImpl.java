@@ -7,6 +7,7 @@ import com.leverx.servletapp.model.animal.dog.dto.DogOutputDto;
 import com.leverx.servletapp.model.animal.dog.dto.DogWithOwnerDto;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
+import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
 
@@ -33,6 +34,13 @@ public class DogServiceImpl implements DogService {
         var dogDto = dogRepository.findById(id);
         var dog = dogDto.orElseThrow();
         return toDtoWithOwner(dog);
+    }
+
+    @Override
+    public Collection<DogOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException {
+        UserValidator.validateId(ownerId);
+        var dogs = dogRepository.findByOwnerId(ownerId);
+        return toOutputDtoList(dogs);
     }
 
     @Override

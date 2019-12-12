@@ -126,38 +126,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Collection<Animal> findAnimals(int id) {
-        log.info("Getting animals by owner id = {}", id);
-
-        var entityManager = getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            var criteriaQuery = getAnimalCriteriaQuery(id, entityManager);
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            var query = entityManager.createQuery(criteriaQuery);
-            var animals = query.getResultList();
-            if (isEmpty(animals)) {
-                throw new NoResultException();
-            }
-
-            transaction.commit();
-            log.info("Animals were found");
-
-            return animals;
-        } catch (NoResultException ex) {
-            rollbackTransaction(transaction);
-            var message = "Animals can't be found";
-            log.error(message);
-            return emptyCollection();
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    @Override
     public Collection<User> findByName(String name) {
         log.info("Getting user by firstName = {}", name);
 
