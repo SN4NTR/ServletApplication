@@ -19,16 +19,18 @@ public class DogConverter {
     public static Dog fromInputDto(DogInputDto dogInputDto) {
         var name = dogInputDto.getName();
         var dateOfBirth = dogInputDto.getDateOfBirth();
-        return new Dog(name, dateOfBirth);
+        int goodBoyAmount = dogInputDto.getGoodBoyAmount();
+        return new Dog(name, dateOfBirth, goodBoyAmount);
     }
 
     public static DogWithOwnerDto toDtoWithOwner(Dog dog) {
         var id = dog.getId();
         var name = dog.getName();
         var dateOfBirth = dog.getDateOfBirth();
+        int goodBoyAmount = dog.getGoodBoyAmount();
         var owners = dog.getOwners();
         var ownerOutputDto = UserConverter.toOutputDtoList(owners);
-        return new DogWithOwnerDto(id, name, dateOfBirth, ownerOutputDto);
+        return new DogWithOwnerDto(id, name, goodBoyAmount, dateOfBirth, ownerOutputDto);
     }
 
     public static List<DogOutputDto> toOutputDtoList(Collection<Dog> dogs) {
@@ -44,6 +46,7 @@ public class DogConverter {
         var id = dog.getId();
         var name = dog.getName();
         var dateOfBirth = dog.getDateOfBirth();
-        return new DogOutputDto(id, name, dateOfBirth);
+        int goodBoyAmount = dog.getGoodBoyAmount();
+        return new DogOutputDto(id, name, dateOfBirth, goodBoyAmount);
     }
 }

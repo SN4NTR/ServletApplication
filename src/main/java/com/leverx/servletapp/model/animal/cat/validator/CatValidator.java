@@ -17,6 +17,9 @@ public class CatValidator {
     private static final String CAT_DOES_NOT_EXIST = "Cat doesn't exist";
     private static final CatRepository CAT_REPOSITORY = new CatRepositoryImpl();
 
+    public static final int MIN_VALUE = 0;
+    public static final String WRONG_VALUE = "Value is less than " + MIN_VALUE;
+
     public static void validateId(int id) throws EntityNotFoundException {
         var catOpt = CAT_REPOSITORY.findById(id);
         catOpt.orElseThrow(() -> new EntityNotFoundException(CAT_DOES_NOT_EXIST, NOT_FOUND));

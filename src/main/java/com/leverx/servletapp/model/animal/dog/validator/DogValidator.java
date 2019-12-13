@@ -17,6 +17,9 @@ public class DogValidator {
     private static final String DOG_DOES_NOT_EXIST = "Dog doesn't exist";
     private static final DogRepository DOG_REPOSITORY = new DogRepositoryImpl();
 
+    public static final int MIN_VALUE = 0;
+    public static final String WRONG_VALUE = "Value is less than " + MIN_VALUE;
+
     public static void validateId(int id) throws EntityNotFoundException {
         var dogOpt = DOG_REPOSITORY.findById(id);
         dogOpt.orElseThrow(() -> new EntityNotFoundException(DOG_DOES_NOT_EXIST, NOT_FOUND));

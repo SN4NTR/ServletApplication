@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
@@ -21,6 +22,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.MIN_VALUE;
+import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.WRONG_VALUE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MIN_SIZE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_DATE_MSG;
@@ -40,6 +43,10 @@ public class CatWithOwnerDto {
     @NotNull
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String name;
+
+    @NonNull
+    @Min(value = MIN_VALUE, message = WRONG_VALUE)
+    private int miceCaught;
 
     @NonNull
     @NotNull
