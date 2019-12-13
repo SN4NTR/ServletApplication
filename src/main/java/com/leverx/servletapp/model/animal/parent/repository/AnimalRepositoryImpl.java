@@ -1,9 +1,7 @@
 package com.leverx.servletapp.model.animal.parent.repository;
 
 import com.leverx.servletapp.model.animal.cat.entity.Cat;
-import com.leverx.servletapp.model.animal.cat.entity.Cat_;
 import com.leverx.servletapp.model.animal.parent.Animal;
-import com.leverx.servletapp.model.animal.parent.Animal_;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +43,44 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         } finally {
             entityManager.close();
         }
+    }
+
+    @Override
+    public Collection<Animal> findAll() {
+        log.info("Getting all animals");
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var animals = getAnimals(entityManager);
+
+            transaction.commit();
+            log.info("Animals were found");
+
+            return animals;
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "Animals can't be found";
+            log.error(message);
+            return emptyCollection();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    private Collection<Animal> getAnimals(EntityManager entityManager) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
+        var root = criteriaQuery.from(Animal.class);
+
+        criteriaQuery.select(root);
+
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
     private Collection<Animal> getCatsByOwnerId(EntityManager entityManager, int ownerId) {

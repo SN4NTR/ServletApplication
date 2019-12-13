@@ -20,4 +20,10 @@ public class AnimalServiceImpl implements AnimalService {
         var animals = animalRepository.findByOwnerId(ownerId);
         return toOutputDtoList(animals);
     }
+
+    @Override
+    public Collection<AnimalOutputDto> findAll() {
+        var animals = animalRepository.findAll();
+        return toOutputDtoList(animals);
+    }
 }

@@ -8,4 +8,6 @@ import java.util.Collection;
 public interface AnimalService {
 
     Collection<AnimalOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException;
+
+    Collection<AnimalOutputDto> findAll();
 }
