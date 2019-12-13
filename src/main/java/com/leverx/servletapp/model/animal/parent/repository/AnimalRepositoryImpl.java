@@ -1,8 +1,7 @@
 package com.leverx.servletapp.model.animal.parent.repository;
 
-import com.leverx.servletapp.model.animal.cat.entity.Cat;
 import com.leverx.servletapp.model.animal.parent.Animal;
-import com.leverx.servletapp.model.user.entity.User;
+import com.leverx.servletapp.model.animal.parent.Animal_;
 import com.leverx.servletapp.model.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,11 +85,12 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     private Collection<Animal> getCatsByOwnerId(EntityManager entityManager, int ownerId) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-        var root = criteriaQuery.from(User.class);
-        var condition = criteriaBuilder.equal(root.get(User_.id), ownerId);
-        criteriaQuery.where(condition);
-        var animals = root.join(User_.animals);
-        criteriaQuery.select(animals).where(condition);
+        var root = criteriaQuery.from(Animal.class);
+        var owners = root.join(Animal_.owners);
+        var condition = criteriaBuilder.equal(owners.get(User_.id), ownerId);
+
+        criteriaQuery.select(root).where(condition);
+
         var query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();
     }
