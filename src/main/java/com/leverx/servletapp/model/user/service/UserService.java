@@ -19,8 +19,6 @@ public interface UserService {
 
     UserWithAnimalsDto findById(int id) throws EntityNotFoundException;
 
-    Collection<AnimalOutputDto> findAnimals(int id) throws EntityNotFoundException;
-
     Collection<UserOutputDto> findByName(String name);
 
     Collection<UserOutputDto> findAll();

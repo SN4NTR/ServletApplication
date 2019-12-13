@@ -17,7 +17,6 @@ import java.time.LocalDate;
 public class Cat extends Animal {
 
     public Cat(String name, LocalDate dateOfBirth) {
-        setName(name);
-        setDateOfBirth(dateOfBirth);
+        super(name, dateOfBirth);
     }
 }

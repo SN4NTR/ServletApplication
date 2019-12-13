@@ -2,6 +2,9 @@ package com.leverx.servletapp.model.animal.parent;
 
 import com.leverx.servletapp.model.user.entity.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -31,6 +34,8 @@ import static javax.persistence.InheritanceType.JOINED;
 @Setter
 @Entity
 @Table(name = "animals")
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Inheritance(strategy = JOINED)
 public abstract class Animal {
 
@@ -39,11 +44,13 @@ public abstract class Animal {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
+    @NonNull
     @NotNull
     @Column(name = "name")
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
     private String name;
 
+    @NonNull
     @NotNull
     @Column(name = "date_of_birth")
     @PastOrPresent(message = WRONG_DATE_MSG)

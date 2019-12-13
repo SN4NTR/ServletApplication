@@ -41,18 +41,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
         validateInputDto(userInputDto);
-
         var catsIds = userInputDto.getCatsIds();
         var dogsIds = userInputDto.getDogsIds();
         CatValidator.validateIds(catsIds);
         DogValidator.validateIds(dogsIds);
-
         var user = fromInputDto(userInputDto);
-        userRepository.save(user);
-
         assignCats(user, catsIds);
         assignDogs(user, dogsIds);
-        userRepository.update(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -78,16 +74,6 @@ public class UserServiceImpl implements UserService {
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
         return toWithAnimalsDto(user);
-    }
-
-    @Override
-    public Collection<AnimalOutputDto> findAnimals(int id) throws EntityNotFoundException {
-        validateId(id);
-        var cats = catRepository.findByOwnerId(id);
-        var dogs = dogRepository.findByOwnerId(id);
-        var animals = new ArrayList<Animal>(cats);
-        animals.addAll(dogs);
-        return AnimalConverter.toOutputDtoList(animals);
     }
 
     @Override

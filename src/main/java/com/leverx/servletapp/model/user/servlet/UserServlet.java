@@ -6,6 +6,8 @@ import com.leverx.servletapp.model.animal.cat.service.CatService;
 import com.leverx.servletapp.model.animal.cat.service.CatServiceImpl;
 import com.leverx.servletapp.model.animal.dog.service.DogService;
 import com.leverx.servletapp.model.animal.dog.service.DogServiceImpl;
+import com.leverx.servletapp.model.animal.parent.service.AnimalService;
+import com.leverx.servletapp.model.animal.parent.service.AnimalServiceImpl;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.service.UserService;
 import com.leverx.servletapp.model.user.service.UserServiceImpl;
@@ -35,6 +37,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 public class UserServlet extends HttpServlet {
 
     private UserService userService = new UserServiceImpl();
+    private AnimalService animalService = new AnimalServiceImpl();
     private CatService catService = new CatServiceImpl();
     private DogService dogService = new DogServiceImpl();
 
@@ -154,7 +157,7 @@ public class UserServlet extends HttpServlet {
     private void printAnimalsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
         try {
             var id = parseInt(idToString);
-            var animals = userService.findAnimals(id);
+            var animals = animalService.findByOwnerId(id);
             var result = collectionToJson(animals);
             printWriter.print(result);
             resp.setStatus(OK);
