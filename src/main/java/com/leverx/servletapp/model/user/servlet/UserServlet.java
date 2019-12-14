@@ -57,18 +57,22 @@ public class UserServlet extends HttpServlet {
         var valueOpt = getValueFromUrl(urlToString, param);
         var value = valueOpt.orElseThrow();
 
-        if (USERS_ENDPOINT.equals(value)) {
-            printAllUsers(printWriter, resp);
-        } else if (CATS_ENDPOINT.equals(value) && isParsable(idToString)) {
-            printCatsByOwner(printWriter, idToString, resp);
-        } else if (DOGS_ENDPOINT.equals(value) && isParsable(idToString)) {
-            printDogsByOwner(printWriter, idToString, resp);
-        } else if (ANIMALS_ENDPOINT.equals(value) && isParsable(idToString)) {
-            printAnimalsByOwner(printWriter, idToString, resp);
-        } else if (isParsable(value)) {
-            printUserById(printWriter, value, resp);
-        } else {
-            printUserByFirstName(printWriter, value, resp);
+        switch (value) {
+            case USERS_ENDPOINT:
+                printAllUsers(printWriter, resp);
+                break;
+            case CATS_ENDPOINT:
+                printCatsByOwner(printWriter, idToString, resp);
+                break;
+            case DOGS_ENDPOINT:
+                printDogsByOwner(printWriter, idToString, resp);
+                break;
+            case ANIMALS_ENDPOINT:
+                printAnimalsByOwner(printWriter, idToString, resp);
+                break;
+            default:
+                printUserByAttribute(printWriter, value, resp);
+                break;
         }
         printWriter.flush();
     }
@@ -164,6 +168,21 @@ public class UserServlet extends HttpServlet {
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
             resp.sendError(responseStatus, ex.getMessage());
+        }
+    }
+
+    private void printUserByAttribute(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
+        isStringParsable(value);
+        if (isParsable(value)) {
+            printUserById(printWriter, value, resp);
+        } else {
+            printUserByFirstName(printWriter, value, resp);
+        }
+    }
+
+    private void isStringParsable(String idToString) throws IOException {
+        if (!isParsable(idToString)) {
+            throw new IOException();
         }
     }
 
