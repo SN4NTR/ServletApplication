@@ -21,7 +21,7 @@ public class PropertyLoader {
         var passwordValue = getenv(PASSWORD_ENV_NAME);
 
         var properties = new HashMap<String, String>();
-        properties.put(URL_PROPERTY_NAME, dbUrlValue);
+        properties.put(URL_PROPERTY_NAME, "jdbc:mysql://localhost:3306/servlet_db?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8");
         properties.put(USER_PROPERTY_NAME, userValue);
         properties.put(PASSWORD_PROPERTY_NAME, passwordValue);
         return properties;
