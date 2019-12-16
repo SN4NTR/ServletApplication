@@ -1,10 +1,10 @@
 package com.leverx.servletapp.model.animal.cat.servlet;
 
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.dto.CatInputDto;
 import com.leverx.servletapp.model.animal.cat.service.CatService;
 import com.leverx.servletapp.model.animal.cat.service.CatServiceImpl;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
+import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -24,7 +25,11 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class CatServlet extends HttpServlet {
 
-    private CatService catService = new CatServiceImpl();
+    private CatService catService;
+
+    public CatServlet() {
+        catService = (CatServiceImpl) getBean(CatService.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

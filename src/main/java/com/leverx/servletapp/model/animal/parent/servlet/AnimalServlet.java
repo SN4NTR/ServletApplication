@@ -10,13 +10,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
+import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
 
 public class AnimalServlet extends HttpServlet {
 
-    private AnimalService animalService = new AnimalServiceImpl();
+    private AnimalService animalService;
+
+    public AnimalServlet() {
+        animalService = (AnimalServiceImpl) getBean(AnimalService.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

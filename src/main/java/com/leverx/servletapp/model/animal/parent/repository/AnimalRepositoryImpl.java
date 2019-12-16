@@ -1,5 +1,6 @@
 package com.leverx.servletapp.model.animal.parent.repository;
 
+import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.model.animal.parent.Animal;
 import com.leverx.servletapp.model.animal.parent.Animal_;
 import com.leverx.servletapp.model.user.entity.User_;
@@ -15,6 +16,7 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 
 @Slf4j
+@Repository
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     @Override

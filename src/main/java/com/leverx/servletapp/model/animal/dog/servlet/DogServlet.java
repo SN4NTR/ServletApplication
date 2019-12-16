@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
+import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -24,7 +25,11 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class DogServlet extends HttpServlet {
 
-    public DogService dogService = new DogServiceImpl();
+    public DogService dogService;
+
+    public DogServlet() {
+        dogService = (DogServiceImpl) getBean(DogService.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

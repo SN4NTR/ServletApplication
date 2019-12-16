@@ -1,5 +1,6 @@
 package com.leverx.servletapp.model.animal.cat.service;
 
+import com.leverx.servletapp.annotation.Service;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.dto.CatInputDto;
@@ -11,15 +12,21 @@ import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
 
+import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.fromInputDto;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.toDtoWithOwner;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.toOutputDtoList;
 import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.validateId;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.validateInputDto;
 
+@Service
 public class CatServiceImpl implements CatService {
 
-    private CatRepository catRepository = new CatRepositoryImpl();
+    private CatRepository catRepository;
+
+    public CatServiceImpl() {
+        catRepository = (CatRepositoryImpl) getBean(CatRepository.class);
+    }
 
     @Override
     public void save(CatInputDto catInputDto) throws ValidationException {
