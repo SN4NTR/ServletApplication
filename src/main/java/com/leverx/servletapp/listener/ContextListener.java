@@ -1,6 +1,5 @@
 package com.leverx.servletapp.listener;
 
-import com.leverx.servletapp.context.ApplicationContext;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletContextEvent;

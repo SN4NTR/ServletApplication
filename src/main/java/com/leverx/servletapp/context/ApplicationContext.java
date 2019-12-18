@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,11 +24,11 @@ public class ApplicationContext {
 
     private static ApplicationContext applicationContext;
 
-    private static final String PACKAGE_NAME = "com.leverx.servletapp";
+    private static final String PACKAGE_NAME = "com.leverx.servletapp.model";
 
     static {
-        loadServices();
-        loadRepositories();
+        loadComponents(Service.class);
+        loadComponents(Repository.class);
     }
 
     public static synchronized ApplicationContext getInstance() {
@@ -48,22 +49,11 @@ public class ApplicationContext {
         }
     }
 
-    private static void loadServices() {
+    private static <T extends Annotation> void loadComponents(Class<T> tClass) {
         var reflections = new Reflections(PACKAGE_NAME);
-        var services = reflections.getTypesAnnotatedWith(Service.class);
+        var components = reflections.getTypesAnnotatedWith(tClass);
 
-        for (var implementationClass : services) {
-            for (var interfaceName : implementationClass.getInterfaces()) {
-                componentsMap.put(interfaceName, implementationClass);
-            }
-        }
-    }
-
-    private static void loadRepositories() {
-        var reflections = new Reflections(PACKAGE_NAME);
-        var repositories = reflections.getTypesAnnotatedWith(Repository.class);
-
-        for (var implementationClass : repositories) {
+        for (var implementationClass : components) {
             for (var interfaceName : implementationClass.getInterfaces()) {
                 componentsMap.put(interfaceName, implementationClass);
             }
