@@ -180,17 +180,10 @@ public class UserServlet extends HttpServlet {
     }
 
     private void printUserByAttribute(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
-        isStringParsable(value);
         if (isParsable(value)) {
             printUserById(printWriter, value, resp);
         } else {
             printUserByFirstName(printWriter, value, resp);
-        }
-    }
-
-    private void isStringParsable(String idToString) throws IOException {
-        if (!isParsable(idToString)) {
-            throw new IOException();
         }
     }
 
