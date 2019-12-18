@@ -22,7 +22,7 @@ public class CatValidator {
 
     private static CatRepository catRepository;
 
-    public CatValidator() {
+    static {
         catRepository = (CatRepositoryImpl) getBean(CatRepository.class);
     }
 

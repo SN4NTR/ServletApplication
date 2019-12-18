@@ -29,7 +29,7 @@ public class UserValidator {
 
     private static UserRepository userRepository;
 
-    public UserValidator() {
+    static {
         userRepository = (UserRepositoryImpl) getBean(UserRepository.class);
     }
 

@@ -22,7 +22,7 @@ public class DogValidator {
 
     private static DogRepository dogRepository;
 
-    public DogValidator() {
+    static {
         dogRepository = (DogRepositoryImpl) getBean(DogRepository.class);
     }
 
