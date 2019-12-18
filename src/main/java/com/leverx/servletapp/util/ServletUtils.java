@@ -1,13 +1,23 @@
 package com.leverx.servletapp.util;
 
+import com.leverx.servletapp.util.constant.MethodType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
+import static com.leverx.servletapp.util.constant.MethodType.GET_ALL_USERS;
+import static com.leverx.servletapp.util.constant.MethodType.GET_USERS_ANIMALS;
+import static com.leverx.servletapp.util.constant.MethodType.GET_USERS_CATS;
+import static com.leverx.servletapp.util.constant.MethodType.GET_USERS_DOGS;
+import static com.leverx.servletapp.util.constant.MethodType.GET_USER_BY_ATTRIBUTE;
+import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
+import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
 import static com.leverx.servletapp.util.constant.UrlComponent.DELIMITER;
+import static com.leverx.servletapp.util.constant.UrlComponent.DOGS_ENDPOINT;
 import static com.leverx.servletapp.util.constant.UrlComponent.LAST_ELEMENT_POSITION;
 import static com.leverx.servletapp.util.constant.UrlComponent.PENULTIMATE_ELEMENT_POSITION;
+import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
 import static java.util.Objects.isNull;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
@@ -32,6 +42,21 @@ public final class ServletUtils {
         var valueOpt = getLastPartOfUrl(url);
         var value = valueOpt.orElseThrow();
         return isParsable(value) ? Optional.of(Integer.parseInt(value)) : Optional.empty();
+    }
+
+    public static MethodType getMethodType(String urlValue) {
+        return switch (urlValue) {
+            case USERS_ENDPOINT:
+                yield GET_ALL_USERS;
+            case CATS_ENDPOINT:
+                yield GET_USERS_CATS;
+            case DOGS_ENDPOINT:
+                yield GET_USERS_DOGS;
+            case ANIMALS_ENDPOINT:
+                yield GET_USERS_ANIMALS;
+            default:
+                yield GET_USER_BY_ATTRIBUTE;
+        };
     }
 
     public static Optional<String> getValueFromUrl(String url, String parameter) {

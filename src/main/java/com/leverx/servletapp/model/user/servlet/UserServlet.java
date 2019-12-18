@@ -26,12 +26,9 @@ import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
+import static com.leverx.servletapp.util.ServletUtils.getMethodType;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
-import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
-import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
-import static com.leverx.servletapp.util.constant.UrlComponent.DOGS_ENDPOINT;
-import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
@@ -65,22 +62,14 @@ public class UserServlet extends HttpServlet {
         var valueOpt = getValueFromUrl(urlToString, param);
         var value = valueOpt.orElseThrow();
 
-        switch (value) {
-            case USERS_ENDPOINT:
-                printAllUsers(printWriter, resp);
-                break;
-            case CATS_ENDPOINT:
-                printCatsByOwner(printWriter, idToString, resp);
-                break;
-            case DOGS_ENDPOINT:
-                printDogsByOwner(printWriter, idToString, resp);
-                break;
-            case ANIMALS_ENDPOINT:
-                printAnimalsByOwner(printWriter, idToString, resp);
-                break;
-            default:
-                printUserByAttribute(printWriter, value, resp);
-                break;
+        var methodType = getMethodType(value);
+
+        switch (methodType) {
+            case GET_ALL_USERS -> printAllUsers(printWriter, resp);
+            case GET_USERS_CATS -> printCatsByOwner(printWriter, idToString, resp);
+            case GET_USERS_DOGS -> printDogsByOwner(printWriter, idToString, resp);
+            case GET_USERS_ANIMALS -> printAnimalsByOwner(printWriter, idToString, resp);
+            default -> printUserByAttribute(printWriter, value, resp);
         }
         printWriter.flush();
     }
