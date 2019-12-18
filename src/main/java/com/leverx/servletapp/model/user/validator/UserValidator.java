@@ -13,6 +13,7 @@ import java.util.StringJoiner;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
+import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -21,11 +22,16 @@ public class UserValidator {
 
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
-    public static final String DELIMITER = "; ";
     public static final String WRONG_NAME_SIZE_MSG = "First name must be between " + NAME_MIN_SIZE + " and " + NAME_MAX_SIZE;
 
-    private static final UserRepository USER_REPOSITORY = new UserRepositoryImpl();
+    private static final String DELIMITER = "; ";
     private static final String USER_DOES_NOT_EXIST = "User doesn't exist";
+
+    private static UserRepository userRepository;
+
+    public UserValidator() {
+        userRepository = (UserRepositoryImpl) getBean(UserRepository.class);
+    }
 
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {
         var validatorFactory = buildDefaultValidatorFactory();
@@ -38,7 +44,7 @@ public class UserValidator {
     }
 
     public static void validateId(int id) throws EntityNotFoundException {
-        var userOpt = USER_REPOSITORY.findById(id);
+        var userOpt = userRepository.findById(id);
         userOpt.orElseThrow(() -> new EntityNotFoundException(USER_DOES_NOT_EXIST, NOT_FOUND));
     }
 

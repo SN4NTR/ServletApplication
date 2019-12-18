@@ -9,26 +9,32 @@ import java.util.List;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
+import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
 public class DogValidator {
 
-    private static final String DOG_DOES_NOT_EXIST = "Dog doesn't exist";
-    private static final DogRepository DOG_REPOSITORY = new DogRepositoryImpl();
-
     public static final int MIN_VALUE = 0;
     public static final String WRONG_VALUE = "Value is less than " + MIN_VALUE;
 
+    private static final String DOG_DOES_NOT_EXIST = "Dog doesn't exist";
+
+    private static DogRepository dogRepository;
+
+    public DogValidator() {
+        dogRepository = (DogRepositoryImpl) getBean(DogRepository.class);
+    }
+
     public static void validateId(int id) throws EntityNotFoundException {
-        var dogOpt = DOG_REPOSITORY.findById(id);
+        var dogOpt = dogRepository.findById(id);
         dogOpt.orElseThrow(() -> new EntityNotFoundException(DOG_DOES_NOT_EXIST, NOT_FOUND));
     }
 
     public static void validateIds(List<Integer> ids) throws EntityNotFoundException {
         if (isNotEmpty(ids)) {
             for (var id : ids) {
-                var dogOpt = DOG_REPOSITORY.findById(id);
+                var dogOpt = dogRepository.findById(id);
                 dogOpt.orElseThrow(() -> new EntityNotFoundException(DOG_DOES_NOT_EXIST, UNPROCESSABLE_ENTITY));
             }
         }
