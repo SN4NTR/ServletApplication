@@ -16,6 +16,10 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ServletUtils {
 
+    private static final int FIND_ALL_GROUP = 3;
+    private static final int FIND_BY_ID_GROUP = 4;
+    private static final int FIND_BY_OWNER_GROUP = 5;
+
     public static Optional<String> getUserIdFormUrl(String url) {
         return getUrlPartByPosition(url, PENULTIMATE_ELEMENT_POSITION);
     }
@@ -35,7 +39,7 @@ public final class ServletUtils {
         var findByOwnerMatcher = findByOwnerPattern.matcher(url);
 
         if (findByOwnerMatcher.matches()) {
-            var value = findByOwnerMatcher.group(5);
+            var value = findByOwnerMatcher.group(FIND_BY_OWNER_GROUP);
             return Optional.of(value);
         }
 
@@ -43,7 +47,7 @@ public final class ServletUtils {
         var findByIdMatcher = findByIdPattern.matcher(url);
 
         if (findByIdMatcher.matches()) {
-            var id = findByIdMatcher.group(4);
+            var id = findByIdMatcher.group(FIND_BY_ID_GROUP);
             return Optional.of(id);
         }
 
@@ -51,10 +55,9 @@ public final class ServletUtils {
         var findAllMatcher = findAllPattern.matcher(url);
 
         if (findAllMatcher.matches()) {
-            var value = findAllMatcher.group(3);
+            var value = findAllMatcher.group(FIND_ALL_GROUP);
             return isNull(parameter) ? Optional.of(value) : Optional.of(parameter);
         }
-
         return Optional.empty();
     }
 
