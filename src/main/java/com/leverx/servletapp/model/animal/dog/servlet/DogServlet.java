@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class DogServlet extends HttpServlet {
 
-    public DogService dogService;
+    private DogService dogService;
 
     public DogServlet() {
         dogService = (DogServiceImpl) getBean(DogService.class);
@@ -56,7 +56,7 @@ public class DogServlet extends HttpServlet {
             resp.setStatus(CREATED);
         } catch (ValidationException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 
@@ -76,7 +76,7 @@ public class DogServlet extends HttpServlet {
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 }

@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Objects.isNull;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -23,20 +22,11 @@ public class ApplicationContext {
 
     private static Map<Class<?>, Class<?>> componentsMap = new HashMap<>();
 
-    private static ApplicationContext applicationContext;
-
     private static final String PACKAGE_NAME = "com.leverx.servletapp.model";
 
-    static {
+    public static void loadApplicationContext() {
         loadComponents(Service.class);
         loadComponents(Repository.class);
-    }
-
-    public static synchronized ApplicationContext getInstance() {
-        if (isNull(applicationContext)) {
-            applicationContext = new ApplicationContext();
-        }
-        return applicationContext;
     }
 
     public static Object getBean(Class<?> interfaceClass) {

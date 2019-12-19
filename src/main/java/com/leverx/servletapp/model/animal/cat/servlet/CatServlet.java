@@ -57,7 +57,7 @@ public class CatServlet extends HttpServlet {
             resp.setStatus(CREATED);
         } catch (ValidationException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 

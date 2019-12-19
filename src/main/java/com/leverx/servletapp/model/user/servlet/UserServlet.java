@@ -12,6 +12,7 @@ import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.service.UserService;
 import com.leverx.servletapp.model.user.service.UserServiceImpl;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -101,7 +102,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(NO_CONTENT);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 
@@ -122,10 +123,10 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(OK);
         } catch (ValidationException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 
@@ -138,7 +139,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 
@@ -151,7 +152,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 
@@ -164,7 +165,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 
