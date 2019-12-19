@@ -20,7 +20,7 @@ public class AnimalServlet extends HttpServlet {
     private AnimalService animalService;
 
     public AnimalServlet() {
-        animalService = (AnimalServiceImpl) getBean(AnimalService.class);
+        animalService = getBean(AnimalService.class);
     }
 
     @Override

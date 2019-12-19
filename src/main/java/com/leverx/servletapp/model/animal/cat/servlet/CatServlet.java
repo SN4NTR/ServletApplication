@@ -4,7 +4,6 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.dto.CatInputDto;
 import com.leverx.servletapp.model.animal.cat.service.CatService;
-import com.leverx.servletapp.model.animal.cat.service.CatServiceImpl;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ public class CatServlet extends HttpServlet {
     private CatService catService;
 
     public CatServlet() {
-        catService = (CatServiceImpl) getBean(CatService.class);
+        catService = getBean(CatService.class);
     }
 
     @Override

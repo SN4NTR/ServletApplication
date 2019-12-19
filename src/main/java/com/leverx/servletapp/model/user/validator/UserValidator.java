@@ -30,7 +30,7 @@ public class UserValidator {
     private static UserRepository userRepository;
 
     static {
-        userRepository = (UserRepositoryImpl) getBean(UserRepository.class);
+        userRepository = getBean(UserRepository.class);
     }
 
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {

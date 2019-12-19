@@ -2,7 +2,6 @@ package com.leverx.servletapp.model.animal.cat.validator;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
-import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class CatValidator {
     private static CatRepository catRepository;
 
     static {
-        catRepository = (CatRepositoryImpl) getBean(CatRepository.class);
+        catRepository = getBean(CatRepository.class);
     }
 
     public static void validateId(int id) throws EntityNotFoundException {

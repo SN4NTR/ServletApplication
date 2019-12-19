@@ -4,7 +4,6 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.dog.dto.DogInputDto;
 import com.leverx.servletapp.model.animal.dog.service.DogService;
-import com.leverx.servletapp.model.animal.dog.service.DogServiceImpl;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ public class DogServlet extends HttpServlet {
     private DogService dogService;
 
     public DogServlet() {
-        dogService = (DogServiceImpl) getBean(DogService.class);
+        dogService = getBean(DogService.class);
     }
 
     @Override

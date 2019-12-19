@@ -3,16 +3,11 @@ package com.leverx.servletapp.model.user.servlet;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.service.CatService;
-import com.leverx.servletapp.model.animal.cat.service.CatServiceImpl;
 import com.leverx.servletapp.model.animal.dog.service.DogService;
-import com.leverx.servletapp.model.animal.dog.service.DogServiceImpl;
 import com.leverx.servletapp.model.animal.parent.service.AnimalService;
-import com.leverx.servletapp.model.animal.parent.service.AnimalServiceImpl;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.service.UserService;
-import com.leverx.servletapp.model.user.service.UserServiceImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,10 +38,10 @@ public class UserServlet extends HttpServlet {
     private static final String FIRST_NAME_PARAMETER = "firstName";
 
     public UserServlet() {
-        userService = (UserServiceImpl) getBean(UserService.class);
-        animalService = (AnimalServiceImpl) getBean(AnimalService.class);
-        catService = (CatServiceImpl) getBean(CatService.class);
-        dogService = (DogServiceImpl) getBean(DogService.class);
+        userService = getBean(UserService.class);
+        animalService = getBean(AnimalService.class);
+        catService = getBean(CatService.class);
+        dogService = getBean(DogService.class);
     }
 
     @Override
