@@ -7,7 +7,6 @@ import com.leverx.servletapp.model.animal.cat.dto.CatInputDto;
 import com.leverx.servletapp.model.animal.cat.dto.CatOutputDto;
 import com.leverx.servletapp.model.animal.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
-import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
@@ -25,7 +24,7 @@ public class CatServiceImpl implements CatService {
     private CatRepository catRepository;
 
     public CatServiceImpl() {
-        catRepository = (CatRepositoryImpl) getBean(CatRepository.class);
+        catRepository = getBean(CatRepository.class);
     }
 
     @Override

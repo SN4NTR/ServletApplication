@@ -7,7 +7,6 @@ import com.leverx.servletapp.model.animal.dog.dto.DogInputDto;
 import com.leverx.servletapp.model.animal.dog.dto.DogOutputDto;
 import com.leverx.servletapp.model.animal.dog.dto.DogWithOwnerDto;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
-import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
@@ -25,7 +24,7 @@ public class DogServiceImpl implements DogService {
     private DogRepository dogRepository;
 
     public DogServiceImpl() {
-        dogRepository = (DogRepositoryImpl) getBean(DogRepository.class);
+        dogRepository = getBean(DogRepository.class);
     }
 
     @Override

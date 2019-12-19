@@ -4,17 +4,14 @@ import com.leverx.servletapp.annotation.Service;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
-import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.model.animal.cat.validator.CatValidator;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
-import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.model.animal.dog.validator.DogValidator;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.repository.UserRepository;
-import com.leverx.servletapp.model.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
@@ -38,9 +35,9 @@ public class UserServiceImpl implements UserService {
     private DogRepository dogRepository;
 
     public UserServiceImpl() {
-        userRepository = (UserRepositoryImpl) getBean(UserRepository.class);
-        catRepository = (CatRepositoryImpl) getBean(CatRepository.class);
-        dogRepository = (DogRepositoryImpl) getBean(DogRepository.class);
+        userRepository = getBean(UserRepository.class);
+        catRepository = getBean(CatRepository.class);
+        dogRepository = getBean(DogRepository.class);
     }
 
     @Override

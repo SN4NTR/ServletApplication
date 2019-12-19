@@ -4,7 +4,6 @@ import com.leverx.servletapp.annotation.Service;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.animal.parent.repository.AnimalRepository;
-import com.leverx.servletapp.model.animal.parent.repository.AnimalRepositoryImpl;
 import com.leverx.servletapp.model.user.validator.UserValidator;
 
 import java.util.Collection;
@@ -18,7 +17,7 @@ public class AnimalServiceImpl implements AnimalService {
     private AnimalRepository animalRepository;
 
     public AnimalServiceImpl() {
-        animalRepository = (AnimalRepositoryImpl) getBean(AnimalRepository.class);
+        animalRepository = getBean(AnimalRepository.class);
     }
 
     @Override
