@@ -2,6 +2,7 @@ package com.leverx.servletapp.context;
 
 import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.annotation.Service;
+import com.leverx.servletapp.exception.InternalServerErrorException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +39,13 @@ public class ApplicationContext {
         return applicationContext;
     }
 
-    // TODO return Optional
     public static Object getBean(Class<?> interfaceClass) {
         var implementationClass = componentsMap.get(interfaceClass);
         try {
             return implementationClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.error(e.getMessage());
-            return null;
+            throw new InternalServerErrorException();
         }
     }
 
