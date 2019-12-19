@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -23,7 +25,6 @@ import java.util.List;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MIN_SIZE;
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.JOINED;
 
@@ -54,5 +55,8 @@ public abstract class Animal {
     private LocalDate dateOfBirth;
 
     @ManyToMany(fetch = EAGER)
+    @JoinTable(name = "owner_animal",
+            joinColumns = {@JoinColumn(name = "animal_id")},
+            inverseJoinColumns = {@JoinColumn(name = "owner_id")})
     private List<User> owners;
 }
