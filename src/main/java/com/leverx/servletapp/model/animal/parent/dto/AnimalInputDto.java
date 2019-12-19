@@ -15,18 +15,16 @@ import java.time.LocalDate;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MIN_SIZE;
-import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_DATE_MSG;
-import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_NAME_SIZE_MSG;
 
 @Data
 public class AnimalInputDto {
 
     @NotNull
-    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
     @NotNull
-    @PastOrPresent(message = WRONG_DATE_MSG)
+    @PastOrPresent
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)

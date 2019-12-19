@@ -8,9 +8,16 @@ import lombok.NoArgsConstructor;
 public class EntityNotFoundException extends Exception {
 
     private int responseStatus;
+    private String message;
 
     public EntityNotFoundException(String message, int responseStatus) {
         super(message);
+        this.message = message;
         this.responseStatus = responseStatus;
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return message;
     }
 }

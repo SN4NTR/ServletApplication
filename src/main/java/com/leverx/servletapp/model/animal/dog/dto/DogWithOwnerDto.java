@@ -10,7 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -23,11 +22,8 @@ import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.MIN_VALUE;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.WRONG_VALUE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.NAME_MIN_SIZE;
-import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_DATE_MSG;
-import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.WRONG_NAME_SIZE_MSG;
 
 @Getter
 @Setter
@@ -39,14 +35,14 @@ public class DogWithOwnerDto {
     private int id;
 
     @NotNull
-    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE, message = WRONG_NAME_SIZE_MSG)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
-    @Min(value = MIN_VALUE, message = WRONG_VALUE)
+    @Min(value = MIN_VALUE)
     private int goodBoyAmount;
 
     @NotNull
-    @PastOrPresent(message = WRONG_DATE_MSG)
+    @PastOrPresent
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)

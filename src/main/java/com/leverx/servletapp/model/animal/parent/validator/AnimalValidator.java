@@ -17,8 +17,6 @@ public class AnimalValidator {
 
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
-    public static final String WRONG_DATE_MSG = "Date must be past or present";
-    public static final String WRONG_NAME_SIZE_MSG = "First name must be between " + NAME_MIN_SIZE + " and " + NAME_MAX_SIZE;
 
     private static final String DELIMITER = "; ";
 

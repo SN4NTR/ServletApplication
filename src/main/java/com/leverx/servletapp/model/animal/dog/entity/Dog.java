@@ -1,6 +1,5 @@
 package com.leverx.servletapp.model.animal.dog.entity;
 
-import com.leverx.servletapp.model.animal.dog.validator.DogValidator;
 import com.leverx.servletapp.model.animal.parent.Animal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,17 +12,16 @@ import javax.validation.constraints.Min;
 import java.time.LocalDate;
 
 import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.MIN_VALUE;
-import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.WRONG_VALUE;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "dogs")
+@Table
 public class Dog extends Animal {
 
-    @Min(value = MIN_VALUE, message = WRONG_VALUE)
-    @Column(name = "good_boy_amount")
+    @Column
+    @Min(value = MIN_VALUE)
     private int goodBoyAmount;
 
     public Dog(String name, LocalDate dateOfBirth, int goodBoyAmount) {

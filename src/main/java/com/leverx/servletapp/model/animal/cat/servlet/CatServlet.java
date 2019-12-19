@@ -77,7 +77,7 @@ public class CatServlet extends HttpServlet {
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getMessage());
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
         }
     }
 }
