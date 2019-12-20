@@ -20,8 +20,8 @@ import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.MIN_
 @Table
 public class Dog extends Animal {
 
-    @Column
     @Min(value = MIN_VALUE)
+    @Column(nullable = false)
     private int goodBoyAmount;
 
     public Dog(String name, LocalDate dateOfBirth, int goodBoyAmount) {

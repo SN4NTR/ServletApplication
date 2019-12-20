@@ -44,14 +44,14 @@ public abstract class Animal {
 
     @NonNull
     @NotNull
-    @Column
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
+    @Column(nullable = false, length = NAME_MAX_SIZE)
     private String name;
 
     @NonNull
     @NotNull
-    @Column
     @PastOrPresent
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
 
     @ManyToMany(fetch = EAGER)

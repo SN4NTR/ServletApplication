@@ -20,8 +20,8 @@ import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.MIN_
 @Table
 public class Cat extends Animal {
 
-    @Column
     @Min(value = MIN_VALUE)
+    @Column(nullable = false)
     private int miceCaught;
 
     public Cat(String name, LocalDate dateOfBirth, int miceCaught) {

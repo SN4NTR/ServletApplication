@@ -49,6 +49,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column(columnDefinition = "integer default 0")
+    private int animalPoint;
+
     @NonNull
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "owner_animal",
