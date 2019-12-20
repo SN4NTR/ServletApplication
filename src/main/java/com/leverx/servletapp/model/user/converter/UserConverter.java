@@ -20,24 +20,24 @@ public final class UserConverter {
     private static UserOutputDto toOutputDto(User user) {
         var id = user.getId();
         var firstName = user.getFirstName();
-        return new UserOutputDto(id, firstName);
+        var email = user.getEmail();
+        return new UserOutputDto(id, firstName, email);
     }
 
     public static UserWithAnimalsDto toWithAnimalsDto(User user) {
         var id = user.getId();
         var firstName = user.getFirstName();
+        var email = user.getEmail();
         var animals = user.getAnimals();
         var animalOutputDtos = AnimalConverter.toOutputDtoList(animals);
-        return new UserWithAnimalsDto(id, firstName, animalOutputDtos);
+        return new UserWithAnimalsDto(id, firstName, email, animalOutputDtos);
     }
 
-    public static User fromInputDto(UserInputDto userDto) {
-        var firstName = userDto.getFirstName();
+    public static User fromInputDto(UserInputDto userInputDto) {
+        var firstName = userInputDto.getFirstName();
+        var email = userInputDto.getEmail();
         var animals = new ArrayList<Animal>();
-        var user = new User();
-        user.setFirstName(firstName);
-        user.setAnimals(animals);
-        return user;
+        return new User(firstName, email, animals);
     }
 
     public static List<UserOutputDto> toOutputDtoList(Collection<User> users) {

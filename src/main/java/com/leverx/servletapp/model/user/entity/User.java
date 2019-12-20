@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -39,10 +40,16 @@ public class User {
 
     @NonNull
     @NotNull
-    @Column
+    @Column(nullable = false, length = NAME_MAX_SIZE)
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String firstName;
 
+    @Email
+    @NonNull
+    @Column(nullable = false)
+    private String email;
+
+    @NonNull
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "owner_animal",
             joinColumns = {@JoinColumn(name = "owner_id")},

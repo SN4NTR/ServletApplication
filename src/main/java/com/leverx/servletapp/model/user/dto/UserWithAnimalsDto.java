@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -28,6 +29,9 @@ public class UserWithAnimalsDto {
     @NotNull
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String firstName;
+
+    @Email
+    private String email;
 
     private List<AnimalOutputDto> animals = emptyList();
 }
