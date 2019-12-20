@@ -65,8 +65,18 @@ public class UserServiceImpl implements UserService {
         validateInputDto(userInputDto);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
+
         var firstName = userInputDto.getFirstName();
         user.setFirstName(firstName);
+        var email = userInputDto.getEmail();
+        user.setEmail(email);
+        var catsIds = userInputDto.getCatsIds();
+        var dogsIds = userInputDto.getDogsIds();
+        CatValidator.validateIds(catsIds);
+        DogValidator.validateIds(dogsIds);
+        assignCats(user, catsIds);
+        assignDogs(user, dogsIds);
+
         userRepository.update(user);
     }
 
