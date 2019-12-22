@@ -8,7 +8,6 @@ import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.service.UserService;
-import com.leverx.servletapp.user.servlet.util.UserServletUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +25,7 @@ import static com.leverx.servletapp.factory.BeanFactory.getAnimalServiceImpl;
 import static com.leverx.servletapp.factory.BeanFactory.getCatServiceImpl;
 import static com.leverx.servletapp.factory.BeanFactory.getDogServiceImpl;
 import static com.leverx.servletapp.factory.BeanFactory.getUserServiceImpl;
+import static com.leverx.servletapp.user.servlet.util.UserServletUtil.getMethodType;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
@@ -64,7 +64,7 @@ public class UserServlet extends HttpServlet {
         var valueOpt = getValueFromUrl(urlToString, param);
         var value = valueOpt.orElseThrow();
 
-        var methodType = UserServletUtil.getMethodType(value);
+        var methodType = getMethodType(value);
 
         switch (methodType) {
             case GET_ALL_USERS -> printAllUsers(printWriter, resp);
