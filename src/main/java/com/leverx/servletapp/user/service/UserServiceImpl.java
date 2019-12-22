@@ -1,6 +1,5 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.annotation.Service;
 import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.cat.validator.CatValidator;
@@ -29,7 +28,6 @@ import static com.leverx.servletapp.user.validator.UserValidator.validateInputDt
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
-@Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 

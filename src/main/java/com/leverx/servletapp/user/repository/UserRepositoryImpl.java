@@ -1,6 +1,5 @@
 package com.leverx.servletapp.user.repository;
 
-import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
-@Repository
 public class UserRepositoryImpl implements UserRepository {
 
     @Override

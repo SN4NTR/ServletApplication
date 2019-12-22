@@ -1,6 +1,5 @@
 package com.leverx.servletapp.dog.repository;
 
-import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.dog.entity.Dog;
 import com.leverx.servletapp.dog.entity.Dog_;
 import com.leverx.servletapp.user.entity.User_;
@@ -18,7 +17,6 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 
 @Slf4j
-@Repository
 public class DogRepositoryImpl implements DogRepository {
 
     @Override

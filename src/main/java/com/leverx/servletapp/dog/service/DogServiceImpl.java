@@ -1,6 +1,5 @@
 package com.leverx.servletapp.dog.service;
 
-import com.leverx.servletapp.annotation.Service;
 import com.leverx.servletapp.dog.dto.DogInputDto;
 import com.leverx.servletapp.dog.dto.DogOutputDto;
 import com.leverx.servletapp.dog.dto.DogWithOwnerDto;
@@ -19,7 +18,6 @@ import static com.leverx.servletapp.dog.converter.DogConverter.fromInputDto;
 import static com.leverx.servletapp.dog.converter.DogConverter.toDtoWithOwner;
 import static com.leverx.servletapp.dog.converter.DogConverter.toOutputDtoList;
 
-@Service
 @AllArgsConstructor
 public class DogServiceImpl implements DogService {
 

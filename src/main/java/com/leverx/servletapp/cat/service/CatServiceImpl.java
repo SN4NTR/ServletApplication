@@ -1,6 +1,5 @@
 package com.leverx.servletapp.cat.service;
 
-import com.leverx.servletapp.annotation.Service;
 import com.leverx.servletapp.cat.dto.CatInputDto;
 import com.leverx.servletapp.cat.dto.CatOutputDto;
 import com.leverx.servletapp.cat.dto.CatWithOwnerDto;
@@ -19,7 +18,6 @@ import static com.leverx.servletapp.cat.converter.CatConverter.fromInputDto;
 import static com.leverx.servletapp.cat.converter.CatConverter.toDtoWithOwner;
 import static com.leverx.servletapp.cat.converter.CatConverter.toOutputDtoList;
 
-@Service
 @AllArgsConstructor
 public class CatServiceImpl implements CatService {
 

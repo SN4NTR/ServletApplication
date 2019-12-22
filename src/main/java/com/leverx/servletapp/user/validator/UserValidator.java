@@ -13,7 +13,6 @@ import java.util.StringJoiner;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.message.MessageConstant.MESSAGE_BUNDLE_NAME;
 import static com.leverx.servletapp.message.MessageConstant.USER_NOT_FOUND;
 import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
@@ -32,7 +31,7 @@ public class UserValidator {
 
     public void validateId(int id) throws EntityNotFoundException {
         var userOpt = userRepository.findById(id);
-        var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, USER_NOT_FOUND);
+        var message = getLocalizedMessage(USER_NOT_FOUND);
         userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 

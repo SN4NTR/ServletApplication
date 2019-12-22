@@ -2,7 +2,6 @@ package com.leverx.servletapp.animal.repository;
 
 import com.leverx.servletapp.animal.entity.Animal;
 import com.leverx.servletapp.animal.entity.Animal_;
-import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +15,6 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 
 @Slf4j
-@Repository
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     @Override

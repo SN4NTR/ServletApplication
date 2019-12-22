@@ -10,7 +10,6 @@ import java.util.Collection;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static com.leverx.servletapp.message.MessageConstant.FROM_JSON_ERROR;
-import static com.leverx.servletapp.message.MessageConstant.MESSAGE_BUNDLE_NAME;
 import static com.leverx.servletapp.message.MessageConstant.TO_JSON_ERROR;
 import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
 import static java.util.stream.Collectors.joining;
@@ -30,7 +29,7 @@ public class EntityConverter {
             var jsonBody = readJsonBody(reader);
             return OBJECT_MAPPER.readValue(jsonBody, tClass);
         } catch (JsonProcessingException e) {
-            var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, FROM_JSON_ERROR);
+            var message = getLocalizedMessage(FROM_JSON_ERROR);
             log.error(message);
             throw new InternalServerErrorException(message, INTERNAL_SERVER_ERROR);
         }
@@ -40,7 +39,7 @@ public class EntityConverter {
         try {
             return OBJECT_MAPPER.writeValueAsString(t);
         } catch (JsonProcessingException e) {
-            var message =getLocalizedMessage(MESSAGE_BUNDLE_NAME, TO_JSON_ERROR);
+            var message = getLocalizedMessage(TO_JSON_ERROR);
             log.error(message);
             throw new InternalServerErrorException(message, INTERNAL_SERVER_ERROR);
         }
