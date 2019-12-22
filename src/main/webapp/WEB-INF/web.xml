@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>UserServlet</servlet-name>
-        <servlet-class>com.leverx.servletapp.model.user.servlet.UserServlet</servlet-class>
+        <servlet-class>com.leverx.servletapp.user.servlet.UserServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
@@ -20,7 +20,7 @@
 
     <servlet>
         <servlet-name>CatServlet</servlet-name>
-        <servlet-class>com.leverx.servletapp.model.animal.cat.servlet.CatServlet</servlet-class>
+        <servlet-class>com.leverx.servletapp.cat.servlet.CatServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CatServlet</servlet-name>
@@ -30,7 +30,7 @@
 
     <servlet>
         <servlet-name>DogServlet</servlet-name>
-        <servlet-class>com.leverx.servletapp.model.animal.dog.servlet.DogServlet</servlet-class>
+        <servlet-class>com.leverx.servletapp.dog.servlet.DogServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DogServlet</servlet-name>
@@ -40,7 +40,7 @@
 
     <servlet>
         <servlet-name>AnimalServlet</servlet-name>
-        <servlet-class>com.leverx.servletapp.model.animal.parent.servlet.AnimalServlet</servlet-class>
+        <servlet-class>com.leverx.servletapp.animal.servlet.AnimalServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>AnimalServlet</servlet-name>
