@@ -8,10 +8,10 @@ import com.leverx.servletapp.model.animal.cat.dto.CatOutputDto;
 import com.leverx.servletapp.model.animal.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.user.validator.UserValidator;
+import lombok.AllArgsConstructor;
 
 import java.util.Collection;
 
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.fromInputDto;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.toDtoWithOwner;
 import static com.leverx.servletapp.model.animal.cat.converter.CatConverter.toOutputDtoList;
@@ -19,13 +19,10 @@ import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.vali
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.validateInputDto;
 
 @Service
+@AllArgsConstructor
 public class CatServiceImpl implements CatService {
 
     private CatRepository catRepository;
-
-    public CatServiceImpl() {
-        catRepository = getBean(CatRepository.class);
-    }
 
     @Override
     public void save(CatInputDto catInputDto) throws ValidationException {

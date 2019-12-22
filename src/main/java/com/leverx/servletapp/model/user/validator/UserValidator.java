@@ -4,6 +4,7 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.repository.UserRepository;
+import com.leverx.servletapp.model.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -12,7 +13,6 @@ import java.util.StringJoiner;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
 import static com.leverx.servletapp.exception.constant.BundleConstant.USER_NOT_FOUND;
 import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
@@ -26,11 +26,10 @@ public class UserValidator {
     public static final int NAME_MAX_SIZE = 60;
 
     private static final String DELIMITER = "; ";
-
     private static final UserRepository USER_REPOSITORY;
 
     static {
-        USER_REPOSITORY = getBean(UserRepository.class);
+        USER_REPOSITORY = new UserRepositoryImpl();
     }
 
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {

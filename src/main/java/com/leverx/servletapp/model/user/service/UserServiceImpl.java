@@ -14,13 +14,13 @@ import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;
 import com.leverx.servletapp.model.user.dto.validator.AnimalPointsValidator;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.model.user.converter.UserConverter.fromInputDto;
 import static com.leverx.servletapp.model.user.converter.UserConverter.toOutputDtoList;
 import static com.leverx.servletapp.model.user.converter.UserConverter.toWithAnimalsDto;
@@ -30,17 +30,12 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private CatRepository catRepository;
     private DogRepository dogRepository;
-
-    public UserServiceImpl() {
-        userRepository = getBean(UserRepository.class);
-        catRepository = getBean(CatRepository.class);
-        dogRepository = getBean(DogRepository.class);
-    }
 
     @Override
     public void save(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
@@ -82,6 +77,7 @@ public class UserServiceImpl implements UserService {
         userRepository.update(user);
     }
 
+    //TODO create points transfer
     @Override
     public void transferAnimalPoint(AnimalPointsDto animalPointsDto) throws ValidationException {
         AnimalPointsValidator.validateInputDto(animalPointsDto);

@@ -2,12 +2,20 @@ package com.leverx.servletapp.model.user.servlet;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.model.animal.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.model.animal.cat.service.CatService;
+import com.leverx.servletapp.model.animal.cat.service.CatServiceImpl;
+import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.model.animal.dog.service.DogService;
+import com.leverx.servletapp.model.animal.dog.service.DogServiceImpl;
+import com.leverx.servletapp.model.animal.parent.repository.AnimalRepositoryImpl;
 import com.leverx.servletapp.model.animal.parent.service.AnimalService;
+import com.leverx.servletapp.model.animal.parent.service.AnimalServiceImpl;
 import com.leverx.servletapp.model.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
+import com.leverx.servletapp.model.user.repository.UserRepositoryImpl;
 import com.leverx.servletapp.model.user.service.UserService;
+import com.leverx.servletapp.model.user.service.UserServiceImpl;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +26,6 @@ import java.io.PrintWriter;
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.NO_CONTENT;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -41,10 +48,10 @@ public class UserServlet extends HttpServlet {
     private static final String ACTION_PARAMETER = "action";
 
     public UserServlet() {
-        userService = getBean(UserService.class);
-        animalService = getBean(AnimalService.class);
-        catService = getBean(CatService.class);
-        dogService = getBean(DogService.class);
+        userService = new UserServiceImpl(new UserRepositoryImpl(), new CatRepositoryImpl(), new DogRepositoryImpl());
+        animalService = new AnimalServiceImpl(new AnimalRepositoryImpl());
+        catService = new CatServiceImpl(new CatRepositoryImpl());
+        dogService = new DogServiceImpl(new DogRepositoryImpl());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.leverx.servletapp.model.animal.parent.servlet;
 
+import com.leverx.servletapp.model.animal.parent.repository.AnimalRepositoryImpl;
 import com.leverx.servletapp.model.animal.parent.service.AnimalService;
 import com.leverx.servletapp.model.animal.parent.service.AnimalServiceImpl;
 
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
 import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
@@ -20,7 +20,7 @@ public class AnimalServlet extends HttpServlet {
     private AnimalService animalService;
 
     public AnimalServlet() {
-        animalService = getBean(AnimalService.class);
+        animalService = new AnimalServiceImpl(new AnimalRepositoryImpl());
     }
 
     @Override

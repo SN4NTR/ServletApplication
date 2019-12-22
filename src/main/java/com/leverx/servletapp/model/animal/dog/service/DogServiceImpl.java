@@ -8,10 +8,10 @@ import com.leverx.servletapp.model.animal.dog.dto.DogOutputDto;
 import com.leverx.servletapp.model.animal.dog.dto.DogWithOwnerDto;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
 import com.leverx.servletapp.model.user.validator.UserValidator;
+import lombok.AllArgsConstructor;
 
 import java.util.Collection;
 
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.model.animal.dog.converter.DogConverter.fromInputDto;
 import static com.leverx.servletapp.model.animal.dog.converter.DogConverter.toDtoWithOwner;
 import static com.leverx.servletapp.model.animal.dog.converter.DogConverter.toOutputDtoList;
@@ -19,13 +19,10 @@ import static com.leverx.servletapp.model.animal.dog.validator.DogValidator.vali
 import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidator.validateInputDto;
 
 @Service
+@AllArgsConstructor
 public class DogServiceImpl implements DogService {
 
     private DogRepository dogRepository;
-
-    public DogServiceImpl() {
-        dogRepository = getBean(DogRepository.class);
-    }
 
     @Override
     public void save(DogInputDto dogInputDto) throws ValidationException {

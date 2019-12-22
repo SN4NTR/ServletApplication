@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import static com.leverx.servletapp.context.ApplicationContext.loadApplicationContext;
 import static com.leverx.servletapp.db.EntityManagerConfig.closeEntityManagerFactory;
 import static com.leverx.servletapp.db.EntityManagerConfig.createEntityManagerFactory;
 
@@ -15,7 +14,6 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.info("Context initialized.");
-        loadApplicationContext();
         createEntityManagerFactory();
         log.info("EntityManagerFactory is created");
     }

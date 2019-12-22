@@ -3,7 +3,9 @@ package com.leverx.servletapp.model.animal.dog.servlet;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.dog.dto.DogInputDto;
+import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.model.animal.dog.service.DogService;
+import com.leverx.servletapp.model.animal.dog.service.DogServiceImpl;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +15,6 @@ import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -27,7 +28,7 @@ public class DogServlet extends HttpServlet {
     private DogService dogService;
 
     public DogServlet() {
-        dogService = getBean(DogService.class);
+        dogService = new DogServiceImpl(new DogRepositoryImpl());
     }
 
     @Override

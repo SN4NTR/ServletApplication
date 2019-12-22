@@ -5,20 +5,17 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
 import com.leverx.servletapp.model.animal.parent.repository.AnimalRepository;
 import com.leverx.servletapp.model.user.validator.UserValidator;
+import lombok.AllArgsConstructor;
 
 import java.util.Collection;
 
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.model.animal.parent.converter.AnimalConverter.toOutputDtoList;
 
 @Service
+@AllArgsConstructor
 public class AnimalServiceImpl implements AnimalService {
 
     private AnimalRepository animalRepository;
-
-    public AnimalServiceImpl() {
-        animalRepository = getBean(AnimalRepository.class);
-    }
 
     @Override
     public Collection<AnimalOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException {

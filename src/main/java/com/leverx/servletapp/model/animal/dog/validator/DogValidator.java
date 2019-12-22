@@ -2,13 +2,13 @@ package com.leverx.servletapp.model.animal.dog.validator;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
+import com.leverx.servletapp.model.animal.dog.repository.DogRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.context.ApplicationContext.getBean;
 import static com.leverx.servletapp.exception.constant.BundleConstant.DOG_NOT_FOUND;
 import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
 import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
@@ -22,7 +22,7 @@ public class DogValidator {
     private static final DogRepository DOG_REPOSITORY;
 
     static {
-        DOG_REPOSITORY = getBean(DogRepository.class);
+        DOG_REPOSITORY = new DogRepositoryImpl();
     }
 
     public static void validateId(int id) throws EntityNotFoundException {
