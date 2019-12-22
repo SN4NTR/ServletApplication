@@ -53,11 +53,6 @@ public class UserServiceImpl implements UserService {
         userRepository.update(user);
     }
 
-//    @Override
-//    public void transferAnimalPoint() {
-//
-//    }
-
     @Override
     public UserWithAnimalsDto findById(int id) throws EntityNotFoundException {
         var userValidator = new UserValidator(userRepository);

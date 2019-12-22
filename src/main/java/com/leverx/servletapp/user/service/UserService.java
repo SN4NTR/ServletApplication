@@ -16,8 +16,6 @@ public interface UserService {
 
     void update(int id, UserInputDto user) throws ValidationException, EntityNotFoundException;
 
-//    void transferAnimalPoint();
-
     UserWithAnimalsDto findById(int id) throws EntityNotFoundException;
 
     Collection<UserOutputDto> findByName(String name);
