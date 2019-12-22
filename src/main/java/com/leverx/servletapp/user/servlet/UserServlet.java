@@ -5,7 +5,6 @@ import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.service.UserService;
 
@@ -30,7 +29,6 @@ import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
-import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
@@ -107,25 +105,12 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    @Override
     // TODO create animal points transfer
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var param = req.getParameter(ACTION_PARAMETER);
-
-        if (isNull(param)) {
-            updateUser(req, resp, urlToString);
-        } else {
-            try {
-                var reader = req.getReader();
-                var animalPointsDto = jsonToEntity(reader, AnimalPointsDto.class);
-                userService.transferAnimalPoint(animalPointsDto);
-            } catch (ValidationException ex) {
-                var responseStatus = ex.getResponseStatus();
-                resp.sendError(responseStatus, ex.getLocalizedMessage());
-            }
-        }
+        updateUser(req, resp, urlToString);
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {

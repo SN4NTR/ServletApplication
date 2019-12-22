@@ -9,11 +9,9 @@ import com.leverx.servletapp.dog.validator.DogValidator;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.converter.UserConverter;
-import com.leverx.servletapp.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
 import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
-import com.leverx.servletapp.user.dto.validator.AnimalPointsValidator;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.validator.UserValidator;
@@ -85,11 +83,10 @@ public class UserServiceImpl implements UserService {
         userRepository.update(user);
     }
 
-    //TODO create points transfer
-    @Override
-    public void transferAnimalPoint(AnimalPointsDto animalPointsDto) throws ValidationException {
-        AnimalPointsValidator.validateInputDto(animalPointsDto);
-    }
+//    @Override
+//    public void transferAnimalPoint() {
+//
+//    }
 
     @Override
     public UserWithAnimalsDto findById(int id) throws EntityNotFoundException {
