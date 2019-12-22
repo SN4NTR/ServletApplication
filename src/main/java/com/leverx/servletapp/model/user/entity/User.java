@@ -16,7 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -25,10 +24,10 @@ import static com.leverx.servletapp.model.user.validator.UserValidator.NAME_MIN_
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
+@Table
 @Getter
 @Setter
 @Entity
-@Table
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class User {
@@ -39,7 +38,6 @@ public class User {
     private int id;
 
     @NonNull
-    @NotNull
     @Column(nullable = false, length = NAME_MAX_SIZE)
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String firstName;
@@ -49,8 +47,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @NonNull
     @Column(columnDefinition = "integer default 0")
-    private int animalPoint;
+    private int animalPoints;
 
     @NonNull
     @ManyToMany(fetch = EAGER)

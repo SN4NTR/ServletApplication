@@ -28,16 +28,18 @@ public final class UserConverter {
         var id = user.getId();
         var firstName = user.getFirstName();
         var email = user.getEmail();
+        var animalPoints = user.getAnimalPoints();
         var animals = user.getAnimals();
         var animalOutputDtos = AnimalConverter.toOutputDtoList(animals);
-        return new UserWithAnimalsDto(id, firstName, email, animalOutputDtos);
+        return new UserWithAnimalsDto(id, firstName, email, animalPoints, animalOutputDtos);
     }
 
     public static User fromInputDto(UserInputDto userInputDto) {
         var firstName = userInputDto.getFirstName();
         var email = userInputDto.getEmail();
+        var animalPoints = userInputDto.getAnimalPoints();
         var animals = new ArrayList<Animal>();
-        return new User(firstName, email, animals);
+        return new User(firstName, email, animalPoints, animals);
     }
 
     public static List<UserOutputDto> toOutputDtoList(Collection<User> users) {

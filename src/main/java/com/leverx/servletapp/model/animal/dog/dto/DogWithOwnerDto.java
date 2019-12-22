@@ -28,20 +28,17 @@ import static com.leverx.servletapp.model.animal.parent.validator.AnimalValidato
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
 @JsonIdentityInfo(generator = PropertyGenerator.class, property = "id")
 public class DogWithOwnerDto {
 
     private int id;
 
-    @NotNull
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
     @Min(value = MIN_VALUE)
     private int goodBoyAmount;
 
-    @NotNull
     @PastOrPresent
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")

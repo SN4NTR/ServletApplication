@@ -19,7 +19,10 @@ public class UserInputDto {
     private String firstName;
 
     @Email
+    @NotNull
     private String email;
+
+    private int animalPoints;
 
     private List<Integer> catsIds = emptyList();
     private List<Integer> dogsIds = emptyList();

@@ -21,5 +21,6 @@ public class UserOutputDto {
     private String firstName;
 
     @Email
+    @NotNull
     private String email;
 }

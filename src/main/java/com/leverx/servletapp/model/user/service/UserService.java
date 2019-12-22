@@ -2,7 +2,7 @@ package com.leverx.servletapp.model.user.service;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.model.animal.parent.dto.AnimalOutputDto;
+import com.leverx.servletapp.model.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;
@@ -16,6 +16,8 @@ public interface UserService {
     void delete(int id) throws EntityNotFoundException;
 
     void update(int id, UserInputDto user) throws ValidationException, EntityNotFoundException;
+
+    void transferAnimalPoint(AnimalPointsDto animalPointsDto) throws ValidationException;
 
     UserWithAnimalsDto findById(int id) throws EntityNotFoundException;
 

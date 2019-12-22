@@ -9,6 +9,10 @@ import java.io.BufferedReader;
 import java.util.Collection;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.INTERNAL_SERVER_ERROR;
+import static com.leverx.servletapp.exception.constant.BundleConstant.FROM_JSON_ERROR;
+import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
+import static com.leverx.servletapp.exception.constant.BundleConstant.TO_JSON_ERROR;
+import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
 import static java.util.stream.Collectors.joining;
 
 @Slf4j
@@ -26,7 +30,7 @@ public class EntityConverter {
             var jsonBody = readJsonBody(reader);
             return OBJECT_MAPPER.readValue(jsonBody, tClass);
         } catch (JsonProcessingException e) {
-            var message = "Failed to convert JSON to entity";
+            var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, FROM_JSON_ERROR);
             log.error(message);
             throw new InternalServerErrorException(message, INTERNAL_SERVER_ERROR);
         }
@@ -36,7 +40,7 @@ public class EntityConverter {
         try {
             return OBJECT_MAPPER.writeValueAsString(t);
         } catch (JsonProcessingException e) {
-            var message = "Failed to convert entity to JSON";
+            var message =getLocalizedMessage(MESSAGE_BUNDLE_NAME, TO_JSON_ERROR);
             log.error(message);
             throw new InternalServerErrorException(message, INTERNAL_SERVER_ERROR);
         }

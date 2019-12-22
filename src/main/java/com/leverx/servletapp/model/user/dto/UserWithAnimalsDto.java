@@ -31,7 +31,10 @@ public class UserWithAnimalsDto {
     private String firstName;
 
     @Email
+    @NotNull
     private String email;
+
+    private int animalPoints;
 
     private List<AnimalOutputDto> animals = emptyList();
 }

@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -43,13 +42,11 @@ public abstract class Animal {
     private int id;
 
     @NonNull
-    @NotNull
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     @Column(nullable = false, length = NAME_MAX_SIZE)
     private String name;
 
     @NonNull
-    @NotNull
     @PastOrPresent
     @Column(nullable = false)
     private LocalDate dateOfBirth;

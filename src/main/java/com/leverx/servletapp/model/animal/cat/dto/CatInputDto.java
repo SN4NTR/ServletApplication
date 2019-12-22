@@ -1,6 +1,7 @@
 package com.leverx.servletapp.model.animal.cat.dto;
 
 import com.leverx.servletapp.model.animal.parent.dto.AnimalInputDto;
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import static com.leverx.servletapp.model.animal.cat.validator.CatValidator.MIN_
 @Setter
 public class CatInputDto extends AnimalInputDto {
 
+    @NotNull
     @Min(value = MIN_VALUE)
     private int miceCaught;
 }

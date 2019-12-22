@@ -5,6 +5,7 @@ import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.animal.cat.service.CatService;
 import com.leverx.servletapp.model.animal.dog.service.DogService;
 import com.leverx.servletapp.model.animal.parent.service.AnimalService;
+import com.leverx.servletapp.model.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.service.UserService;
 
@@ -26,6 +27,7 @@ import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
@@ -36,6 +38,7 @@ public class UserServlet extends HttpServlet {
     private DogService dogService;
 
     private static final String FIRST_NAME_PARAMETER = "firstName";
+    private static final String ACTION_PARAMETER = "action";
 
     public UserServlet() {
         userService = getBean(UserService.class);
@@ -105,7 +108,20 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        updateUser(req, resp, urlToString);
+        var param = req.getParameter(ACTION_PARAMETER);
+
+        if (isNull(param)) {
+            updateUser(req, resp, urlToString);
+        } else {
+            try {
+                var reader = req.getReader();
+                var animalPointsDto = jsonToEntity(reader, AnimalPointsDto.class);
+                userService.transferAnimalPoint(animalPointsDto);
+            } catch (ValidationException ex) {
+                var responseStatus = ex.getResponseStatus();
+                resp.sendError(responseStatus, ex.getLocalizedMessage());
+            }
+        }
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {

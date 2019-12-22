@@ -7,9 +7,11 @@ import com.leverx.servletapp.model.animal.cat.repository.CatRepository;
 import com.leverx.servletapp.model.animal.cat.validator.CatValidator;
 import com.leverx.servletapp.model.animal.dog.repository.DogRepository;
 import com.leverx.servletapp.model.animal.dog.validator.DogValidator;
+import com.leverx.servletapp.model.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.dto.UserOutputDto;
 import com.leverx.servletapp.model.user.dto.UserWithAnimalsDto;
+import com.leverx.servletapp.model.user.dto.validator.AnimalPointsValidator;
 import com.leverx.servletapp.model.user.entity.User;
 import com.leverx.servletapp.model.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +80,11 @@ public class UserServiceImpl implements UserService {
         assignDogs(user, dogsIds);
 
         userRepository.update(user);
+    }
+
+    @Override
+    public void transferAnimalPoint(AnimalPointsDto animalPointsDto) throws ValidationException {
+        AnimalPointsValidator.validateInputDto(animalPointsDto);
     }
 
     @Override

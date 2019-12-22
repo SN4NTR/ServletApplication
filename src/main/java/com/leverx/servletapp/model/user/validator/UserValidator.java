@@ -4,7 +4,6 @@ import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.model.user.dto.UserInputDto;
 import com.leverx.servletapp.model.user.repository.UserRepository;
-import com.leverx.servletapp.model.user.repository.UserRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -14,6 +13,7 @@ import java.util.StringJoiner;
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static com.leverx.servletapp.context.ApplicationContext.getBean;
+import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
 import static com.leverx.servletapp.exception.constant.BundleConstant.USER_NOT_FOUND;
 import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
@@ -27,10 +27,10 @@ public class UserValidator {
 
     private static final String DELIMITER = "; ";
 
-    private static UserRepository userRepository;
+    private static final UserRepository USER_REPOSITORY;
 
     static {
-        userRepository = getBean(UserRepository.class);
+        USER_REPOSITORY = getBean(UserRepository.class);
     }
 
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {
@@ -44,8 +44,8 @@ public class UserValidator {
     }
 
     public static void validateId(int id) throws EntityNotFoundException {
-        var userOpt = userRepository.findById(id);
-        var message = getLocalizedMessage(USER_NOT_FOUND);
+        var userOpt = USER_REPOSITORY.findById(id);
+        var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, USER_NOT_FOUND);
         userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
