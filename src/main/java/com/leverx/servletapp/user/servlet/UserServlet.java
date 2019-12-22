@@ -39,7 +39,6 @@ public class UserServlet extends HttpServlet {
     private DogService dogService;
 
     private static final String FIRST_NAME_PARAMETER = "firstName";
-    private static final String ACTION_PARAMETER = "action";
 
     public UserServlet() {
         userService = getUserService();

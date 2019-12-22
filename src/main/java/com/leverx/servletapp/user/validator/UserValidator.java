@@ -1,5 +1,9 @@
 package com.leverx.servletapp.user.validator;
 
+import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
+import com.leverx.servletapp.cat.validator.CatValidator;
+import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
+import com.leverx.servletapp.dog.validator.DogValidator;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
@@ -35,7 +39,7 @@ public class UserValidator {
         userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
-    public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {
+    public static void validateInputDto(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
         var violations = validator.validate(userInputDto);
@@ -43,6 +47,13 @@ public class UserValidator {
             var message = logErrors(violations);
             throw new ValidationException(message, UNPROCESSABLE_ENTITY);
         }
+
+        var catsIds = userInputDto.getCatsIds();
+        var catValidator = new CatValidator(new CatRepositoryImpl());
+        catValidator.validateIds(catsIds);
+        var dogsIds = userInputDto.getDogsIds();
+        var dogValidator = new DogValidator(new DogRepositoryImpl());
+        dogValidator.validateIds(dogsIds);
     }
 
     private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {
