@@ -1,6 +1,5 @@
 package com.leverx.servletapp.user.validator;
 
-import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
@@ -14,9 +13,9 @@ import java.util.StringJoiner;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
-import static com.leverx.servletapp.exception.constant.BundleConstant.USER_NOT_FOUND;
-import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
+import static com.leverx.servletapp.message.MessageConstant.MESSAGE_BUNDLE_NAME;
+import static com.leverx.servletapp.message.MessageConstant.USER_NOT_FOUND;
+import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 

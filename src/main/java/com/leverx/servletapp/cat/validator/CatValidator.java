@@ -9,9 +9,9 @@ import java.util.List;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
 import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.exception.constant.BundleConstant.CAT_NOT_FOUND;
-import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
-import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
+import static com.leverx.servletapp.message.MessageConstant.CAT_NOT_FOUND;
+import static com.leverx.servletapp.message.MessageConstant.MESSAGE_BUNDLE_NAME;
+import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j

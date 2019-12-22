@@ -9,10 +9,10 @@ import java.io.BufferedReader;
 import java.util.Collection;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.INTERNAL_SERVER_ERROR;
-import static com.leverx.servletapp.exception.constant.BundleConstant.FROM_JSON_ERROR;
-import static com.leverx.servletapp.exception.constant.BundleConstant.MESSAGE_BUNDLE_NAME;
-import static com.leverx.servletapp.exception.constant.BundleConstant.TO_JSON_ERROR;
-import static com.leverx.servletapp.exception.constant.BundleConstant.getLocalizedMessage;
+import static com.leverx.servletapp.message.MessageConstant.FROM_JSON_ERROR;
+import static com.leverx.servletapp.message.MessageConstant.MESSAGE_BUNDLE_NAME;
+import static com.leverx.servletapp.message.MessageConstant.TO_JSON_ERROR;
+import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
 import static java.util.stream.Collectors.joining;
 
 @Slf4j
