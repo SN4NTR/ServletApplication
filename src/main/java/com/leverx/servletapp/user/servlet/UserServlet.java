@@ -108,6 +108,7 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
+    // TODO create animal points transfer
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
