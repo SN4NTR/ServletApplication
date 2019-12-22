@@ -1,21 +1,13 @@
 package com.leverx.servletapp.user.servlet;
 
-import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
-import com.leverx.servletapp.cat.service.CatService;
-import com.leverx.servletapp.cat.service.CatServiceImpl;
-import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
-import com.leverx.servletapp.dog.service.DogService;
-import com.leverx.servletapp.dog.service.DogServiceImpl;
-import com.leverx.servletapp.animal.repository.AnimalRepositoryImpl;
 import com.leverx.servletapp.animal.service.AnimalService;
-import com.leverx.servletapp.animal.service.AnimalServiceImpl;
+import com.leverx.servletapp.cat.service.CatService;
+import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.user.dto.UserInputDto;
-import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import com.leverx.servletapp.user.service.UserService;
-import com.leverx.servletapp.user.service.UserServiceImpl;
 import com.leverx.servletapp.user.servlet.util.UserServletUtil;
 
 import javax.servlet.http.HttpServlet;
@@ -30,6 +22,10 @@ import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
+import static com.leverx.servletapp.factory.BeanFactory.getAnimalServiceImpl;
+import static com.leverx.servletapp.factory.BeanFactory.getCatServiceImpl;
+import static com.leverx.servletapp.factory.BeanFactory.getDogServiceImpl;
+import static com.leverx.servletapp.factory.BeanFactory.getUserServiceImpl;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.util.ServletUtils.getValueFromUrl;
@@ -48,10 +44,10 @@ public class UserServlet extends HttpServlet {
     private static final String ACTION_PARAMETER = "action";
 
     public UserServlet() {
-        userService = new UserServiceImpl(new UserRepositoryImpl(), new CatRepositoryImpl(), new DogRepositoryImpl());
-        animalService = new AnimalServiceImpl(new AnimalRepositoryImpl());
-        catService = new CatServiceImpl(new CatRepositoryImpl());
-        dogService = new DogServiceImpl(new DogRepositoryImpl());
+        userService = getUserServiceImpl();
+        animalService = getAnimalServiceImpl();
+        catService = getCatServiceImpl();
+        dogService = getDogServiceImpl();
     }
 
     @Override

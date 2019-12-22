@@ -10,10 +10,8 @@ import static com.leverx.servletapp.user.dto.validator.AnimalPointsValidator.ANI
 @Getter
 public class AnimalPointsDto {
 
-    @NotNull
     private int receiverId;
 
-    @NotNull
     @Min(value = ANIMAL_POINTS_MIN)
     private int animalPoints;
 }

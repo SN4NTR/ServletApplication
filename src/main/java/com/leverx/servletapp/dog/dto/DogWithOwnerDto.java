@@ -13,15 +13,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.leverx.servletapp.dog.validator.DogValidator.MIN_VALUE;
 import static com.leverx.servletapp.animal.validator.AnimalValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.animal.validator.AnimalValidator.NAME_MIN_SIZE;
+import static com.leverx.servletapp.dog.validator.DogValidator.MIN_VALUE;
 
 @Getter
 @Setter
@@ -31,12 +32,14 @@ public class DogWithOwnerDto {
 
     private int id;
 
+    @NotNull
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
     @Min(value = MIN_VALUE)
     private int goodBoyAmount;
 
+    @NotNull
     @PastOrPresent
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")

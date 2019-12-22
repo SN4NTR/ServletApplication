@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 import static com.leverx.servletapp.cat.validator.CatValidator.MIN_VALUE;
@@ -21,7 +20,6 @@ import static com.leverx.servletapp.cat.validator.CatValidator.MIN_VALUE;
 @NoArgsConstructor
 public class Cat extends Animal {
 
-    @NotNull
     @Min(value = MIN_VALUE)
     @Column(nullable = false)
     private int miceCaught;

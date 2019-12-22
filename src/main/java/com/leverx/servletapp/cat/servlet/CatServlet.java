@@ -1,11 +1,9 @@
 package com.leverx.servletapp.cat.servlet;
 
+import com.leverx.servletapp.cat.dto.CatInputDto;
+import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.cat.dto.CatInputDto;
-import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
-import com.leverx.servletapp.cat.service.CatService;
-import com.leverx.servletapp.cat.service.CatServiceImpl;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +13,7 @@ import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
+import static com.leverx.servletapp.factory.BeanFactory.getCatServiceImpl;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -28,7 +27,7 @@ public class CatServlet extends HttpServlet {
     private CatService catService;
 
     public CatServlet() {
-        catService = new CatServiceImpl(new CatRepositoryImpl());
+        catService = getCatServiceImpl();
     }
 
     @Override

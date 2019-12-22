@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 import static com.leverx.servletapp.cat.validator.CatValidator.MIN_VALUE;
@@ -14,7 +13,6 @@ import static com.leverx.servletapp.cat.validator.CatValidator.MIN_VALUE;
 @Setter
 public class CatOutputDto extends AnimalOutputDto {
 
-    @NotNull
     @Min(value = MIN_VALUE)
     private int miceCaught;
 

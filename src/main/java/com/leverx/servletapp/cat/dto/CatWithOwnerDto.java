@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -31,12 +32,14 @@ public class CatWithOwnerDto {
 
     private int id;
 
+    @NotNull
     @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String name;
 
     @Min(value = MIN_VALUE)
     private int miceCaught;
 
+    @NotNull
     @PastOrPresent
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd")

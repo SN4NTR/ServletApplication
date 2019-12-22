@@ -1,12 +1,15 @@
 package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.annotation.Service;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.cat.repository.CatRepository;
+import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.cat.validator.CatValidator;
 import com.leverx.servletapp.dog.repository.DogRepository;
+import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.dog.validator.DogValidator;
+import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.user.converter.UserConverter;
 import com.leverx.servletapp.user.dto.AnimalPointsDto;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
@@ -14,7 +17,7 @@ import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
 import com.leverx.servletapp.user.dto.validator.AnimalPointsValidator;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
-import com.leverx.servletapp.user.converter.UserConverter;
+import com.leverx.servletapp.user.validator.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +25,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.leverx.servletapp.user.validator.UserValidator.validateId;
 import static com.leverx.servletapp.user.validator.UserValidator.validateInputDto;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -38,10 +40,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
         validateInputDto(userInputDto);
+
         var catsIds = userInputDto.getCatsIds();
         var dogsIds = userInputDto.getDogsIds();
-        CatValidator.validateIds(catsIds);
-        DogValidator.validateIds(dogsIds);
+        var catValidator = new CatValidator(new CatRepositoryImpl());
+        catValidator.validateIds(catsIds);
+        var dogValidator = new DogValidator(new DogRepositoryImpl());
+        dogValidator.validateIds(dogsIds);
+
         var user = UserConverter.fromInputDto(userInputDto);
         assignCats(user, catsIds);
         assignDogs(user, dogsIds);
@@ -50,13 +56,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) throws EntityNotFoundException {
-        validateId(id);
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(id);
         userRepository.delete(id);
     }
 
     @Override
     public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
-        validateId(id);
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(id);
         validateInputDto(userInputDto);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
@@ -65,10 +73,14 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(firstName);
         var email = userInputDto.getEmail();
         user.setEmail(email);
+
         var catsIds = userInputDto.getCatsIds();
         var dogsIds = userInputDto.getDogsIds();
-        CatValidator.validateIds(catsIds);
-        DogValidator.validateIds(dogsIds);
+        var catValidator = new CatValidator(new CatRepositoryImpl());
+        catValidator.validateIds(catsIds);
+        var dogValidator = new DogValidator(new DogRepositoryImpl());
+        dogValidator.validateIds(dogsIds);
+
         assignCats(user, catsIds);
         assignDogs(user, dogsIds);
 
@@ -83,7 +95,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserWithAnimalsDto findById(int id) throws EntityNotFoundException {
-        validateId(id);
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(id);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
         return UserConverter.toWithAnimalsDto(user);

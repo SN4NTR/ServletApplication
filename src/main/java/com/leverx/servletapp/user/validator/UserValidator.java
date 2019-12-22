@@ -1,10 +1,11 @@
 package com.leverx.servletapp.user.validator;
 
+import com.leverx.servletapp.annotation.Repository;
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.repository.UserRepository;
-import com.leverx.servletapp.user.repository.UserRepositoryImpl;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -20,16 +21,20 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
+@AllArgsConstructor
 public class UserValidator {
 
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
 
     private static final String DELIMITER = "; ";
-    private static final UserRepository USER_REPOSITORY;
 
-    static {
-        USER_REPOSITORY = new UserRepositoryImpl();
+    private UserRepository userRepository;
+
+    public void validateId(int id) throws EntityNotFoundException {
+        var userOpt = userRepository.findById(id);
+        var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, USER_NOT_FOUND);
+        userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
     public static void validateInputDto(UserInputDto userInputDto) throws ValidationException {
@@ -40,12 +45,6 @@ public class UserValidator {
             var message = logErrors(violations);
             throw new ValidationException(message, UNPROCESSABLE_ENTITY);
         }
-    }
-
-    public static void validateId(int id) throws EntityNotFoundException {
-        var userOpt = USER_REPOSITORY.findById(id);
-        var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, USER_NOT_FOUND);
-        userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
     private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {

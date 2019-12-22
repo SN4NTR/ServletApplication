@@ -2,7 +2,7 @@ package com.leverx.servletapp.dog.validator;
 
 import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.dog.repository.DogRepository;
-import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -15,26 +15,23 @@ import static com.leverx.servletapp.exception.constant.BundleConstant.getLocaliz
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
+@AllArgsConstructor
 public class DogValidator {
 
     public static final int MIN_VALUE = 0;
 
-    private static final DogRepository DOG_REPOSITORY;
+    private DogRepository dogRepository;
 
-    static {
-        DOG_REPOSITORY = new DogRepositoryImpl();
-    }
-
-    public static void validateId(int id) throws EntityNotFoundException {
-        var dogOpt = DOG_REPOSITORY.findById(id);
+    public void validateId(int id) throws EntityNotFoundException {
+        var dogOpt = dogRepository.findById(id);
         var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, DOG_NOT_FOUND);
         dogOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
-    public static void validateIds(List<Integer> ids) throws EntityNotFoundException {
+    public void validateIds(List<Integer> ids) throws EntityNotFoundException {
         if (isNotEmpty(ids)) {
             for (var id : ids) {
-                var dogOpt = DOG_REPOSITORY.findById(id);
+                var dogOpt = dogRepository.findById(id);
                 var message = getLocalizedMessage(MESSAGE_BUNDLE_NAME, DOG_NOT_FOUND);
                 dogOpt.orElseThrow(() -> new EntityNotFoundException(message, UNPROCESSABLE_ENTITY));
             }

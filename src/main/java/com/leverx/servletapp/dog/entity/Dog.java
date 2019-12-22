@@ -21,7 +21,6 @@ import static com.leverx.servletapp.dog.validator.DogValidator.MIN_VALUE;
 @NoArgsConstructor
 public class Dog extends Animal {
 
-    @NotNull
     @Min(value = MIN_VALUE)
     @Column(nullable = false)
     private int goodBoyAmount;
