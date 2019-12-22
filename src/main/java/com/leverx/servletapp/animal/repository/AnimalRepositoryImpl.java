@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
@@ -18,7 +19,34 @@ import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     @Override
-    public Collection<Animal> findByOwnerId(int ownerId) {
+    public <T extends Animal> Optional<T> findById(int id, Class<T> tClass) {
+        log.info("Getting animal with id = {}", id);
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            var animal = getAnimalById(id, entityManager, tClass);
+
+            transaction.commit();
+            log.info("Animal with id = {} was found", id);
+
+            return Optional.of(animal);
+        } catch (NoResultException ex) {
+            rollbackTransaction(transaction);
+            var message = "Animal can't be found";
+            log.error(message);
+            return Optional.empty();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public <T extends Animal> Collection<T> findByOwnerId(int ownerId, Class<T> tClass) {
         log.info("Getting animals by owner id");
 
         var entityManager = getEntityManager();
@@ -28,7 +56,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var animals = getCatsByOwnerId(entityManager, ownerId);
+            var animals = getAnimalsByOwnerId(ownerId, entityManager, tClass);
 
             transaction.commit();
             log.info("Animals were found");
@@ -45,7 +73,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     }
 
     @Override
-    public Collection<Animal> findAll() {
+    public <T extends Animal> Collection<T> findAll(Class<T> tClass) {
         log.info("Getting all animals");
 
         var entityManager = getEntityManager();
@@ -55,7 +83,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var animals = getAnimals(entityManager);
+            var animals = getAnimals(entityManager, tClass);
 
             transaction.commit();
             log.info("Animals were found");
@@ -71,10 +99,23 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         }
     }
 
-    private Collection<Animal> getAnimals(EntityManager entityManager) {
+    private <T extends Animal> T getAnimalById(int id, EntityManager entityManager, Class<T> tClass) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-        var root = criteriaQuery.from(Animal.class);
+        var criteriaQuery = criteriaBuilder.createQuery(tClass);
+        var root = criteriaQuery.from(tClass);
+        var fieldName = root.get(Animal_.id);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(fieldName, id));
+
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getSingleResult();
+    }
+
+    private <T extends Animal> Collection<T> getAnimals(EntityManager entityManager, Class<T> tClass) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var criteriaQuery = criteriaBuilder.createQuery(tClass);
+        var root = criteriaQuery.from(tClass);
 
         criteriaQuery.select(root);
 
@@ -82,10 +123,10 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         return query.getResultList();
     }
 
-    private Collection<Animal> getCatsByOwnerId(EntityManager entityManager, int ownerId) {
+    private static <T extends Animal> Collection<T> getAnimalsByOwnerId(int ownerId, EntityManager entityManager, Class<T> tClass) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var criteriaQuery = criteriaBuilder.createQuery(Animal.class);
-        var root = criteriaQuery.from(Animal.class);
+        var criteriaQuery = criteriaBuilder.createQuery(tClass);
+        var root = criteriaQuery.from(tClass);
         var owners = root.join(Animal_.owners);
         var condition = criteriaBuilder.equal(owners.get(User_.id), ownerId);
 
@@ -95,7 +136,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         return query.getResultList();
     }
 
-    private void rollbackTransaction(EntityTransaction transaction) {
+    protected void rollbackTransaction(EntityTransaction transaction) {
         if (nonNull(transaction) && transaction.isActive()) {
             transaction.rollback();
         }

@@ -44,6 +44,7 @@ public class DogServlet extends HttpServlet {
         } else if (isParsable(value)) {
             printDogById(printWriter, value, resp);
         }
+        printWriter.flush();
     }
 
     @Override

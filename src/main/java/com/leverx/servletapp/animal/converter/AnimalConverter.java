@@ -1,7 +1,9 @@
 package com.leverx.servletapp.animal.converter;
 
 import com.leverx.servletapp.animal.dto.AnimalOutputDto;
+import com.leverx.servletapp.animal.dto.AnimalWithOwnerDto;
 import com.leverx.servletapp.animal.entity.Animal;
+import com.leverx.servletapp.user.converter.UserConverter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,5 +25,14 @@ public class AnimalConverter {
         var name = animal.getName();
         var dateOfBirth = animal.getDateOfBirth();
         return new AnimalOutputDto(id, name, dateOfBirth);
+    }
+
+    public static AnimalWithOwnerDto toDtoWithOwner(Animal animal) {
+        var id = animal.getId();
+        var name = animal.getName();
+        var dateOfBirth = animal.getDateOfBirth();
+        var owners = animal.getOwners();
+        var ownerOutputDto = UserConverter.toOutputDtoList(owners);
+        return new AnimalWithOwnerDto(id, name, dateOfBirth, ownerOutputDto);
     }
 }
