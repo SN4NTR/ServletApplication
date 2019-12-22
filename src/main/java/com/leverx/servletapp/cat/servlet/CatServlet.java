@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.factory.BeanFactory.getCatServiceImpl;
+import static com.leverx.servletapp.factory.BeanFactory.getCatService;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -27,7 +27,7 @@ public class CatServlet extends HttpServlet {
     private CatService catService;
 
     public CatServlet() {
-        catService = getCatServiceImpl();
+        catService = getCatService();
     }
 
     @Override

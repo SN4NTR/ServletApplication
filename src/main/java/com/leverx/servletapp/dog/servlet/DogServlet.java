@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 
 import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.factory.BeanFactory.getDogServiceImpl;
+import static com.leverx.servletapp.factory.BeanFactory.getDogService;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
@@ -27,7 +27,7 @@ public class DogServlet extends HttpServlet {
     private DogService dogService;
 
     public DogServlet() {
-        dogService = getDogServiceImpl();
+        dogService = getDogService();
     }
 
     @Override

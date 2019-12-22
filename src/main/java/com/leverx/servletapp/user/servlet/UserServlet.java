@@ -21,10 +21,10 @@ import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
 import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
-import static com.leverx.servletapp.factory.BeanFactory.getAnimalServiceImpl;
-import static com.leverx.servletapp.factory.BeanFactory.getCatServiceImpl;
-import static com.leverx.servletapp.factory.BeanFactory.getDogServiceImpl;
-import static com.leverx.servletapp.factory.BeanFactory.getUserServiceImpl;
+import static com.leverx.servletapp.factory.BeanFactory.getAnimalService;
+import static com.leverx.servletapp.factory.BeanFactory.getCatService;
+import static com.leverx.servletapp.factory.BeanFactory.getDogService;
+import static com.leverx.servletapp.factory.BeanFactory.getUserService;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtil.getMethodType;
 import static com.leverx.servletapp.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.util.ServletUtils.getUserIdFormUrl;
@@ -44,10 +44,10 @@ public class UserServlet extends HttpServlet {
     private static final String ACTION_PARAMETER = "action";
 
     public UserServlet() {
-        userService = getUserServiceImpl();
-        animalService = getAnimalServiceImpl();
-        catService = getCatServiceImpl();
-        dogService = getDogServiceImpl();
+        userService = getUserService();
+        animalService = getAnimalService();
+        catService = getCatService();
+        dogService = getDogService();
     }
 
     @Override

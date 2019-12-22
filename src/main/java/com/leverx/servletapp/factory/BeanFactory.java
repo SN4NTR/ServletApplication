@@ -11,19 +11,19 @@ import com.leverx.servletapp.user.service.UserServiceImpl;
 
 public class BeanFactory {
 
-    public static UserServiceImpl getUserServiceImpl() {
+    public static UserServiceImpl getUserService() {
         return new UserServiceImpl(new UserRepositoryImpl(), new CatRepositoryImpl(), new DogRepositoryImpl());
     }
 
-    public static AnimalServiceImpl getAnimalServiceImpl() {
+    public static AnimalServiceImpl getAnimalService() {
         return new AnimalServiceImpl(new AnimalRepositoryImpl());
     }
 
-    public static CatServiceImpl getCatServiceImpl() {
+    public static CatServiceImpl getCatService() {
         return new CatServiceImpl(new CatRepositoryImpl());
     }
 
-    public static DogServiceImpl getDogServiceImpl() {
+    public static DogServiceImpl getDogService() {
         return new DogServiceImpl(new DogRepositoryImpl());
     }
 }

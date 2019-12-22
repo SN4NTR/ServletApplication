@@ -11,8 +11,8 @@ public class MessageConstant {
     public static final String TO_JSON_ERROR = "to_json_error";
     public static final String FROM_JSON_ERROR = "from_json_error";
 
-    public static String getLocalizedMessage(String bundleName, String key) {
-        var resourceBundle = getBundle(bundleName);
+    public static String getLocalizedMessage(String key) {
+        var resourceBundle = getBundle(MESSAGE_BUNDLE_NAME);
         return resourceBundle.getString(key);
     }
 }
