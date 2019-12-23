@@ -15,7 +15,8 @@ public class EntityManagerConfig {
     private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
 
     public static void createEntityManagerFactory() {
-        ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        var properties = PropertyLoader.getEnvVariable();
+        ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
     }
 
     public static EntityManager getEntityManager() {

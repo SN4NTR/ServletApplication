@@ -1,46 +1,31 @@
 package com.leverx.servletapp.cat.entity;
 
-import com.leverx.servletapp.user.entity.User;
+import com.leverx.servletapp.animal.entity.Animal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
 
-import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.GenerationType.IDENTITY;
+import static com.leverx.servletapp.cat.validator.CatValidator.MIN_VALUE;
 
+@Table
 @Getter
 @Setter
 @Entity
-@Table(name = "cats")
 @NoArgsConstructor
-@RequiredArgsConstructor
-public class Cat {
+public class Cat extends Animal {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = IDENTITY)
-    private int id;
+    @Min(value = MIN_VALUE)
+    @Column(nullable = false)
+    private int miceCaught;
 
-    @NonNull
-    @Column(name = "name")
-    private String name;
-
-    @NonNull
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    public Cat(String name, LocalDate dateOfBirth, int miceCaught) {
+        super(name, dateOfBirth);
+        this.miceCaught = miceCaught;
+    }
 }

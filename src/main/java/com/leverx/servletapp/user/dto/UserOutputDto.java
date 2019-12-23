@@ -1,23 +1,26 @@
 package com.leverx.servletapp.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static com.leverx.servletapp.user.validator.UserValidator.NAME_MAX_SIZE;
+import static com.leverx.servletapp.user.validator.UserValidator.NAME_MIN_SIZE;
+
 @Data
-@NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserOutputDto {
 
-    @NonNull
     private int id;
 
-    @NonNull
     @NotNull
-    @Size(min = 5, max = 60)
+    @Size(min = NAME_MIN_SIZE, max = NAME_MAX_SIZE)
     private String firstName;
+
+    @Email
+    @NotNull
+    private String email;
 }

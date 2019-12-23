@@ -1,65 +1,75 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.exception.InputDataException;
 import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.user.converter.UserConverter;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
-import com.leverx.servletapp.user.dto.UserWithCatsDto;
-import com.leverx.servletapp.user.mapper.UserConverter;
+import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
 import com.leverx.servletapp.user.repository.UserRepository;
-import com.leverx.servletapp.user.repository.UserRepositoryImpl;
+import com.leverx.servletapp.user.validator.UserValidator;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
-import java.util.Optional;
 
-import static com.leverx.servletapp.user.mapper.UserConverter.fromInputDto;
-import static com.leverx.servletapp.user.mapper.UserConverter.toWithCatsDto;
-import static com.leverx.servletapp.validator.EntityValidator.validateEntity;
+import static com.leverx.servletapp.user.converter.UserConverter.fromInputDto;
+import static com.leverx.servletapp.user.validator.UserValidator.validateInputDto;
 
 @Slf4j
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository = new UserRepositoryImpl();
+    private UserRepository userRepository;
 
     @Override
-    public void save(UserInputDto userInputDto) throws InputDataException {
-        validateEntity(userInputDto);
+    public void save(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
+        validateInputDto(userInputDto);
         var user = fromInputDto(userInputDto);
         userRepository.save(user);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws EntityNotFoundException {
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(id);
         userRepository.delete(id);
     }
 
     @Override
-    public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, InputDataException {
-        validateEntity(userInputDto);
+    public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(id);
+        validateInputDto(userInputDto);
+
         var userOpt = userRepository.findById(id);
-        var user = userOpt.orElseThrow();
-        var firstName = userInputDto.getFirstName();
-        user.setFirstName(firstName);
+        var user = userOpt.orElseThrow(EntityNotFoundException::new);
+        var userFromDto = fromInputDto(userInputDto);
+        var existingAnimals = user.getAnimals();
+        var newAnimals = userFromDto.getAnimals();
+        existingAnimals.addAll(newAnimals);
+
+        user.setId(id);
         userRepository.update(user);
     }
 
     @Override
-    public Optional<UserWithCatsDto> findById(int id) throws EntityNotFoundException {
+    public UserWithAnimalsDto findById(int id) throws EntityNotFoundException {
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(id);
         var userOpt = userRepository.findById(id);
-        var user = userOpt.orElseThrow();
-        var userWithCatsDto = toWithCatsDto(user);
-        return Optional.of(userWithCatsDto);
+        var user = userOpt.orElseThrow(EntityNotFoundException::new);
+        return UserConverter.toWithAnimalsDto(user);
     }
 
     @Override
-    public Collection<UserOutputDto> findByName(String name) throws EntityNotFoundException {
+    public Collection<UserOutputDto> findByName(String name) {
         var users = userRepository.findByName(name);
         return UserConverter.toOutputDtoList(users);
     }
 
     @Override
-    public Collection<UserOutputDto> findAll() throws EntityNotFoundException {
+    public Collection<UserOutputDto> findAll() {
         var users = userRepository.findAll();
         return UserConverter.toOutputDtoList(users);
     }

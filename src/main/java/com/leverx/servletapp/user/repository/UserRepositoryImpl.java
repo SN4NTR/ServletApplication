@@ -1,6 +1,5 @@
 package com.leverx.servletapp.user.repository;
 
-import com.leverx.servletapp.exception.EntityNotFoundException;
 import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -96,14 +96,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(int id) throws EntityNotFoundException {
+    public Optional<User> findById(int id) {
         log.info("Getting user by id = {}", id);
 
         var entityManager = getEntityManager();
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.id, id);
+            var criteriaQuery = getUserByCriteria(entityManager, User_.id, id);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -118,21 +118,21 @@ public class UserRepositoryImpl implements UserRepository {
             rollbackTransaction(transaction);
             var message = "User can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return Optional.empty();
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<User> findByName(String name) throws EntityNotFoundException {
+    public Collection<User> findByName(String name) {
         log.info("Getting user by firstName = {}", name);
 
         var entityManager = getEntityManager();
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQueryByAttributes(entityManager, User_.firstName, name);
+            var criteriaQuery = getUserByCriteria(entityManager, User_.firstName, name);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
@@ -150,26 +150,24 @@ public class UserRepositoryImpl implements UserRepository {
             rollbackTransaction(transaction);
             var message = "User can't be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public Collection<User> findAll() throws EntityNotFoundException {
+    public Collection<User> findAll() {
         log.info("Getting all users");
 
         var entityManager = getEntityManager();
         EntityTransaction transaction = null;
 
         try {
-            var criteriaQuery = getCriteriaQuery(entityManager);
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(criteriaQuery);
-            var users = query.getResultList();
+            var users = getUsers(entityManager);
 
             transaction.commit();
             log.info("Users were found");
@@ -179,21 +177,24 @@ public class UserRepositoryImpl implements UserRepository {
             rollbackTransaction(transaction);
             var message = "Users cant' be found";
             log.error(message);
-            throw new EntityNotFoundException(message);
+            return emptyCollection();
         } finally {
             entityManager.close();
         }
     }
 
-    private CriteriaQuery<User> getCriteriaQuery(EntityManager entityManager) {
+    private Collection<User> getUsers(EntityManager entityManager) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(User.class);
         var root = criteriaQuery.from(User.class);
+
         criteriaQuery.select(root);
-        return criteriaQuery;
+
+        var query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
-    private CriteriaQuery<User> getCriteriaQueryByAttributes(EntityManager entityManager, SingularAttribute<User, ?> attribute, Object compareWith) {
+    private CriteriaQuery<User> getUserByCriteria(EntityManager entityManager, SingularAttribute<User, ?> attribute, Object compareWith) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(User.class);
         var root = criteriaQuery.from(User.class);
