@@ -5,6 +5,7 @@ import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
+import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ public interface UserService {
 
     void update(int id, UserInputDto user) throws ValidationException, EntityNotFoundException;
 
-    void transferAnimalPoints(int senderId, int receiverId, int animalPoints) throws EntityNotFoundException, TransferException;
+    void transferAnimalPoints(int senderId, UserTransferDto userTransferDto) throws EntityNotFoundException, TransferException, ValidationException;
 
     UserWithAnimalsDto findById(int id) throws EntityNotFoundException;
 

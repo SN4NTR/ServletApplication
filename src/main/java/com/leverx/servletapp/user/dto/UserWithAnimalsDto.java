@@ -36,7 +36,6 @@ public class UserWithAnimalsDto {
     @NotNull
     private String email;
 
-    @Min(value = ANIMAL_POINTS_MIN)
     private int animalPoints;
 
     private List<AnimalOutputDto> animals = emptyList();

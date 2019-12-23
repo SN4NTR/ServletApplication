@@ -6,10 +6,10 @@ import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.converter.UserConverter;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
+import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.validator.UserValidator;
-import com.leverx.servletapp.web.HttpResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +18,6 @@ import java.util.Collection;
 import static com.leverx.servletapp.core.exception.ErrorConstant.TRANSFER_ERROR;
 import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
 import static com.leverx.servletapp.user.converter.UserConverter.fromInputDto;
-import static com.leverx.servletapp.user.validator.UserValidator.validateInputDto;
 import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 
 @Slf4j
@@ -29,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
-        validateInputDto(userInputDto);
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateInputDto(userInputDto);
         var user = fromInputDto(userInputDto);
         userRepository.save(user);
     }
@@ -44,25 +44,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
         var userValidator = new UserValidator(userRepository);
+        userValidator.validateInputDto(userInputDto);
         userValidator.validateId(id);
-        validateInputDto(userInputDto);
 
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);
         var userFromDto = fromInputDto(userInputDto);
         var existingAnimals = user.getAnimals();
         var newAnimals = userFromDto.getAnimals();
-        existingAnimals.addAll(newAnimals);
+        newAnimals.addAll(existingAnimals);
 
-        user.setId(id);
-        userRepository.update(user);
+        userFromDto.setId(id);
+        userRepository.update(userFromDto);
     }
 
     @Override
-    public void transferAnimalPoints(int senderId, int receiverId, int animalPoints) throws EntityNotFoundException, TransferException {
+    public void transferAnimalPoints(int senderId, UserTransferDto userTransferDto) throws EntityNotFoundException, TransferException, ValidationException {
         var userValidator = new UserValidator(userRepository);
+        userValidator.validateTransferDto(userTransferDto);
         userValidator.validateId(senderId);
-        userValidator.validateId(receiverId);
+        var receiverId = userTransferDto.getReceiverId();
+        var animalPoints = userTransferDto.getAnimalPoints();
 
         var senderOpt = userRepository.findById(senderId);
         var sender = senderOpt.orElseThrow(EntityNotFoundException::new);

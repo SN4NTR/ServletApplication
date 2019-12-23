@@ -7,6 +7,7 @@ import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.service.UserService;
 
 import javax.servlet.http.HttpServlet;
@@ -31,6 +32,7 @@ import static com.leverx.servletapp.web.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.web.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
@@ -41,8 +43,8 @@ public class UserServlet extends HttpServlet {
     private DogService dogService;
 
     private static final String FIRST_NAME_PARAMETER = "firstName";
-    private static final String RECEIVER_ID_PARAMETER = "receiverId";
-    private static final String ANIMAL_POINTS_PARAMETER = "animalPoints";
+    private static final String ACTION_PARAMETER = "action";
+    private static final String TRANSFER_ACTION = "transferAnimalPoints";
 
     public UserServlet() {
         userService = getUserService();
@@ -112,27 +114,29 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var receiverIdString = req.getParameter(RECEIVER_ID_PARAMETER);
-        var animalPointsString = req.getParameter(ANIMAL_POINTS_PARAMETER);
-        if (isNull(receiverIdString) || isNull(animalPointsString)) {
-            updateUser(req, resp, urlToString);
+        var action = req.getParameter(ACTION_PARAMETER);
+        if (nonNull(action) && TRANSFER_ACTION.equals(action)) {
+            transferAnimalPoints(req, resp, urlToString);
         } else {
-            var animalPoints = parseInt(animalPointsString);
-            var receiverId = parseInt(receiverIdString);
-            transferAnimalPoints(animalPoints, receiverId, resp, urlToString);
+            updateUser(req, resp, urlToString);
         }
     }
 
-    private void transferAnimalPoints(int animalPoints, int receiverId, HttpServletResponse resp, String urlToString) throws IOException {
+    private void transferAnimalPoints(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {
         try {
             var senderIdOpt = getIdFromUrl(urlToString);
             var senderId = senderIdOpt.orElseThrow();
-            userService.transferAnimalPoints(senderId, receiverId, animalPoints);
+            var reader = req.getReader();
+            var userTransferDto = jsonToEntity(reader, UserTransferDto.class);
+            userService.transferAnimalPoints(senderId, userTransferDto);
             resp.setStatus(OK);
         } catch (EntityNotFoundException ex) {
             var responseStatus = ex.getResponseStatus();
             resp.sendError(responseStatus, ex.getLocalizedMessage());
         } catch (TransferException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        } catch (ValidationException ex) {
             var responseStatus = ex.getResponseStatus();
             resp.sendError(responseStatus, ex.getLocalizedMessage());
         }

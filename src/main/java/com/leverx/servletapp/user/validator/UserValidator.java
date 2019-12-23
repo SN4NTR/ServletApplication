@@ -7,6 +7,7 @@ import com.leverx.servletapp.dog.validator.DogValidator;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,15 +41,8 @@ public class UserValidator {
         userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
-    public static void validateInputDto(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
-        var validatorFactory = buildDefaultValidatorFactory();
-        var validator = validatorFactory.getValidator();
-        var violations = validator.validate(userInputDto);
-        if (isNotEmpty(violations)) {
-            var message = logErrors(violations);
-            throw new ValidationException(message, UNPROCESSABLE_ENTITY);
-        }
-
+    public void validateInputDto(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
+        validateDto(userInputDto);
         var catsIds = userInputDto.getCatsIds();
         var catValidator = new CatValidator(new CatRepositoryImpl());
         catValidator.validateIds(catsIds);
@@ -57,7 +51,23 @@ public class UserValidator {
         dogValidator.validateIds(dogsIds);
     }
 
-    private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {
+    public void validateTransferDto(UserTransferDto userTransferDto) throws ValidationException, EntityNotFoundException {
+        validateDto(userTransferDto);
+        var receiverId = userTransferDto.getReceiverId();
+        validateId(receiverId);
+    }
+
+    private <T> void validateDto(T t) throws ValidationException {
+        var validatorFactory = buildDefaultValidatorFactory();
+        var validator = validatorFactory.getValidator();
+        var violations = validator.validate(t);
+        if (isNotEmpty(violations)) {
+            var message = logErrors(violations);
+            throw new ValidationException(message, UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private <T> String logErrors(Set<ConstraintViolation<T>> violations) {
         var joiner = new StringJoiner(DELIMITER);
         violations.stream()
                 .map(ConstraintViolation::getMessage)
