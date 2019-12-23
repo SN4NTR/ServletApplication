@@ -1,6 +1,7 @@
 package com.leverx.servletapp.user.service;
 
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.converter.UserConverter;
 import com.leverx.servletapp.user.dto.UserInputDto;
@@ -8,13 +9,17 @@ import com.leverx.servletapp.user.dto.UserOutputDto;
 import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.validator.UserValidator;
+import com.leverx.servletapp.web.HttpResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 
+import static com.leverx.servletapp.core.exception.ErrorConstant.TRANSFER_ERROR;
+import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
 import static com.leverx.servletapp.user.converter.UserConverter.fromInputDto;
 import static com.leverx.servletapp.user.validator.UserValidator.validateInputDto;
+import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 
 @Slf4j
 @AllArgsConstructor
@@ -51,6 +56,30 @@ public class UserServiceImpl implements UserService {
 
         user.setId(id);
         userRepository.update(user);
+    }
+
+    @Override
+    public void transferAnimalPoints(int senderId, int receiverId, int animalPoints) throws EntityNotFoundException, TransferException {
+        var userValidator = new UserValidator(userRepository);
+        userValidator.validateId(senderId);
+        userValidator.validateId(receiverId);
+
+        var senderOpt = userRepository.findById(senderId);
+        var sender = senderOpt.orElseThrow(EntityNotFoundException::new);
+        var receiverOpt = userRepository.findById(receiverId);
+        var receiver = receiverOpt.orElseThrow(EntityNotFoundException::new);
+
+        var senderAnimalPointsAccount = sender.getAnimalPoints();
+        if (senderAnimalPointsAccount >= animalPoints) {
+            sender.setAnimalPoints(senderAnimalPointsAccount - animalPoints);
+            var receiverAnimalPointsAccount = receiver.getAnimalPoints();
+            receiver.setAnimalPoints(receiverAnimalPointsAccount + animalPoints);
+            userRepository.update(sender);
+            userRepository.update(receiver);
+        } else {
+            var message = getLocalizedMessage(TRANSFER_ERROR);
+            throw new TransferException(message, UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override

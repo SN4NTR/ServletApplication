@@ -2,9 +2,10 @@ package com.leverx.servletapp.user.servlet;
 
 import com.leverx.servletapp.animal.service.AnimalService;
 import com.leverx.servletapp.cat.service.CatService;
-import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
+import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.service.UserService;
 
@@ -14,9 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
-import static com.leverx.servletapp.web.HttpResponseStatus.NO_CONTENT;
-import static com.leverx.servletapp.web.HttpResponseStatus.OK;
 import static com.leverx.servletapp.core.converter.EntityConverter.collectionToJson;
 import static com.leverx.servletapp.core.converter.EntityConverter.entityToJson;
 import static com.leverx.servletapp.core.converter.EntityConverter.jsonToEntity;
@@ -25,10 +23,14 @@ import static com.leverx.servletapp.core.factory.BeanFactory.getCatService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getDogService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getUserService;
 import static com.leverx.servletapp.user.servlet.util.UserServletUtil.getMethodType;
+import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
+import static com.leverx.servletapp.web.HttpResponseStatus.NO_CONTENT;
+import static com.leverx.servletapp.web.HttpResponseStatus.OK;
 import static com.leverx.servletapp.web.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.web.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.web.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
@@ -39,6 +41,8 @@ public class UserServlet extends HttpServlet {
     private DogService dogService;
 
     private static final String FIRST_NAME_PARAMETER = "firstName";
+    private static final String RECEIVER_ID_PARAMETER = "receiverId";
+    private static final String ANIMAL_POINTS_PARAMETER = "animalPoints";
 
     public UserServlet() {
         userService = getUserService();
@@ -108,7 +112,30 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        updateUser(req, resp, urlToString);
+        var receiverIdString = req.getParameter(RECEIVER_ID_PARAMETER);
+        var animalPointsString = req.getParameter(ANIMAL_POINTS_PARAMETER);
+        if (isNull(receiverIdString) || isNull(animalPointsString)) {
+            updateUser(req, resp, urlToString);
+        } else {
+            var animalPoints = parseInt(animalPointsString);
+            var receiverId = parseInt(receiverIdString);
+            transferAnimalPoints(animalPoints, receiverId, resp, urlToString);
+        }
+    }
+
+    private void transferAnimalPoints(int animalPoints, int receiverId, HttpServletResponse resp, String urlToString) throws IOException {
+        try {
+            var senderIdOpt = getIdFromUrl(urlToString);
+            var senderId = senderIdOpt.orElseThrow();
+            userService.transferAnimalPoints(senderId, receiverId, animalPoints);
+            resp.setStatus(OK);
+        } catch (EntityNotFoundException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        } catch (TransferException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        }
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {

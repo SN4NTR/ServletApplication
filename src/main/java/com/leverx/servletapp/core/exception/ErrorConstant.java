@@ -10,6 +10,7 @@ public class ErrorConstant {
     public static final String DOG_NOT_FOUND = "dog_not_found";
     public static final String TO_JSON_ERROR = "to_json_error";
     public static final String FROM_JSON_ERROR = "from_json_error";
+    public static final String TRANSFER_ERROR = "transfer_error";
 
     private static final String MESSAGE_BUNDLE_NAME = "message";
 

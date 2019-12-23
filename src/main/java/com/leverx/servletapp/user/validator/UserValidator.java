@@ -28,6 +28,7 @@ public class UserValidator {
 
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
+    public static final int ANIMAL_POINTS_MIN = 1;
 
     private static final String DELIMITER = "; ";
 
