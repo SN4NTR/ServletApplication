@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface AnimalRepository {
 
+    <T extends Animal> void save(T t);
+
     <T extends Animal> Optional<T> findById(int id, Class<T> tClass);
 
     <T extends Animal> Collection<T> findByOwnerId(int ownerId, Class<T> tClass);

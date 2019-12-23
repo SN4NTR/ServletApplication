@@ -5,6 +5,7 @@ import com.leverx.servletapp.animal.entity.Animal_;
 import com.leverx.servletapp.user.entity.User_;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -17,6 +18,30 @@ import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
 
 @Slf4j
 public class AnimalRepositoryImpl implements AnimalRepository {
+
+    @Override
+    public <T extends Animal> void save(T t) {
+        log.info("Saving animal with name '{}'.", t.getName());
+
+        var entityManager = getEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            entityManager.persist(t);
+
+            transaction.commit();
+            log.info("Animal was saved");
+        } catch (EntityExistsException ex) {
+            rollbackTransaction(transaction);
+            log.error("Animal can't be saved");
+            throw new IllegalArgumentException(ex);
+        } finally {
+            entityManager.close();
+        }
+    }
 
     @Override
     public <T extends Animal> Optional<T> findById(int id, Class<T> tClass) {
@@ -136,7 +161,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         return query.getResultList();
     }
 
-    protected void rollbackTransaction(EntityTransaction transaction) {
+    private void rollbackTransaction(EntityTransaction transaction) {
         if (nonNull(transaction) && transaction.isActive()) {
             transaction.rollback();
         }
