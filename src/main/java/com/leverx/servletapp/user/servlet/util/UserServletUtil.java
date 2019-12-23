@@ -7,10 +7,10 @@ import static com.leverx.servletapp.user.servlet.util.constant.MethodType.GET_US
 import static com.leverx.servletapp.user.servlet.util.constant.MethodType.GET_USERS_CATS;
 import static com.leverx.servletapp.user.servlet.util.constant.MethodType.GET_USERS_DOGS;
 import static com.leverx.servletapp.user.servlet.util.constant.MethodType.GET_USER_BY_ATTRIBUTE;
-import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
-import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
-import static com.leverx.servletapp.util.constant.UrlComponent.DOGS_ENDPOINT;
-import static com.leverx.servletapp.util.constant.UrlComponent.USERS_ENDPOINT;
+import static com.leverx.servletapp.web.UrlPath.ANIMALS_ENDPOINT;
+import static com.leverx.servletapp.web.UrlPath.CATS_ENDPOINT;
+import static com.leverx.servletapp.web.UrlPath.DOGS_ENDPOINT;
+import static com.leverx.servletapp.web.UrlPath.USERS_ENDPOINT;
 
 public class UserServletUtil {
 

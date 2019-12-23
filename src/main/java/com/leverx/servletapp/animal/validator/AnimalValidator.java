@@ -3,8 +3,8 @@ package com.leverx.servletapp.animal.validator;
 import com.leverx.servletapp.animal.dto.AnimalInputDto;
 import com.leverx.servletapp.animal.entity.Animal;
 import com.leverx.servletapp.animal.repository.AnimalRepository;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,10 +12,10 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
-import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.message.MessageConstant.ANIMAL_NOT_FOUND;
-import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
+import static com.leverx.servletapp.web.HttpResponseStatus.NOT_FOUND;
+import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
+import static com.leverx.servletapp.core.exception.ErrorConstant.ANIMAL_NOT_FOUND;
+import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 

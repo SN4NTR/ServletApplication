@@ -1,13 +1,13 @@
-package com.leverx.servletapp.util;
+package com.leverx.servletapp.web.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
-import static com.leverx.servletapp.util.constant.UrlComponent.DELIMITER;
-import static com.leverx.servletapp.util.constant.UrlComponent.LAST_ELEMENT_POSITION;
-import static com.leverx.servletapp.util.constant.UrlComponent.PENULTIMATE_ELEMENT_POSITION;
+import static com.leverx.servletapp.web.UrlPath.DELIMITER;
+import static com.leverx.servletapp.web.UrlPath.LAST_ELEMENT_POSITION;
+import static com.leverx.servletapp.web.UrlPath.PENULTIMATE_ELEMENT_POSITION;
 import static java.util.Objects.isNull;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;

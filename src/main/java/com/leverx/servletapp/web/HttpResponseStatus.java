@@ -1,4 +1,4 @@
-package com.leverx.servletapp.constant;
+package com.leverx.servletapp.web;
 
 import lombok.NoArgsConstructor;
 

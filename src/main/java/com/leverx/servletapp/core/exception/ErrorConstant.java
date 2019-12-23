@@ -1,8 +1,8 @@
-package com.leverx.servletapp.message;
+package com.leverx.servletapp.core.exception;
 
 import static java.util.ResourceBundle.getBundle;
 
-public class MessageConstant {
+public class ErrorConstant {
 
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String ANIMAL_NOT_FOUND = "animal_not_found";

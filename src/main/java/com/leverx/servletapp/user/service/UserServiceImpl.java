@@ -1,7 +1,7 @@
 package com.leverx.servletapp.user.service;
 
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.converter.UserConverter;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;

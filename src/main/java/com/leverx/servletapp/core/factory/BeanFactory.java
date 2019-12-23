@@ -1,4 +1,4 @@
-package com.leverx.servletapp.factory;
+package com.leverx.servletapp.core.factory;
 
 import com.leverx.servletapp.animal.repository.AnimalRepositoryImpl;
 import com.leverx.servletapp.animal.service.AnimalService;

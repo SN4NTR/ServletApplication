@@ -4,8 +4,8 @@ import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.cat.validator.CatValidator;
 import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
 import com.leverx.servletapp.dog.validator.DogValidator;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -15,10 +15,10 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
-import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.message.MessageConstant.USER_NOT_FOUND;
-import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
+import static com.leverx.servletapp.web.HttpResponseStatus.NOT_FOUND;
+import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
+import static com.leverx.servletapp.core.exception.ErrorConstant.USER_NOT_FOUND;
+import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 

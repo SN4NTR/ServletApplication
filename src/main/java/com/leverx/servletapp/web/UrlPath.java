@@ -1,11 +1,11 @@
-package com.leverx.servletapp.util.constant;
+package com.leverx.servletapp.web;
 
 import lombok.NoArgsConstructor;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class UrlComponent {
+public class UrlPath {
 
     public static final String DELIMITER = "/";
     public static final String CATS_ENDPOINT = "cats";

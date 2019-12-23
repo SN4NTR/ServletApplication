@@ -1,7 +1,7 @@
 package com.leverx.servletapp.animal.servlet;
 
 import com.leverx.servletapp.animal.service.AnimalService;
-import com.leverx.servletapp.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
-import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
-import static com.leverx.servletapp.factory.BeanFactory.getAnimalService;
-import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
-import static com.leverx.servletapp.util.constant.UrlComponent.ANIMALS_ENDPOINT;
+import static com.leverx.servletapp.web.HttpResponseStatus.OK;
+import static com.leverx.servletapp.core.converter.EntityConverter.collectionToJson;
+import static com.leverx.servletapp.core.converter.EntityConverter.entityToJson;
+import static com.leverx.servletapp.core.factory.BeanFactory.getAnimalService;
+import static com.leverx.servletapp.web.util.ServletUtils.getLastPartOfUrl;
+import static com.leverx.servletapp.web.UrlPath.ANIMALS_ENDPOINT;
 import static java.lang.Integer.parseInt;
 
 public class AnimalServlet extends HttpServlet {

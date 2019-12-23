@@ -1,4 +1,4 @@
-package com.leverx.servletapp.exception;
+package com.leverx.servletapp.core.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
