@@ -28,24 +28,33 @@
         <url-pattern>/cats/*</url-pattern>
     </servlet-mapping>
 
-    <filter>
-        <filter-name>UserServletFilter</filter-name>
-        <filter-class>com.leverx.servletapp.user.filter.UserServletFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>UserServletFilter</filter-name>
-        <url-pattern>/users</url-pattern>
-        <url-pattern>/users/*</url-pattern>
-    </filter-mapping>
+    <servlet>
+        <servlet-name>DogServlet</servlet-name>
+        <servlet-class>com.leverx.servletapp.dog.servlet.DogServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DogServlet</servlet-name>
+        <url-pattern>/dogs</url-pattern>
+        <url-pattern>/dogs/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AnimalServlet</servlet-name>
+        <servlet-class>com.leverx.servletapp.animal.servlet.AnimalServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AnimalServlet</servlet-name>
+        <url-pattern>/animals</url-pattern>
+        <url-pattern>/animals/*</url-pattern>
+    </servlet-mapping>
 
     <filter>
-        <filter-name>CatServletFilter</filter-name>
-        <filter-class>com.leverx.servletapp.cat.filter.CatServletFilter</filter-class>
+        <filter-name>ServletFilter</filter-name>
+        <filter-class>com.leverx.servletapp.filter.ServletFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>CatServletFilter</filter-name>
-        <url-pattern>/cats</url-pattern>
-        <url-pattern>/cats/*</url-pattern>
+        <filter-name>ServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <listener>

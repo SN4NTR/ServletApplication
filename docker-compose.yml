@@ -1,25 +1,27 @@
-version: '3.3'
+version: '2.1'
 services:
   database:
+    hostname: database
     image: mysql:latest
     restart: always
     ports:
-      - '3306:3306'
-    environment:
-      MYSQL_DATABASE: 'db'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
-    expose:
-      - '3306'
-    volumes:
-      - ./src/main/resources/initdb:/docker-entrypoint-initdb.d
+      - '3307:3306'
+    env_file:
+      - env/db.env
+    healthcheck:
+      test: mysqladmin -uroot -proot ping
+      interval: 10s
+      timeout: 20s
+      retries: 30
 
   tomcat:
     image: tomcat:9.0.27-jdk13-openjdk-oracle
     volumes:
       - ./target/servlet-app-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/app.war
     ports:
-      - '8080:8080'
+      - '8081:8080'
+    env_file:
+      - env/tomcat.env
     depends_on:
-      - database
+      database:
+        condition: service_healthy
