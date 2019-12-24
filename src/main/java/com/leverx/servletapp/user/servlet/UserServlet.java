@@ -23,7 +23,7 @@ import static com.leverx.servletapp.core.factory.BeanFactory.getAnimalService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getCatService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getDogService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getUserService;
-import static com.leverx.servletapp.user.servlet.util.UserServletUtil.getMethodType;
+import static com.leverx.servletapp.user.servlet.UserServletUtil.getMethodType;
 import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.web.HttpResponseStatus.NO_CONTENT;
 import static com.leverx.servletapp.web.HttpResponseStatus.OK;
@@ -31,7 +31,6 @@ import static com.leverx.servletapp.web.util.ServletUtils.getIdFromUrl;
 import static com.leverx.servletapp.web.util.ServletUtils.getUserIdFormUrl;
 import static com.leverx.servletapp.web.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 

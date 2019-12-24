@@ -1,4 +1,4 @@
-package com.leverx.servletapp.user.servlet.util.constant;
+package com.leverx.servletapp.user.servlet;
 
 public enum MethodType {
     GET_ALL_USERS,
