@@ -28,7 +28,7 @@ import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.web.HttpResponseStatus.NO_CONTENT;
 import static com.leverx.servletapp.web.HttpResponseStatus.OK;
 import static com.leverx.servletapp.web.util.ServletUtils.getIdFromUrl;
-import static com.leverx.servletapp.web.util.ServletUtils.getUserIdFormUrl;
+import static com.leverx.servletapp.web.util.ServletUtils.getUserIdFromUrl;
 import static com.leverx.servletapp.web.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
@@ -59,7 +59,7 @@ public class UserServlet extends HttpServlet {
         var url = req.getRequestURL();
         var urlToString = url.toString();
 
-        var idToStringOpt = getUserIdFormUrl(urlToString);
+        var idToStringOpt = getUserIdFromUrl(urlToString);
         var idToString = idToStringOpt.orElseThrow();
 
         var param = req.getParameter(FIRST_NAME_PARAMETER);

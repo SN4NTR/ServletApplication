@@ -20,7 +20,7 @@ public final class ServletUtils {
     private static final int FIND_BY_ID_GROUP = 4;
     private static final int FIND_BY_OWNER_GROUP = 5;
 
-    public static Optional<String> getUserIdFormUrl(String url) {
+    public static Optional<String> getUserIdFromUrl(String url) {
         return getUrlPartByPosition(url, PENULTIMATE_ELEMENT_POSITION);
     }
 
