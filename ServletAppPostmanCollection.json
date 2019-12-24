@@ -17,6 +17,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -41,6 +46,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
 								"type": "text"
 							}
 						],
@@ -67,6 +77,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
 								"type": "text"
 							}
 						],
@@ -99,6 +114,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -121,7 +141,13 @@
 					"name": "Get cats by owner id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "http://localhost:8080/users/1/cats",
 							"protocol": "http",
@@ -142,7 +168,13 @@
 					"name": "Get dogs by owner id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "http://localhost:8080/users/1/dogs",
 							"protocol": "http",
@@ -169,11 +201,16 @@
 								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"testUser\",\n\t\"catsIds\": [1, 2],\n\t\"dogsIds\": [1, 2]\n}",
+							"raw": "{\n\t\"firstName\": \"12345\",\n\t\"email\": \"123@mail.com\",\n\t\"animalPoints\": 100,\n\t\"catsIds\": [1],\n\t\"dogsIds\": [2]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -204,11 +241,16 @@
 								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"testUserMod\"\n}",
+							"raw": "{\n\t\"firstName\": \"testUserMod\",\n\t\"email\": \"1@gmail.com\",\n\t\"animalPoints\": 1,\n\t\"catsIds\": [],\n\t\"dogsIds\": []\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -231,6 +273,53 @@
 					"response": []
 				},
 				{
+					"name": "Transfer animal points",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"receiverId\": 2,\n\t\"animalPoints\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/1?action=transferAnimalPoints",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "transferAnimalPoints"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete user",
 					"request": {
 						"method": "DELETE",
@@ -238,6 +327,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
 								"type": "text"
 							}
 						],
@@ -271,6 +365,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -295,6 +394,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
 								"type": "text"
 							}
 						],
@@ -322,6 +426,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
 								"type": "text"
 							}
 						],
@@ -358,7 +467,13 @@
 					"name": "Get all dogs",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "http://localhost:8080/dogs",
 							"protocol": "http",
@@ -377,7 +492,13 @@
 					"name": "Get dog by id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "http://localhost:8080/dogs/1",
 							"protocol": "http",
@@ -403,11 +524,16 @@
 								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"testDogt\",\n\t\"dateOfBirth\": \"2019-11-26\",\n\t\"goodBoyAmount\": 1\n}",
+							"raw": "{\n\t\"name\": \"testDog\",\n\t\"dateOfBirth\": \"2019-11-26\",\n\t\"goodBoyAmount\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -438,7 +564,13 @@
 					"name": "Get all animals",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "http://localhost:8080/animals",
 							"protocol": "http",
@@ -448,6 +580,32 @@
 							"port": "8080",
 							"path": [
 								"animals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get animal by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/animals/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"animals",
+								"1"
 							]
 						}
 					},
