@@ -1,11 +1,9 @@
 package com.leverx.servletapp.user.validator;
 
-import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.cat.validator.CatValidator;
-import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
-import com.leverx.servletapp.dog.validator.DogValidator;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
 import com.leverx.servletapp.core.exception.ValidationException;
+import com.leverx.servletapp.dog.validator.DogValidator;
 import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.repository.UserRepository;
@@ -16,10 +14,10 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import static com.leverx.servletapp.web.HttpResponseStatus.NOT_FOUND;
-import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static com.leverx.servletapp.core.exception.ErrorConstant.USER_NOT_FOUND;
 import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
+import static com.leverx.servletapp.web.HttpResponseStatus.NOT_FOUND;
+import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -34,6 +32,8 @@ public class UserValidator {
     private static final String DELIMITER = "; ";
 
     private UserRepository userRepository;
+    private CatValidator catValidator;
+    private DogValidator dogValidator;
 
     public void validateId(int id) throws EntityNotFoundException {
         var userOpt = userRepository.findById(id);
@@ -44,10 +44,8 @@ public class UserValidator {
     public void validateInputDto(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
         validateDto(userInputDto);
         var catsIds = userInputDto.getCatsIds();
-        var catValidator = new CatValidator(new CatRepositoryImpl());
         catValidator.validateIds(catsIds);
         var dogsIds = userInputDto.getDogsIds();
-        var dogValidator = new DogValidator(new DogRepositoryImpl());
         dogValidator.validateIds(dogsIds);
     }
 

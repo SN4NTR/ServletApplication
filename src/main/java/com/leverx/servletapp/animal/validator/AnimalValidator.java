@@ -30,12 +30,6 @@ public class AnimalValidator {
 
     private AnimalRepository animalRepository;
 
-    public void validateId(int id) throws EntityNotFoundException {
-        var animalOpt = animalRepository.findById(id, Animal.class);
-        var message = getLocalizedMessage(ANIMAL_NOT_FOUND);
-        animalOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
-    }
-
     public static void validateInputDto(AnimalInputDto animalInputDto) throws ValidationException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
@@ -44,6 +38,12 @@ public class AnimalValidator {
             var message = logErrors(violations);
             throw new ValidationException(message, UNPROCESSABLE_ENTITY);
         }
+    }
+
+    public void validateId(int id) throws EntityNotFoundException {
+        var animalOpt = animalRepository.findById(id, Animal.class);
+        var message = getLocalizedMessage(ANIMAL_NOT_FOUND);
+        animalOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
     private static String logErrors(Set<ConstraintViolation<AnimalInputDto>> violations) {

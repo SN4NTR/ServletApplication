@@ -25,10 +25,10 @@ import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private UserValidator userValidator;
 
     @Override
     public void save(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
-        var userValidator = new UserValidator(userRepository);
         userValidator.validateInputDto(userInputDto);
         var user = fromInputDto(userInputDto);
         userRepository.save(user);
@@ -36,14 +36,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) throws EntityNotFoundException {
-        var userValidator = new UserValidator(userRepository);
         userValidator.validateId(id);
         userRepository.delete(id);
     }
 
     @Override
     public void update(int id, UserInputDto userInputDto) throws EntityNotFoundException, ValidationException {
-        var userValidator = new UserValidator(userRepository);
         userValidator.validateInputDto(userInputDto);
         userValidator.validateId(id);
 
@@ -60,7 +58,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void transferAnimalPoints(int senderId, UserTransferDto userTransferDto) throws EntityNotFoundException, TransferException, ValidationException {
-        var userValidator = new UserValidator(userRepository);
         userValidator.validateTransferDto(userTransferDto);
         userValidator.validateId(senderId);
         var receiverId = userTransferDto.getReceiverId();
@@ -86,7 +83,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserWithAnimalsDto findById(int id) throws EntityNotFoundException {
-        var userValidator = new UserValidator(userRepository);
         userValidator.validateId(id);
         var userOpt = userRepository.findById(id);
         var user = userOpt.orElseThrow(EntityNotFoundException::new);

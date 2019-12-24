@@ -7,7 +7,6 @@ import com.leverx.servletapp.animal.entity.Animal;
 import com.leverx.servletapp.animal.repository.AnimalRepository;
 import com.leverx.servletapp.animal.validator.AnimalValidator;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
-import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import com.leverx.servletapp.user.validator.UserValidator;
 import lombok.AllArgsConstructor;
 
@@ -19,10 +18,11 @@ import static com.leverx.servletapp.animal.converter.AnimalConverter.toDtoWithOw
 public class AnimalServiceImpl implements AnimalService {
 
     private AnimalRepository animalRepository;
+    private AnimalValidator animalValidator;
+    private UserValidator userValidator;
 
     @Override
     public AnimalWithOwnerDto findById(int id) throws EntityNotFoundException {
-        var animalValidator = new AnimalValidator(animalRepository);
         animalValidator.validateId(id);
         var animalOpt = animalRepository.findById(id, Animal.class);
         var animal = animalOpt.orElseThrow();
@@ -31,7 +31,6 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public Collection<AnimalOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException {
-        var userValidator = new UserValidator(new UserRepositoryImpl());
         userValidator.validateId(ownerId);
         var animals = animalRepository.findByOwnerId(ownerId, Animal.class);
         return AnimalConverter.toOutputDtoList(animals);
