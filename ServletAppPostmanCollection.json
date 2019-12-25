@@ -232,6 +232,48 @@
 					"response": []
 				},
 				{
+					"name": "Transfer animal points",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"receiverId\": 2,\n\t\"animalPoints\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/1/transfer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Edit user",
 					"request": {
 						"method": "PUT",
@@ -267,53 +309,6 @@
 							"path": [
 								"users",
 								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Transfer animal points",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Accept-Language",
-								"value": "en-US",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"receiverId\": 2,\n\t\"animalPoints\": 100\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/users/1?action=transferAnimalPoints",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"1"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "transferAnimalPoints"
-								}
 							]
 						}
 					},
