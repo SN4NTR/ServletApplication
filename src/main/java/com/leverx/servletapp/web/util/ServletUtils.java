@@ -3,6 +3,7 @@ package com.leverx.servletapp.web.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static com.leverx.servletapp.web.UrlPath.DELIMITER;
@@ -19,6 +20,7 @@ public final class ServletUtils {
     private static final int FIND_ALL_GROUP = 3;
     private static final int FIND_BY_ID_GROUP = 4;
     private static final int FIND_BY_OWNER_GROUP = 5;
+    private static final String FIRST_NAME_PARAMETER = "firstName";
 
     public static Optional<String> getUserIdFromUrl(String url) {
         return getUrlPartByPosition(url, PENULTIMATE_ELEMENT_POSITION);
@@ -34,15 +36,36 @@ public final class ServletUtils {
         return isParsable(value) ? Optional.of(Integer.parseInt(value)) : Optional.empty();
     }
 
-    public static Optional<String> getValueFromUrl(String url, String parameter) {
-        var findByOwnerPattern = compile("(.+)//(.+)/(\\w+)/(\\d+)/(\\w+)");
-        var findByOwnerMatcher = findByOwnerPattern.matcher(url);
-
-        if (findByOwnerMatcher.matches()) {
-            var value = findByOwnerMatcher.group(FIND_BY_OWNER_GROUP);
-            return Optional.of(value);
+    public static Optional<String> defineGetMethodFromRequest(HttpServletRequest req) {
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
+        var value = findByOwner(urlToString);
+        if (value.isPresent()) {
+            return value;
         }
 
+        value = findById(urlToString);
+        if (value.isPresent()) {
+            return value;
+        }
+
+        var parameter = req.getParameter(FIRST_NAME_PARAMETER);
+        value = findByFirstName(urlToString, parameter);
+        return value;
+    }
+
+    private static Optional<String> findByFirstName(String url, String parameter) {
+        var findAllPattern = compile("(.+)//(.+)/(\\w+)/?");
+        var findAllMatcher = findAllPattern.matcher(url);
+
+        if (findAllMatcher.matches()) {
+            var value = findAllMatcher.group(FIND_ALL_GROUP);
+            return isNull(parameter) ? Optional.of(value) : Optional.of(parameter);
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<String> findById(String url) {
         var findByIdPattern = compile("(.+)//(.+)/(\\w+)/(\\d+)");
         var findByIdMatcher = findByIdPattern.matcher(url);
 
@@ -50,13 +73,16 @@ public final class ServletUtils {
             var id = findByIdMatcher.group(FIND_BY_ID_GROUP);
             return Optional.of(id);
         }
+        return Optional.empty();
+    }
 
-        var findAllPattern = compile("(.+)//(.+)/(\\w+)/?");
-        var findAllMatcher = findAllPattern.matcher(url);
+    private static Optional<String> findByOwner(String url) {
+        var findByOwnerPattern = compile("(.+)//(.+)/(\\w+)/(\\d+)/(\\w+)");
+        var findByOwnerMatcher = findByOwnerPattern.matcher(url);
 
-        if (findAllMatcher.matches()) {
-            var value = findAllMatcher.group(FIND_ALL_GROUP);
-            return isNull(parameter) ? Optional.of(value) : Optional.of(parameter);
+        if (findByOwnerMatcher.matches()) {
+            var value = findByOwnerMatcher.group(FIND_BY_OWNER_GROUP);
+            return Optional.of(value);
         }
         return Optional.empty();
     }
