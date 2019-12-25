@@ -3,12 +3,11 @@ package com.leverx.servletapp.user.servlet;
 import com.leverx.servletapp.animal.service.AnimalService;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
-import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.user.dto.UserInputDto;
-import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.service.UserService;
+import com.leverx.servletapp.web.util.ServletUtils;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +27,7 @@ import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.web.HttpResponseStatus.NO_CONTENT;
 import static com.leverx.servletapp.web.HttpResponseStatus.OK;
 import static com.leverx.servletapp.web.util.ServletUtils.getIdFromUrl;
-import static com.leverx.servletapp.web.util.ServletUtils.getUserIdFromUrl;
-import static com.leverx.servletapp.web.util.ServletUtils.getValueFromUrl;
 import static java.lang.Integer.parseInt;
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
 public class UserServlet extends HttpServlet {
@@ -40,10 +36,6 @@ public class UserServlet extends HttpServlet {
     private AnimalService animalService;
     private CatService catService;
     private DogService dogService;
-
-    private static final String FIRST_NAME_PARAMETER = "firstName";
-    private static final String ACTION_PARAMETER = "action";
-    private static final String TRANSFER_ACTION = "transferAnimalPoints";
 
     public UserServlet() {
         userService = getUserService();
@@ -55,31 +47,27 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var printWriter = resp.getWriter();
-
         var url = req.getRequestURL();
         var urlToString = url.toString();
-
-        var idToStringOpt = getUserIdFromUrl(urlToString);
-        var idToString = idToStringOpt.orElseThrow();
-
-        var param = req.getParameter(FIRST_NAME_PARAMETER);
-        var valueOpt = getValueFromUrl(urlToString, param);
-        var value = valueOpt.orElseThrow();
-
-        var methodType = getMethodType(value);
+        var methodType = getMethodType(req);
 
         switch (methodType) {
             case GET_ALL_USERS -> printAllUsers(printWriter, resp);
-            case GET_USERS_CATS -> printCatsByOwner(printWriter, idToString, resp);
-            case GET_USERS_DOGS -> printDogsByOwner(printWriter, idToString, resp);
-            case GET_USERS_ANIMALS -> printAnimalsByOwner(printWriter, idToString, resp);
-            default -> printUserByAttribute(printWriter, value, resp);
+            case GET_USERS_CATS -> printCatsByOwner(printWriter, urlToString, resp);
+            case GET_USERS_DOGS -> printDogsByOwner(printWriter, urlToString, resp);
+            case GET_USERS_ANIMALS -> printAnimalsByOwner(printWriter, urlToString, resp);
+            default -> printUserByAttribute(printWriter, urlToString, resp);
         }
         printWriter.flush();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        var url = req.getRequestURL();
+        var urlToString = url.toString();
+        var idOpt = getIdFromUrl(urlToString);
+        var id = idOpt.orElseThrow();
+
         try {
             var reader = req.getReader();
             var userDto = jsonToEntity(reader, UserInputDto.class);
@@ -113,32 +101,7 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var action = req.getParameter(ACTION_PARAMETER);
-        if (nonNull(action) && TRANSFER_ACTION.equals(action)) {
-            transferAnimalPoints(req, resp, urlToString);
-        } else {
-            updateUser(req, resp, urlToString);
-        }
-    }
-
-    private void transferAnimalPoints(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {
-        try {
-            var senderIdOpt = getIdFromUrl(urlToString);
-            var senderId = senderIdOpt.orElseThrow();
-            var reader = req.getReader();
-            var userTransferDto = jsonToEntity(reader, UserTransferDto.class);
-            userService.transferAnimalPoints(senderId, userTransferDto);
-            resp.setStatus(OK);
-        } catch (EntityNotFoundException ex) {
-            var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getLocalizedMessage());
-        } catch (TransferException ex) {
-            var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getLocalizedMessage());
-        } catch (ValidationException ex) {
-            var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getLocalizedMessage());
-        }
+        updateUser(req, resp, urlToString);
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {
@@ -158,9 +121,10 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printCatsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
+    private void printCatsByOwner(PrintWriter printWriter, String url, HttpServletResponse resp) throws IOException {
         try {
-            var id = parseInt(idToString);
+            var idOpt = getIdFromUrl(url);
+            var id = idOpt.orElseThrow();
             var cats = catService.findByOwnerId(id);
             var result = collectionToJson(cats);
             printWriter.print(result);
@@ -171,9 +135,10 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printDogsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
+    private void printDogsByOwner(PrintWriter printWriter, String url, HttpServletResponse resp) throws IOException {
         try {
-            var id = parseInt(idToString);
+            var idOpt = getIdFromUrl(url);
+            var id = idOpt.orElseThrow();
             var dogs = dogService.findByOwnerId(id);
             var result = collectionToJson(dogs);
             printWriter.print(result);
@@ -184,9 +149,10 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printAnimalsByOwner(PrintWriter printWriter, String idToString, HttpServletResponse resp) throws IOException {
+    private void printAnimalsByOwner(PrintWriter printWriter, String url, HttpServletResponse resp) throws IOException {
         try {
-            var id = parseInt(idToString);
+            var idOpt = getIdFromUrl(url);
+            var id = idOpt.orElseThrow();
             var animals = animalService.findByOwnerId(id);
             var result = collectionToJson(animals);
             printWriter.print(result);
@@ -197,7 +163,9 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void printUserByAttribute(PrintWriter printWriter, String value, HttpServletResponse resp) throws IOException {
+    private void printUserByAttribute(PrintWriter printWriter, String url, HttpServletResponse resp) throws IOException {
+        var valueOpt = ServletUtils.getLastPartOfUrl(url);
+        var value = valueOpt.orElseThrow();
         if (isParsable(value)) {
             printUserById(printWriter, value, resp);
         } else {
