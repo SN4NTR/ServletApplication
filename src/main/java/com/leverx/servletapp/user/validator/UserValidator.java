@@ -2,6 +2,7 @@ package com.leverx.servletapp.user.validator;
 
 import com.leverx.servletapp.cat.validator.CatValidator;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.validator.DogValidator;
 import com.leverx.servletapp.user.dto.UserInputDto;
@@ -14,6 +15,7 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import static com.leverx.servletapp.core.exception.ErrorConstant.TRANSFER_ERROR;
 import static com.leverx.servletapp.core.exception.ErrorConstant.USER_NOT_FOUND;
 import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
 import static com.leverx.servletapp.web.HttpResponseStatus.NOT_FOUND;
@@ -49,10 +51,19 @@ public class UserValidator {
         dogValidator.validateIds(dogsIds);
     }
 
-    public void validateTransferDto(UserTransferDto userTransferDto) throws ValidationException, EntityNotFoundException {
+    public void validateTransferDto(int senderId, UserTransferDto userTransferDto) throws ValidationException, EntityNotFoundException, TransferException {
         validateDto(userTransferDto);
         var receiverId = userTransferDto.getReceiverId();
         validateId(receiverId);
+        validateId(senderId);
+        var senderOpt = userRepository.findById(senderId);
+        var sender = senderOpt.orElseThrow();
+        var senderAccount = sender.getAnimalPoints();
+        var animalPoints = userTransferDto.getAnimalPoints();
+        if (senderAccount < animalPoints) {
+            var message = getLocalizedMessage(TRANSFER_ERROR);
+            throw new TransferException(message, UNPROCESSABLE_ENTITY);
+        }
     }
 
     private <T> void validateDto(T t) throws ValidationException {

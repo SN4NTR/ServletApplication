@@ -8,11 +8,13 @@ import com.leverx.servletapp.user.dto.UserInputDto;
 import com.leverx.servletapp.user.dto.UserOutputDto;
 import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.dto.UserWithAnimalsDto;
+import com.leverx.servletapp.user.entity.User;
 import com.leverx.servletapp.user.repository.UserRepository;
 import com.leverx.servletapp.user.validator.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.constraints.Min;
 import java.util.Collection;
 
 import static com.leverx.servletapp.core.exception.ErrorConstant.TRANSFER_ERROR;
@@ -58,8 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void transferAnimalPoints(int senderId, UserTransferDto userTransferDto) throws EntityNotFoundException, TransferException, ValidationException {
-        userValidator.validateTransferDto(userTransferDto);
-        userValidator.validateId(senderId);
+        userValidator.validateTransferDto(senderId, userTransferDto);
         var receiverId = userTransferDto.getReceiverId();
         var animalPoints = userTransferDto.getAnimalPoints();
 
@@ -68,17 +69,7 @@ public class UserServiceImpl implements UserService {
         var receiverOpt = userRepository.findById(receiverId);
         var receiver = receiverOpt.orElseThrow(EntityNotFoundException::new);
 
-        var senderAnimalPointsAccount = sender.getAnimalPoints();
-        if (senderAnimalPointsAccount >= animalPoints) {
-            sender.setAnimalPoints(senderAnimalPointsAccount - animalPoints);
-            var receiverAnimalPointsAccount = receiver.getAnimalPoints();
-            receiver.setAnimalPoints(receiverAnimalPointsAccount + animalPoints);
-            userRepository.update(sender);
-            userRepository.update(receiver);
-        } else {
-            var message = getLocalizedMessage(TRANSFER_ERROR);
-            throw new TransferException(message, UNPROCESSABLE_ENTITY);
-        }
+        doTransfer(animalPoints, sender, receiver);
     }
 
     @Override
@@ -99,5 +90,14 @@ public class UserServiceImpl implements UserService {
     public Collection<UserOutputDto> findAll() {
         var users = userRepository.findAll();
         return UserConverter.toOutputDtoList(users);
+    }
+
+    private void doTransfer(int animalPoints, User sender, User receiver) {
+        var senderAnimalPointsAccount = sender.getAnimalPoints();
+        sender.setAnimalPoints(senderAnimalPointsAccount - animalPoints);
+        var receiverAnimalPointsAccount = receiver.getAnimalPoints();
+        receiver.setAnimalPoints(receiverAnimalPointsAccount + animalPoints);
+        userRepository.update(sender);
+        userRepository.update(receiver);
     }
 }
