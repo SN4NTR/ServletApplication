@@ -3,11 +3,12 @@ package com.leverx.servletapp.user.servlet;
 import com.leverx.servletapp.animal.service.AnimalService;
 import com.leverx.servletapp.cat.service.CatService;
 import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.TransferException;
 import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.service.DogService;
 import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.service.UserService;
-import com.leverx.servletapp.web.util.ServletUtils;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +23,13 @@ import static com.leverx.servletapp.core.factory.BeanFactory.getAnimalService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getCatService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getDogService;
 import static com.leverx.servletapp.core.factory.BeanFactory.getUserService;
+import static com.leverx.servletapp.user.servlet.UserServletUtil.TRANSFER_ACTION;
 import static com.leverx.servletapp.user.servlet.UserServletUtil.getMethodType;
 import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
 import static com.leverx.servletapp.web.HttpResponseStatus.NO_CONTENT;
 import static com.leverx.servletapp.web.HttpResponseStatus.OK;
 import static com.leverx.servletapp.web.util.ServletUtils.getIdFromUrl;
+import static com.leverx.servletapp.web.util.ServletUtils.getLastPartOfUrl;
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 
@@ -65,20 +68,12 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var url = req.getRequestURL();
         var urlToString = url.toString();
-        var idOpt = getIdFromUrl(urlToString);
-        var id = idOpt.orElseThrow();
-
-        try {
-            var reader = req.getReader();
-            var userDto = jsonToEntity(reader, UserInputDto.class);
-            userService.save(userDto);
-            resp.setStatus(CREATED);
-        } catch (ValidationException ex) {
-            var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getLocalizedMessage());
-        } catch (EntityNotFoundException ex) {
-            var responseStatus = ex.getResponseStatus();
-            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        var valueOpt = getLastPartOfUrl(urlToString);
+        var value = valueOpt.orElseThrow();
+        if (TRANSFER_ACTION.equals(value)) {
+            transferAnimalPoints(urlToString, req, resp);
+        } else {
+            saveUser(req, resp);
         }
     }
 
@@ -102,6 +97,40 @@ public class UserServlet extends HttpServlet {
         var url = req.getRequestURL();
         var urlToString = url.toString();
         updateUser(req, resp, urlToString);
+    }
+
+    private void transferAnimalPoints(String url, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            var idOpt = getIdFromUrl(url);
+            var id = idOpt.orElseThrow();
+            var reader = req.getReader();
+            var userTransferDto = jsonToEntity(reader, UserTransferDto.class);
+            userService.transferAnimalPoints(id, userTransferDto);
+        } catch (EntityNotFoundException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        } catch (TransferException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        } catch (ValidationException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        }
+    }
+
+    private void saveUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            var reader = req.getReader();
+            var userDto = jsonToEntity(reader, UserInputDto.class);
+            userService.save(userDto);
+            resp.setStatus(CREATED);
+        } catch (ValidationException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        } catch (EntityNotFoundException ex) {
+            var responseStatus = ex.getResponseStatus();
+            resp.sendError(responseStatus, ex.getLocalizedMessage());
+        }
     }
 
     private void updateUser(HttpServletRequest req, HttpServletResponse resp, String urlToString) throws IOException {
@@ -164,7 +193,7 @@ public class UserServlet extends HttpServlet {
     }
 
     private void printUserByAttribute(PrintWriter printWriter, String url, HttpServletResponse resp) throws IOException {
-        var valueOpt = ServletUtils.getLastPartOfUrl(url);
+        var valueOpt = getLastPartOfUrl(url);
         var value = valueOpt.orElseThrow();
         if (isParsable(value)) {
             printUserById(printWriter, value, resp);

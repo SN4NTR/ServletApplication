@@ -19,13 +19,15 @@ import static java.util.regex.Pattern.compile;
 
 class UserServletUtil extends ServletUtils {
 
+    static final String TRANSFER_ACTION = "transfer";
+
     private static final int FIND_ALL_GROUP = 3;
     private static final int FIND_BY_ID_GROUP = 4;
     private static final int FIND_BY_OWNER_GROUP = 5;
     private static final String FIRST_NAME_PARAMETER = "firstName";
 
     static MethodType getMethodType(HttpServletRequest req) {
-        var valueOpt = defineRequest(req);
+        var valueOpt = determineRequestType(req);
         var value = valueOpt.orElseThrow();
         return switch (value) {
             case USERS_ENDPOINT:
@@ -41,7 +43,7 @@ class UserServletUtil extends ServletUtils {
         };
     }
 
-    private static Optional<String> defineRequest(HttpServletRequest req) {
+    private static Optional<String> determineRequestType(HttpServletRequest req) {
         var url = req.getRequestURL();
         var urlToString = url.toString();
         var value = findByOwner(urlToString);
