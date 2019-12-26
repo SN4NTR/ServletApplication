@@ -1,12 +1,12 @@
 package com.leverx.servletapp.user.validator;
 
-import com.leverx.servletapp.cat.repository.CatRepositoryImpl;
 import com.leverx.servletapp.cat.validator.CatValidator;
-import com.leverx.servletapp.dog.repository.DogRepositoryImpl;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.TransferException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.validator.DogValidator;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
 import com.leverx.servletapp.user.dto.UserInputDto;
+import com.leverx.servletapp.user.dto.UserTransferDto;
 import com.leverx.servletapp.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +15,11 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import static com.leverx.servletapp.constant.HttpResponseStatus.NOT_FOUND;
-import static com.leverx.servletapp.constant.HttpResponseStatus.UNPROCESSABLE_ENTITY;
-import static com.leverx.servletapp.message.MessageConstant.USER_NOT_FOUND;
-import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
+import static com.leverx.servletapp.core.exception.ErrorConstant.TRANSFER_ERROR;
+import static com.leverx.servletapp.core.exception.ErrorConstant.USER_NOT_FOUND;
+import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
+import static com.leverx.servletapp.web.HttpResponseStatus.NOT_FOUND;
+import static com.leverx.servletapp.web.HttpResponseStatus.UNPROCESSABLE_ENTITY;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -28,10 +29,13 @@ public class UserValidator {
 
     public static final int NAME_MIN_SIZE = 5;
     public static final int NAME_MAX_SIZE = 60;
+    public static final int ANIMAL_POINTS_MIN = 1;
 
     private static final String DELIMITER = "; ";
 
     private UserRepository userRepository;
+    private CatValidator catValidator;
+    private DogValidator dogValidator;
 
     public void validateId(int id) throws EntityNotFoundException {
         var userOpt = userRepository.findById(id);
@@ -39,24 +43,40 @@ public class UserValidator {
         userOpt.orElseThrow(() -> new EntityNotFoundException(message, NOT_FOUND));
     }
 
-    public static void validateInputDto(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
+    public void validateInputDto(UserInputDto userInputDto) throws ValidationException, EntityNotFoundException {
+        validateDto(userInputDto);
+        var catsIds = userInputDto.getCatsIds();
+        catValidator.validateIds(catsIds);
+        var dogsIds = userInputDto.getDogsIds();
+        dogValidator.validateIds(dogsIds);
+    }
+
+    public void validateTransferDto(int senderId, UserTransferDto userTransferDto) throws ValidationException, EntityNotFoundException, TransferException {
+        validateDto(userTransferDto);
+        var receiverId = userTransferDto.getReceiverId();
+        validateId(receiverId);
+        validateId(senderId);
+        var senderOpt = userRepository.findById(senderId);
+        var sender = senderOpt.orElseThrow();
+        var senderAccount = sender.getAnimalPoints();
+        var animalPoints = userTransferDto.getAnimalPoints();
+        if (senderAccount < animalPoints) {
+            var message = getLocalizedMessage(TRANSFER_ERROR);
+            throw new TransferException(message, UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private <T> void validateDto(T t) throws ValidationException {
         var validatorFactory = buildDefaultValidatorFactory();
         var validator = validatorFactory.getValidator();
-        var violations = validator.validate(userInputDto);
+        var violations = validator.validate(t);
         if (isNotEmpty(violations)) {
             var message = logErrors(violations);
             throw new ValidationException(message, UNPROCESSABLE_ENTITY);
         }
-
-        var catsIds = userInputDto.getCatsIds();
-        var catValidator = new CatValidator(new CatRepositoryImpl());
-        catValidator.validateIds(catsIds);
-        var dogsIds = userInputDto.getDogsIds();
-        var dogValidator = new DogValidator(new DogRepositoryImpl());
-        dogValidator.validateIds(dogsIds);
     }
 
-    private static String logErrors(Set<ConstraintViolation<UserInputDto>> violations) {
+    private <T> String logErrors(Set<ConstraintViolation<T>> violations) {
         var joiner = new StringJoiner(DELIMITER);
         violations.stream()
                 .map(ConstraintViolation::getMessage)

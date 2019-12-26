@@ -5,8 +5,8 @@ import com.leverx.servletapp.cat.dto.CatOutputDto;
 import com.leverx.servletapp.cat.dto.CatWithOwnerDto;
 import com.leverx.servletapp.cat.repository.CatRepository;
 import com.leverx.servletapp.cat.validator.CatValidator;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import com.leverx.servletapp.user.validator.UserValidator;
 import lombok.AllArgsConstructor;
@@ -22,6 +22,8 @@ import static com.leverx.servletapp.cat.converter.CatConverter.toOutputDtoList;
 public class CatServiceImpl implements CatService {
 
     private CatRepository catRepository;
+    private CatValidator catValidator;
+    private UserValidator userValidator;
 
     @Override
     public void save(CatInputDto catInputDto) throws ValidationException {
@@ -32,7 +34,6 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public CatWithOwnerDto findById(int id) throws EntityNotFoundException {
-        var catValidator = new CatValidator(catRepository);
         catValidator.validateId(id);
         var catOpt = catRepository.findById(id);
         var cat = catOpt.orElseThrow();
@@ -41,7 +42,6 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public Collection<CatOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException {
-        var userValidator = new UserValidator(new UserRepositoryImpl());
         userValidator.validateId(ownerId);
         var cats = catRepository.findByOwnerId(ownerId);
         return toOutputDtoList(cats);

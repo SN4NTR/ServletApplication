@@ -1,17 +1,17 @@
-package com.leverx.servletapp.converter;
+package com.leverx.servletapp.core.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leverx.servletapp.exception.InternalServerErrorException;
+import com.leverx.servletapp.core.exception.InternalServerErrorException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.util.Collection;
 
-import static com.leverx.servletapp.constant.HttpResponseStatus.INTERNAL_SERVER_ERROR;
-import static com.leverx.servletapp.message.MessageConstant.FROM_JSON_ERROR;
-import static com.leverx.servletapp.message.MessageConstant.TO_JSON_ERROR;
-import static com.leverx.servletapp.message.MessageConstant.getLocalizedMessage;
+import static com.leverx.servletapp.web.HttpResponseStatus.INTERNAL_SERVER_ERROR;
+import static com.leverx.servletapp.core.exception.ErrorConstant.FROM_JSON_ERROR;
+import static com.leverx.servletapp.core.exception.ErrorConstant.TO_JSON_ERROR;
+import static com.leverx.servletapp.core.exception.ErrorConstant.getLocalizedMessage;
 import static java.util.stream.Collectors.joining;
 
 @Slf4j

@@ -9,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static com.leverx.servletapp.user.validator.UserValidator.ANIMAL_POINTS_MIN;
 import static com.leverx.servletapp.user.validator.UserValidator.NAME_MAX_SIZE;
 import static com.leverx.servletapp.user.validator.UserValidator.NAME_MIN_SIZE;
 import static java.util.Collections.emptyList;
