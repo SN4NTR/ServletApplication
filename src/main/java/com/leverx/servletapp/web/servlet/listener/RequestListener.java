@@ -1,4 +1,4 @@
-package com.leverx.servletapp.listener;
+package com.leverx.servletapp.web.servlet.listener;
 
 import lombok.extern.slf4j.Slf4j;
 

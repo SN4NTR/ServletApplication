@@ -2,8 +2,8 @@ package com.leverx.servletapp.cat.servlet;
 
 import com.leverx.servletapp.cat.dto.CatInputDto;
 import com.leverx.servletapp.cat.service.CatService;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,14 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.leverx.servletapp.constant.HttpResponseStatus.CREATED;
-import static com.leverx.servletapp.constant.HttpResponseStatus.OK;
-import static com.leverx.servletapp.factory.BeanFactory.getCatService;
-import static com.leverx.servletapp.converter.EntityConverter.collectionToJson;
-import static com.leverx.servletapp.converter.EntityConverter.entityToJson;
-import static com.leverx.servletapp.converter.EntityConverter.jsonToEntity;
-import static com.leverx.servletapp.util.ServletUtils.getLastPartOfUrl;
-import static com.leverx.servletapp.util.constant.UrlComponent.CATS_ENDPOINT;
+import static com.leverx.servletapp.web.HttpResponseStatus.CREATED;
+import static com.leverx.servletapp.web.HttpResponseStatus.OK;
+import static com.leverx.servletapp.core.factory.BeanFactory.getCatService;
+import static com.leverx.servletapp.core.converter.EntityConverter.collectionToJson;
+import static com.leverx.servletapp.core.converter.EntityConverter.entityToJson;
+import static com.leverx.servletapp.core.converter.EntityConverter.jsonToEntity;
+import static com.leverx.servletapp.web.util.ServletUtils.getLastPartOfUrl;
+import static com.leverx.servletapp.web.UrlPath.CATS_ENDPOINT;
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 

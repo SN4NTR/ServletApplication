@@ -1,7 +1,7 @@
 package com.leverx.servletapp.dog.service;
 
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.dto.DogInputDto;
 import com.leverx.servletapp.dog.dto.DogOutputDto;
 import com.leverx.servletapp.dog.dto.DogWithOwnerDto;

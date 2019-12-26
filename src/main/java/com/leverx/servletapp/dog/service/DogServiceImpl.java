@@ -1,13 +1,12 @@
 package com.leverx.servletapp.dog.service;
 
+import com.leverx.servletapp.core.exception.EntityNotFoundException;
+import com.leverx.servletapp.core.exception.ValidationException;
 import com.leverx.servletapp.dog.dto.DogInputDto;
 import com.leverx.servletapp.dog.dto.DogOutputDto;
 import com.leverx.servletapp.dog.dto.DogWithOwnerDto;
 import com.leverx.servletapp.dog.repository.DogRepository;
 import com.leverx.servletapp.dog.validator.DogValidator;
-import com.leverx.servletapp.exception.EntityNotFoundException;
-import com.leverx.servletapp.exception.ValidationException;
-import com.leverx.servletapp.user.repository.UserRepositoryImpl;
 import com.leverx.servletapp.user.validator.UserValidator;
 import lombok.AllArgsConstructor;
 
@@ -22,6 +21,8 @@ import static com.leverx.servletapp.dog.converter.DogConverter.toOutputDtoList;
 public class DogServiceImpl implements DogService {
 
     private DogRepository dogRepository;
+    private DogValidator dogValidator;
+    private UserValidator userValidator;
 
     @Override
     public void save(DogInputDto dogInputDto) throws ValidationException {
@@ -32,7 +33,6 @@ public class DogServiceImpl implements DogService {
 
     @Override
     public DogWithOwnerDto findById(int id) throws EntityNotFoundException {
-        var dogValidator = new DogValidator(dogRepository);
         dogValidator.validateId(id);
         var dogDto = dogRepository.findById(id);
         var dog = dogDto.orElseThrow();
@@ -41,7 +41,6 @@ public class DogServiceImpl implements DogService {
 
     @Override
     public Collection<DogOutputDto> findByOwnerId(int ownerId) throws EntityNotFoundException {
-        var userValidator = new UserValidator(new UserRepositoryImpl());
         userValidator.validateId(ownerId);
         var dogs = dogRepository.findByOwnerId(ownerId);
         return toOutputDtoList(dogs);

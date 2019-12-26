@@ -15,8 +15,8 @@ import java.util.Optional;
 
 import static com.leverx.servletapp.db.EntityManagerConfig.getEntityManager;
 import static java.util.Objects.nonNull;
+import static javax.persistence.LockModeType.PESSIMISTIC_WRITE;
 import static org.apache.commons.collections4.CollectionUtils.emptyCollection;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
@@ -107,7 +107,7 @@ public class UserRepositoryImpl implements UserRepository {
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            var query = entityManager.createQuery(criteriaQuery);
+            var query = entityManager.createQuery(criteriaQuery).setLockMode(PESSIMISTIC_WRITE);
             var user = query.getSingleResult();
 
             transaction.commit();
@@ -138,9 +138,6 @@ public class UserRepositoryImpl implements UserRepository {
 
             var query = entityManager.createQuery(criteriaQuery);
             var users = query.getResultList();
-            if (isEmpty(users)) {
-                throw new NoResultException();
-            }
 
             transaction.commit();
             log.info("Users were found");
@@ -148,7 +145,7 @@ public class UserRepositoryImpl implements UserRepository {
             return users;
         } catch (NoResultException ex) {
             rollbackTransaction(transaction);
-            var message = "User can't be found";
+            var message = "Users can't be found";
             log.error(message);
             return emptyCollection();
         } finally {

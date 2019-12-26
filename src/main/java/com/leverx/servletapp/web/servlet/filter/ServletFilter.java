@@ -1,4 +1,4 @@
-package com.leverx.servletapp.filter;
+package com.leverx.servletapp.web.servlet.filter;
 
 import lombok.extern.slf4j.Slf4j;
 
