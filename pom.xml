@@ -24,7 +24,7 @@
         <apache.commons.version>3.9</apache.commons.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <hibernate.validator.version>6.1.0.Final</hibernate.validator.version>
-        <hibernate.version>5.4.9.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
         <jackson.version>2.10.1</jackson.version>
     </properties>
 
